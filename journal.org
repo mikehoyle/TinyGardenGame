@@ -1,0 +1,10 @@
+#+TITLE Tiny Garden Game Journal
+
+* 05/28/2022
+  First entry, it's been a week or so of messing around with Monogame and getting acquainted with the framework. I have a rough idea of a game.. which keeps developing as time goes on. The hope is to keep the scope achievable. What started as a plant-based RTS idea may become more of a tech-up and survive type of single player game, just to avoid multiplayer hurdles.
+
+  I've decided to go isometric for no reason other than it feels right. I have a simple test sprite moving to keyboard input in an isometric map built in Tiled, and a camera which follows the character at the right scale. It's a start.
+
+  Isometric is already turning out to be a pain in the ass, but I think it will pay visual dividends if I can get to the point in the project where that's relevant.
+
+  I also invested some time in getting an in-game console system up and running early (mostly on the back of MonogameConsole, which I had to minorly port).

@@ -1,0 +1,59 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "TinyGardenGame/Content/tilesets/test-tileset.tsx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "TinyGardenGame/Content/maps/first_prototype.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 486.33333333333337,
+                "y": 540.6666666666666
+            }
+        },
+        "TinyGardenGame/Content/tilesets/test-tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "TinyGardenGame/maps/first_prototype.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 486.33333333333337,
+                "y": 540.6666666666666
+            }
+        },
+        "TinyGardenGame/maps/test-tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/micha/PersonalProjects/TinyGardenGame/TinyGardenGame/Content/tilesets",
+    "map.height": 24,
+    "map.lastUsedFormat": "tmx",
+    "map.orientation": null,
+    "map.tileHeight": 16,
+    "map.tileWidth": 32,
+    "map.width": 48,
+    "openFiles": [
+        "TinyGardenGame/Content/maps/first_prototype.tmx",
+        "TinyGardenGame/Content/tilesets/test-tileset.tsx"
+    ],
+    "project": "tiny-garden.tiled-project",
+    "recentFiles": [
+        "TinyGardenGame/Content/maps/first_prototype.tmx",
+        "TinyGardenGame/Content/tilesets/test-tileset.tsx",
+        "TinyGardenGame/maps/test-tileset.tsx",
+        "TinyGardenGame/maps/first_prototype.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 32
+    }
+}
