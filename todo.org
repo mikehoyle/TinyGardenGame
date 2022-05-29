@@ -1,7 +1,7 @@
 
 #+TITLE Tiny Garden Game TODO Tracker
 *
-* TODO Major changes [0/6]
+* TODO Major changes [0/5]
  - [-] Add console support with basic commands
    - See https://github.com/romanov/MonoGame-Console
    - [X] Console support
@@ -9,10 +9,19 @@
      - Command added but not implemented
    - [ ] Get player's position
    - Other?
- - [ ] Add "placement targeting" support
+ - [-] Add "placement targeting" support
    - Selecting the square you are facing to interact with it
+   - [X] Directly-adjacent selection
+   - [X] Debug selection indicator
+   - [ ] Enable diagonal selection
  - [ ] Add simple "building"//plant sprites
  - [ ] Add basic collisions
- - [ ] Controller/config support
- - [ ] Loading/unloading serialized config file
+   - [ ] Add collision component
+   - [ ] Add collision system that prevents bad movement
+ - [-] Controller/config support
+   - [X] Add and use Config class
+   - [ ] Add controls to config
+   - [ ] Loading/unloading serialized config file
+ - [ ] Layered rendering to prevent overlapped draws
+ =- [ ] Move to procedurally-generated map & remove Tiled dependency
    

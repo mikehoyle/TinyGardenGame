@@ -38,12 +38,12 @@ namespace TinyGardenGame.Systems {
     }
 
     private void AdjustCameraPosition() {
-      if (_positionComponentMapper.Components.Count != 1) {
+      if (ActiveEntities.Count != 1) {
         // TODO do this or handle more gracefully with custom exception
         throw new NotImplementedException("cannot handle camera following zero or 2+ sprites");
       }
 
-      _cameraPosition = _positionComponentMapper.Components[0].AbsolutePosition;
+      _cameraPosition = _positionComponentMapper.Get(ActiveEntities[0]).AbsolutePosition;
     }
   }
 }

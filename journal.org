@@ -1,10 +1,70 @@
 #+TITLE Tiny Garden Game Journal
 
+* 05/28/2022 afternoon
+** Development
+  Addition of determining selected tile (currently only directly adjacent), and
+  a debug indicator for that tile. Along with the indicator, a full debug system
+  to hopefully more easily enable future debug features.
+  
+** Brainstorming & Early Game Thoughts
+  Now's a good time to get down some of my general ideas and ongoing
+  brainstorming so they don't get forgotten into the abyss.
+
+  * Premise
+    You are a tiny gardener within a garden plot, seeking to expand the
+    growth around you, promote and attract plant and animal life, and fend off
+    pesky garden pests and diseases.
+
+  * Unique elements (What makes it worth making)
+    - The nature components stay natural and emulate natural processes
+      (i.e. no "sunflower turrets" or "poppy seed shooting pistols")
+      - I may waver on this one... we'll see.
+    - Unique nature-based mechanics as a challenge, not just "combat"
+
+  * Gameplay
+    - Essentially a PvE RTS/defense game of expansion and base-building (but
+      with plants)
+    - *The core fun component* is that it should be enjoyable to overcome a
+      variety of challenges to expand your creation, and satisfying to build
+      through visual and creative appeal.
+    - You control a single character and interact with the world through them
+    - You plant seeds and they grow in real time, on their own, given the resources
+    - Resources include:
+      - *Water*, which you can channel from puddles to create irrigation
+      - *Sun*, Maybe there's a day/night cycle? Maybe some mechanics cast shade?
+      - *Pollination*, Plants which require pollination must have pollinators
+        nearby, attracted by plants such as flowers.
+    - Threats are somewhat like Pandemic gameplay -- procedurally produced and spread
+      - *Diseases* (Mold, Powdery mildew, rot, others..)
+      - *Pests* (aphids, worms, slugs, birds, etc...)
+      - *Nutrient deficiencies* and other environmental problems.
+  * Open ideas (Maybes and questions)
+    - What is the ultimate goal of the game?
+      - Reach a randomly-generated set of achievements a-la SDV Board game?
+      - Eradicate all threats on the map (a-la Pandemic, Minesweeper)?
+      - "Tech up" to a certain point (a-la Factorio)? Mechanics not clear on this.
+      - Demolish some sort of enemy "base"? (What would that be, staying true to the nature theme?
+    - Day/night cycle
+      - Maybe planting fungi etc that would grow better at night (what else would happen at night).
+    - Grow "zones" of full sun, partial sun, full shade which accomodate different plants.
+    - "Bases" (garden sheds?) which are a hub for grown resources (and "researching" seeds?)
+      - Some method of "auto-gathering" near a base? Dare I suggeset insects?n
+    - How are seeds obtained? How does one "tech up?"
 * 05/28/2022
-  First entry, it's been a week or so of messing around with Monogame and getting acquainted with the framework. I have a rough idea of a game.. which keeps developing as time goes on. The hope is to keep the scope achievable. What started as a plant-based RTS idea may become more of a tech-up and survive type of single player game, just to avoid multiplayer hurdles.
+  First entry, it's been a week or so of messing around with Monogame and
+  getting acquainted with the framework. I have a rough idea of a game.. which
+  keeps developing as time goes on. The hope is to keep the scope achievable.
+  What started as a plant-based RTS idea may become more of a tech-up and
+  survive type of single player game, just to avoid multiplayer hurdles.
 
-  I've decided to go isometric for no reason other than it feels right. I have a simple test sprite moving to keyboard input in an isometric map built in Tiled, and a camera which follows the character at the right scale. It's a start.
+  I've decided to go isometric for no reason other than it feels right. I have a
+  simple test sprite moving to keyboard input in an isometric map built in
+  Tiled, and a camera which follows the character at the right scale. It's a
+  start.
 
-  Isometric is already turning out to be a pain in the ass, but I think it will pay visual dividends if I can get to the point in the project where that's relevant.
+  Isometric is already turning out to be a pain in the ass, but I think it will
+  pay visual dividends if I can get to the point in the project where that's
+  relevant.
 
-  I also invested some time in getting an in-game console system up and running early (mostly on the back of MonogameConsole, which I had to minorly port).
+  I also invested some time in getting an in-game console system up and running
+  early (mostly on the back of MonogameConsole, which I had to minorly port).
