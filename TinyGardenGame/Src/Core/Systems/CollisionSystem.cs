@@ -15,8 +15,9 @@ namespace TinyGardenGame.Core.Systems {
   public class CollisionSystem : EntityUpdateSystem {
     private readonly KeyedCollection<int, CollisionActor> _collisionActors;
     private ComponentMapper<PlacementComponent> _placementComponentMapper;
-    private ComponentMapper<CollisionFootprintComponent> _collisionMapper;
+    private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
     private CollisionComponent _collisionEngine;
+    private ComponentMapper<MotionComponent> _motionComponentMapper;
 
     public CollisionSystem() :
         base(Aspect.All(typeof(PlacementComponent), typeof(CollisionFootprintComponent))) {
@@ -25,7 +26,8 @@ namespace TinyGardenGame.Core.Systems {
     
     public override void Initialize(IComponentMapperService mapperService) {
       _placementComponentMapper = mapperService.GetMapper<PlacementComponent>();
-      _collisionMapper = mapperService.GetMapper<CollisionFootprintComponent>();
+      _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
+      _motionComponentMapper = mapperService.GetMapper<MotionComponent>();
       // Note: this is not an ECS component, but is named and made to be used as a
       // monogame game component. We aren't using it that way.
       _collisionEngine = new CollisionComponent(
@@ -63,7 +65,8 @@ namespace TinyGardenGame.Core.Systems {
       var actor = new CollisionActor(
           entityId,
           _placementComponentMapper,
-          _collisionMapper);
+          _collisionComponentMapper,
+          _motionComponentMapper);
       _collisionActors.Add(actor);
       _collisionEngine.Insert(actor);
     }
@@ -75,36 +78,54 @@ namespace TinyGardenGame.Core.Systems {
     private readonly ComponentMapper<PlacementComponent> _placementComponentMapper;
     private readonly ComponentMapper<CollisionFootprintComponent>
         _collisionFootprintComponentMapper;
+    private readonly ComponentMapper<MotionComponent> _motionComponentMapper;
 
     // Allocate local bounds to prevent heap/garbage-collector churn from
     // re-allocating rectangle struct every update, and provide cached bounds to accomodate
     // multiple queries per update.
     private RectangleF _bounds;
-    
+
     public int EntityId { get; }
     public IShapeF Bounds => _bounds;
 
     public CollisionActor(
         int associatedEntity,
         ComponentMapper<PlacementComponent> placementComponentMapper,
-        ComponentMapper<CollisionFootprintComponent> collisionFootprintComponentMapper) {
+        ComponentMapper<CollisionFootprintComponent> collisionFootprintComponentMapper,
+        ComponentMapper<MotionComponent> motionComponentMapper) {
       EntityId = associatedEntity;
       _placementComponentMapper = placementComponentMapper;
       _collisionFootprintComponentMapper = collisionFootprintComponentMapper;
+      _motionComponentMapper = motionComponentMapper;
       _bounds = new RectangleF();
       UpdateBounds();
     }
     
     public void OnCollision(CollisionEventArgs collisionInfo) {
-      var placementComponent = _placementComponentMapper.Get(EntityId);
-      placementComponent.Position -= collisionInfo.PenetrationVector;
+      var motionComponent = _motionComponentMapper.Get(EntityId);
+      // Only resolve collisions on entities with motion. Stationary entities aren't expected
+      // to move in response to collision.
+      if (motionComponent != null) { 
+        if (collisionInfo.PenetrationVector.Length() < motionComponent.CurrentMotion.Length()) {
+          // TODO: consider modifying direction against angled approaches to provide
+          // "walk around" effect.
+          motionComponent.CurrentMotion -= collisionInfo.PenetrationVector;
+        } else {
+          // Restrict correction to stationary to prevent bouncing effect.
+          motionComponent.CurrentMotion = Vector2.Zero;
+        }
+      }
     }
 
     public void UpdateBounds() {
+      var currentMotion = _motionComponentMapper.Get(EntityId)?.CurrentMotion ?? Vector2.Zero;
       var placementComponent = _placementComponentMapper.Get(EntityId);
       var collisionFootprintComponent = _collisionFootprintComponentMapper.Get(EntityId);
-      _bounds.X = placementComponent.Position.X + collisionFootprintComponent.Footprint.X;
-      _bounds.Y = placementComponent.Position.Y + collisionFootprintComponent.Footprint.Y;
+      // Apply not-yet-performed motion to bounds, to preempt collisions and correct them.
+      _bounds.X =
+          placementComponent.Position.X + collisionFootprintComponent.Footprint.X + currentMotion.X;
+      _bounds.Y =
+          placementComponent.Position.Y + collisionFootprintComponent.Footprint.Y + currentMotion.Y;
       _bounds.Width = collisionFootprintComponent.Footprint.Width;
       _bounds.Height = collisionFootprintComponent.Footprint.Height;
     }

@@ -48,15 +48,9 @@ namespace TinyGardenGame.Player.Systems {
     public override void Update(GameTime gameTime) {
       var movementDirection = GetMovementDirection();
       foreach (var entity in ActiveEntities) {
-        // TODO is having a motion component even necessary?
-        // Really only if we have acceleration etc. Maybe for collision?
         var motionComponent = _motionComponentMapper.Get(entity);
-        motionComponent.CurrentMotion =
-            GetMovementVector(gameTime, movementDirection, motionComponent.SpeedTilesPerSec);
-        var placementComponent = _placementComponentMapper.Get(entity);
-        placementComponent.AdjustPositionFromCardinalVector(motionComponent.CurrentMotion);
-        _selectionComponentMapper.Get(entity)
-            .SetFromMapPlacement(placementComponent, _collisionComponentMapper.Get(entity));
+        motionComponent.SetMotionFromCardinalVector(
+            GetMovementVector(gameTime, movementDirection, motionComponent.SpeedTilesPerSec));
       }
     }
 

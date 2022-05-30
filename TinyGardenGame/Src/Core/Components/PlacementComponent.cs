@@ -7,7 +7,6 @@ namespace TinyGardenGame.Core.Components {
    * Where/how an entity is placed on the map 
    */
   public class PlacementComponent {
-    private const float Pi = (float)Math.PI;
     
     // Position is based on isometric top-right = north
     public Vector2 Position { get; set; }
@@ -24,13 +23,9 @@ namespace TinyGardenGame.Core.Components {
       Position = position;
       Rotation = rotation;
     }
-
-    /**
-     * Adjust isometric-position based on traditional orthogonal diff
-     */
-    public void AdjustPositionFromCardinalVector(Vector2 vector) {
+    
+    public void SetPositionFromMotionVector(Vector2 vector) {
       if (!vector.Equals(Vector2.Zero)) {
-        vector = vector.Rotate(0.25f * Pi);
         Rotation = Angle.FromVector(vector);
         Position += vector;
       }

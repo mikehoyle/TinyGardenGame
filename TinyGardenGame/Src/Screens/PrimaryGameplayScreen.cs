@@ -34,6 +34,7 @@ namespace TinyGardenGame.Screens {
           .AddSystem(new RenderSystem(GraphicsDevice, _cameraSystem))
           .AddSystem(new PlayerInputSystem(game))
           .AddSystem(new CollisionSystem())
+          .AddSystem(new MotionSystem())
           .AddSystem(_cameraSystem)
           .AddSystem(_debugSystem)
           .Build();
