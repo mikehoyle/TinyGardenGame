@@ -4,9 +4,10 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.ViewportAdapters;
-using TinyGardenGame.Components;
+using TinyGardenGame.Core.Components;
+using TinyGardenGame.Player.Components;
 
-namespace TinyGardenGame.Systems {
+namespace TinyGardenGame.Player.Systems {
   public class CameraSystem : EntityUpdateSystem {
     private readonly int _resolutionX;
     private readonly int _resolutionY;

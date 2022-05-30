@@ -1,6 +1,6 @@
 ﻿using MonoGame.Extended;
 
-namespace TinyGardenGame.Components {
+namespace TinyGardenGame.Core.Components {
   /**
    * Defines the collision area for an entity.
    * NOTE: This footprint corresponds to the map grid -- that is, before isometric projection.

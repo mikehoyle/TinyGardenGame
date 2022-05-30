@@ -4,14 +4,15 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
-using TinyGardenGame.Components;
+using TinyGardenGame.Core.Components;
+using TinyGardenGame.Player.Components;
 
-namespace TinyGardenGame.Systems {
+namespace TinyGardenGame.Core.Systems {
   /**
    * Encapsulates debug functionality as much as possible.
    */
   public class DebugSystem : EntityUpdateSystem {
-    private readonly Game _game;
+    private readonly MainGame _game;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponent;
     private ComponentMapper<MotionComponent> _motionComponent;
     private ComponentMapper<PlacementComponent> _placementComponent;
@@ -21,12 +22,7 @@ namespace TinyGardenGame.Systems {
     
     public Entity PlayerEntity { private get; set; } 
 
-    public DebugSystem(Game game) : base(Aspect.One(
-        typeof(CollisionFootprintComponent),
-        typeof(MotionComponent),
-        typeof(PlacementComponent),
-        typeof(Sprite),
-        typeof(SelectionComponent))) {
+    public DebugSystem(MainGame game) : base(Aspect.One()) {
       _game = game;
     }
 
@@ -41,7 +37,15 @@ namespace TinyGardenGame.Systems {
     }
 
     public void LoadContent() {
-      if (Config.ShowSelectionIndicator && PlayerEntity != null) {
+      LoadSelectionIndicator();
+    }
+
+    public override void Update(GameTime gameTime) {
+      UpdateSelectionIndicator();
+    }
+
+    private void LoadSelectionIndicator() {
+      if (_game.Config.Debug.ShowSelectionIndicator && PlayerEntity != null) {
         var tileSprites = _game.Content.Load<Texture2D>("tilesets/tile_sprites");
         var playerSelection = _selectionComponent.Get(PlayerEntity);
         _selectionIndicatorEntity
@@ -52,7 +56,7 @@ namespace TinyGardenGame.Systems {
       }
     }
 
-    public override void Update(GameTime gameTime) {
+    private void UpdateSelectionIndicator() {
       if (PlayerEntity != null && _selectionIndicatorEntity != null) {
         var playerSelection = _selectionComponent.Get(PlayerEntity);
         var indicatorPlacement = _placementComponent.Get(_selectionIndicatorEntity);

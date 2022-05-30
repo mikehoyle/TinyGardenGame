@@ -23,5 +23,11 @@
    - [ ] Add controls to config
    - [ ] Loading/unloading serialized config file
  - [ ] Layered rendering to prevent overlapped draws
+   - [ ] Normalize rendering origin for plants, etc. to avoid off-by-one pixel
+     issues
+     - Tile origin should be NW corner (i.e. top of sprite), not in its center
+       (causing all sorts of issues).
  =- [ ] Move to procedurally-generated map & remove Tiled dependency
-   
+*
+* TODO Lower priority [/]
+ - [ ] FPS counter

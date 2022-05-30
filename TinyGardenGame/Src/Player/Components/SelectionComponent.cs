@@ -2,8 +2,9 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using TinyGardenGame.Core.Components;
 
-namespace TinyGardenGame.Components {
+namespace TinyGardenGame.Player.Components {
   /**
    * Defines a selectable area. Currently only supports adjacent selection.
    * TODO: Allow much more intuitive diagonal selection as well.

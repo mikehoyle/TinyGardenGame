@@ -6,9 +6,10 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using TinyGardenGame.Components;
+using TinyGardenGame.Core.Components;
+using TinyGardenGame.Player.Components;
 
-namespace TinyGardenGame.Systems {
+namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
     // TODO: Base player input on configuration
     // TODO: Controller support

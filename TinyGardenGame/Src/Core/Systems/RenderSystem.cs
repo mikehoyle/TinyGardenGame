@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
-using TinyGardenGame.Components;
+using TinyGardenGame.Core.Components;
+using TinyGardenGame.Player.Systems;
 
-namespace TinyGardenGame.Systems {
+namespace TinyGardenGame.Core.Systems {
   public class RenderSystem : EntityDrawSystem {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;

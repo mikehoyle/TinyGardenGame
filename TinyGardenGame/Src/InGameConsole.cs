@@ -11,7 +11,11 @@ namespace TinyGardenGame {
     public delegate void MovePlayerHandler(int x, int y);
     public event MovePlayerHandler MovePlayer;
 
-    public void Initialize(Game game, SpriteBatch spriteBatch, SpriteFont spriteFont) {
+    public void Initialize(MainGame game, SpriteBatch spriteBatch, SpriteFont spriteFont) {
+      if (!game.Config.Debug.EnableConsole) {
+        return;
+      }
+      
       _gameConsole = new GameConsole(
           game,
           spriteBatch,
@@ -31,6 +35,6 @@ namespace TinyGardenGame {
       });
     }
 
-    public void WriteLine(String text) => _gameConsole.WriteLine(text);
+    public void WriteLine(String text) => _gameConsole?.WriteLine(text);
   }
 }

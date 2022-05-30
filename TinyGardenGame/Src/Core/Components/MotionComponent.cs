@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace TinyGardenGame.Components {
+namespace TinyGardenGame.Core.Components {
   public class MotionComponent {
     public MotionComponent(float speedTilesPerSec) {
       SpeedTilesPerSec = speedTilesPerSec;

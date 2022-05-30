@@ -14,8 +14,6 @@ namespace TinyGardenGame {
    * Where N/S is the Y-axis and E-W is the X-axis.
    */
   public static class MapPlacementHelper {
-    public static int MapHeightTiles { get; set; }
-    public static int MapWidthTiles { get; set; }
     // Tile location at top of tile
     public static Vector2 MapOriginTileAbsoluteLocation { get; set; } = Vector2.Zero;
 

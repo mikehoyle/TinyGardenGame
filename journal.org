@@ -1,5 +1,23 @@
 #+TITLE Tiny Garden Game Journal
 
+* 05/29/2021
+  Trying to build some very basic collision today. The Monogame Extended
+  collision library, frustratingly, does not integrate with their ECS system, so
+  I'm trying to add a compatibiliy system to still ride on its coattail.
+
+  I'm ending the night with collision working! Kind of.. everything (of the two
+  things) knows where each other are, but are kind of pushing against each
+  other, even if they should be stationary. Next step is to seperate the
+  "movement" system from the "input" system, so I can follow these steps:
+  - Capture input & record intended movement
+  - Detect potential collisions from movement and modify movement accordingly
+  - Actually execute the move
+
+  I'll need to make sure the plan accomodates for two+ moving actors, which is
+  currently outside of my simple test environment. Something to keep in mind
+  moving forward (and a technical debt to very much avoid, knowing multiplayer
+  could be a desire).
+
 * 05/28/2022 afternoon
 ** Development
   Addition of determining selected tile (currently only directly adjacent), and
@@ -25,8 +43,8 @@
     - Essentially a PvE RTS/defense game of expansion and base-building (but
       with plants)
     - *The core fun component* is that it should be enjoyable to overcome a
-      variety of challenges to expand your creation, and satisfying to build
-      through visual and creative appeal.
+      variety of challenges to expand your creation, and satisfying to
+      base-build through visual, creative, and organizational appeal.
     - You control a single character and interact with the world through them
     - You plant seeds and they grow in real time, on their own, given the resources
     - Resources include:
@@ -43,12 +61,16 @@
       - Reach a randomly-generated set of achievements a-la SDV Board game?
       - Eradicate all threats on the map (a-la Pandemic, Minesweeper)?
       - "Tech up" to a certain point (a-la Factorio)? Mechanics not clear on this.
-      - Demolish some sort of enemy "base"? (What would that be, staying true to the nature theme?
+      - Demolish some sort of enemy "base"? (What would that be, staying true to
+        the nature theme?
     - Day/night cycle
-      - Maybe planting fungi etc that would grow better at night (what else would happen at night).
-    - Grow "zones" of full sun, partial sun, full shade which accomodate different plants.
-    - "Bases" (garden sheds?) which are a hub for grown resources (and "researching" seeds?)
-      - Some method of "auto-gathering" near a base? Dare I suggeset insects?n
+      - Maybe planting fungi etc that would grow better at night (what else
+        would happen at night).
+    - Grow "zones" of full sun, partial sun, full shade which accomodate
+      different plants.
+    - "Bases" (garden sheds?) which are a hub for grown resources (and
+      "researching" seeds?)
+      - Some method of "auto-gathering" near a base? Dare I suggeset insects?
     - How are seeds obtained? How does one "tech up?"
 * 05/28/2022
   First entry, it's been a week or so of messing around with Monogame and

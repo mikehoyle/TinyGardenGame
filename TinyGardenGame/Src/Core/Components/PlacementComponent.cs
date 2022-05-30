@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Specialized;
-using Autofac;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
-namespace TinyGardenGame.Components {
+namespace TinyGardenGame.Core.Components {
   /**
    * Where/how an entity is placed on the map 
    */

@@ -8,29 +8,38 @@ using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
-using TinyGardenGame.Components;
-using TinyGardenGame.Systems;
+using TinyGardenGame.Core.Components;
+using TinyGardenGame.Core.Systems;
+using TinyGardenGame.Player.Components;
+using TinyGardenGame.Player.Systems;
 
 namespace TinyGardenGame.Screens {
   public class PrimaryGameplayScreen : GameScreen {
     private TiledMap _tiledMap;
     private TiledMapRenderer _tiledMapRenderer;
+    
+    private readonly MainGame _game;
     private readonly World _world;
     private readonly CameraSystem _cameraSystem;
     private readonly Entity _playerEntity;
     private readonly DebugSystem _debugSystem;
+    private readonly Entity _testPlant;
 
     public PrimaryGameplayScreen(MainGame game) : base(game) {
+      _game = game;
       _cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _debugSystem = new DebugSystem(game);
       _world = new WorldBuilder()
           .AddSystem(new RenderSystem(GraphicsDevice, _cameraSystem))
           .AddSystem(new PlayerInputSystem(game))
+          .AddSystem(new CollisionSystem())
           .AddSystem(_cameraSystem)
           .AddSystem(_debugSystem)
           .Build();
       _playerEntity = CreatePlayerCharacter();
+      // TODO remove this hacky test thing once the player can place things
+      _testPlant = _world.CreateEntity();
       _debugSystem.PlayerEntity = _playerEntity;
     }
     
@@ -44,6 +53,7 @@ namespace TinyGardenGame.Screens {
           Origin = new Vector2(5, 15),
       };
       _playerEntity.Attach(playerSprite);
+      LoadTestPlant();
       _debugSystem.LoadContent();
       base.LoadContent();
     }
@@ -55,15 +65,14 @@ namespace TinyGardenGame.Screens {
 
     public override void Draw(GameTime gameTime) {
       GraphicsDevice.Clear(Color.CornflowerBlue);
-      
       _tiledMapRenderer.Draw(_cameraSystem.ViewMatrix);
       _world.Draw(gameTime);
     }
 
-    private Entity CreatePlayerCharacter() {
+    private Entity CreatePlayerCharacter() { 
       var player = _world.CreateEntity()
           .AttachAnd(new CameraFollowComponent())
-          .AttachAnd(new MotionComponent(Config.PlayerSpeed))
+          .AttachAnd(new MotionComponent(_game.Config.PlayerSpeed))
           .AttachAnd(new PlayerInputComponent())
           .AttachAnd(new PlacementComponent(new Vector2(0, 0)))
           .AttachAnd(new CollisionFootprintComponent() {
@@ -73,6 +82,22 @@ namespace TinyGardenGame.Screens {
           })
           .AttachAnd(new SelectionComponent());
       return player;
+    }
+
+    private void LoadTestPlant() {
+      var sprite = new Sprite(
+          new TextureRegion2D(Content.Load<Texture2D>("sprites/test_plant_sprites"),
+              0, 0, 64, 48)) {
+          // TODO create helpers for these magic numbers 
+          // This is the middle of the would-be north-west square
+          Origin = new Vector2(32, 24),
+      };
+      _testPlant
+          .AttachAnd(sprite)
+          .AttachAnd(new PlacementComponent(new Vector2(5, -5)))
+          .AttachAnd(new CollisionFootprintComponent {
+              Footprint = new RectangleF(-0.5f, -0.5f, 2, 2),
+          });
     }
   }
 }

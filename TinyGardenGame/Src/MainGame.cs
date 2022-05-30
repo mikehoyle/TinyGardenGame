@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,9 +15,12 @@ namespace TinyGardenGame {
     private GraphicsDeviceManager _graphics;
     private readonly ScreenManager _screenManager;
     private SpriteBatch _spriteBatch;
+    
     public InGameConsole Console { get; }
+    public Config Config { get; }
 
     public MainGame() {
+      Config = new Config();
       _graphics = new GraphicsDeviceManager(this);
       _screenManager = new ScreenManager();
       Console = new InGameConsole();
@@ -35,6 +39,8 @@ namespace TinyGardenGame {
     private void InitializeGraphics() {
       _graphics.PreferredBackBufferWidth = 1920;
       _graphics.PreferredBackBufferHeight = 1080;
+      IsFixedTimeStep = true;
+      TargetElapsedTime = TimeSpan.FromSeconds(1d / Config.FpsCap);
       _graphics.ApplyChanges();
     }
 
@@ -51,10 +57,6 @@ namespace TinyGardenGame {
           Keyboard.GetState().IsKeyDown(Keys.Escape))
         Exit();
       base.Update(gameTime);
-    }
-
-    protected override void Draw(GameTime gameTime) {
-      base.Draw(gameTime);
     }
   }
 }
