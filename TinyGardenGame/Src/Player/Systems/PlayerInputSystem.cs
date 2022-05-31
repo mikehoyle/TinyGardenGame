@@ -8,6 +8,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Player.Components;
+using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
@@ -15,8 +16,8 @@ namespace TinyGardenGame.Player.Systems {
     // TODO: Controller support
     private static readonly Dictionary<Keys, Vector2> MovementControls =
         new Dictionary<Keys, Vector2>() {
-          {Keys.Down, Vector2.UnitY * -1},
-          {Keys.Up, Vector2.UnitY},
+          {Keys.Down, Vector2.UnitY},
+          {Keys.Up, Vector2.UnitY * -1},
           {Keys.Right, Vector2.UnitX},
           {Keys.Left, Vector2.UnitX * -1},
         };
@@ -64,8 +65,7 @@ namespace TinyGardenGame.Player.Systems {
       var state = Keyboard.GetState();
       var movementDirection = MovementControls.Keys.Where(key => state.IsKeyDown(key))
           .Aggregate(Vector2.Zero, (current, key) => current + MovementControls[key]);
-
-      // Can't normalize the zero vector so test for it before normalizing
+      
       if (movementDirection != Vector2.Zero) {
         movementDirection.Normalize(); 
       }

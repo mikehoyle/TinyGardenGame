@@ -11,7 +11,6 @@ namespace TinyGardenGame.Core.Components {
     
     public Vector2 CurrentMotion { get; set; }
     
-    // TODO this is currently pixels/sec. Make the name true
     public float SpeedTilesPerSec { get; set; }
     
     /**
@@ -20,7 +19,7 @@ namespace TinyGardenGame.Core.Components {
      */
     public void SetMotionFromCardinalVector(Vector2 vector) {
       CurrentMotion = vector.Equals(Vector2.Zero) ?
-          vector : vector.Rotate(0.25f * (float)Math.PI);
+          vector : vector.Rotate(-0.25f * (float)Math.PI);
     }
   }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using TinyGardenGame.Core.Components;
+using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.Components {
   /**
@@ -10,43 +11,29 @@ namespace TinyGardenGame.Player.Components {
    * TODO: Allow much more intuitive diagonal selection as well.
    */
   public class SelectionComponent {
-    private enum SelectionDirection {
-      Up = 0,
-      Down = 1,
-      Left = 2,
-      Right = 3,
-    }
     
     // Maps directions to their angular bounds
     // These overlap intentionally, a preference towards a direction is better than gaps,
     // And realistically the player will often be travelling directly on these bounds (as they
     // are the cardinal directions) so we need to choose one way or the other.
-    private static readonly Dictionary<SelectionDirection, (Angle, Angle)> SelectionBounds =
-        new Dictionary<SelectionDirection, (Angle, Angle)> {
+    private static readonly Dictionary<Direction, (Angle, Angle)> SelectionBounds =
+        new Dictionary<Direction, (Angle, Angle)> {
             {
-              SelectionDirection.Right,
+              Direction.East,
               (new Angle(-0.125f, AngleType.Revolution), new Angle(0.125f, AngleType.Revolution))
             },
             {
-              SelectionDirection.Up,
+              Direction.South,
               (new Angle(-0.375f, AngleType.Revolution), new Angle(-0.125f, AngleType.Revolution))
             },
             {
-              SelectionDirection.Left,
+              Direction.West,
               (new Angle(0.375f, AngleType.Revolution), new Angle(-0.375f, AngleType.Revolution))
             },
             {
-              SelectionDirection.Down,
+              Direction.North,
               (new Angle(0.125f, AngleType.Revolution), new Angle(0.375f, AngleType.Revolution))
             },
-        };
-
-    private static readonly Dictionary<SelectionDirection, Vector2> SelectionVectors =
-        new Dictionary<SelectionDirection, Vector2> {
-            { SelectionDirection.Right, Vector2.UnitX },
-            { SelectionDirection.Down, Vector2.UnitY * -1 },
-            { SelectionDirection.Left, Vector2.UnitX * -1 },
-            { SelectionDirection.Up, Vector2.UnitY },
         };
 
     public Vector2 SelectedSquare { get; set; }
@@ -57,7 +44,7 @@ namespace TinyGardenGame.Player.Components {
           .FirstOrDefault(
               entry => Angle.IsBetween(placement.Rotation, entry.Value.Item1, entry.Value.Item2))
           .Key;
-      var vector = SelectionVectors[selectionDirection];
+      var vector = DirectionUnitVectors[selectionDirection];
       var targetSelection = placement.CurrentSquare + vector.ToPoint();
       var footprintModifier =
           vector * new Vector2(footprint.Footprint.Width / 2, footprint.Footprint.Height / 2);

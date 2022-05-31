@@ -102,9 +102,9 @@ namespace TinyGardenGame.Screens {
       
       _testPlant
           .AttachAnd(sprite)
-          .AttachAnd(new PlacementComponent(new Vector2(5, -5)))
+          .AttachAnd(new PlacementComponent(new Vector2(5, 5)))
           .AttachAnd(new CollisionFootprintComponent {
-              Footprint = new RectangleF(0, -2, 2, 2),
+              Footprint = new RectangleF(0, 0, 2, 2),
           })
           .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(10)));
     }

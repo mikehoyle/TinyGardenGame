@@ -31,7 +31,7 @@ namespace TinyGardenGame.Core.Components {
     }
 
     public static Point GetSquareForPosition(Vector2 position) {
-      return new Point((int)Math.Floor(position.X), (int)Math.Ceiling(position.Y));
+      return new Point((int)Math.Floor(position.X), (int)Math.Floor(position.Y));
     }
   }
 }
