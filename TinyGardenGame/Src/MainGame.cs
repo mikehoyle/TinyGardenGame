@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Screens;
+using TinyGardenGame.Core;
 using TinyGardenGame.Screens;
 
 namespace TinyGardenGame {
@@ -29,10 +30,14 @@ namespace TinyGardenGame {
       IsMouseVisible = true;
     }
 
+    public void LoadScreen(Func<MainGame, GameScreen> screenCreator) {
+      _screenManager.LoadScreen(screenCreator(this));
+    }
+
     protected override void Initialize() {
       Debug.WriteLine("Initializing game");
       InitializeGraphics();
-      _screenManager.LoadScreen(new PrimaryGameplayScreen(this));
+      _screenManager.LoadScreen(new GameStartLoadingScreen(this));
       base.Initialize();
     }
 
@@ -48,7 +53,7 @@ namespace TinyGardenGame {
       _spriteBatch = new SpriteBatch(GraphicsDevice);
       // TODO this is referencing a compiled xna from the MonoGameConsoleCore lib that could get
       // cleaned up.
-      var font = Content.Load<SpriteFont>("ConsoleFont");
+      var font = Content.Load<SpriteFont>(Assets.ConsoleFont);
       Console.Initialize(this, _spriteBatch, font);
     }
 

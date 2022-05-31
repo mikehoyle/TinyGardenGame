@@ -46,11 +46,11 @@ namespace TinyGardenGame.Core.Systems {
 
     private void LoadSelectionIndicator() {
       if (_game.Config.Debug.ShowSelectionIndicator && PlayerEntity != null) {
-        var tileSprites = _game.Content.Load<Texture2D>("tilesets/tile_sprites");
+        var tileSprites = _game.Content.Load<Texture2D>(Assets.TileSprites);
         var playerSelection = _selectionComponent.Get(PlayerEntity);
         _selectionIndicatorEntity
             .AttachAnd(new Sprite(new TextureRegion2D(tileSprites, 0, 0, 32, 16)) {
-                Origin = new Vector2(16, 8),
+                Origin = new Vector2(16, 0),
             })
             .Attach(new PlacementComponent(playerSelection.SelectedSquare));
       }

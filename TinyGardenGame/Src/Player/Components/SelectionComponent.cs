@@ -61,7 +61,7 @@ namespace TinyGardenGame.Player.Components {
       var targetSelection = placement.CurrentSquare + vector.ToPoint();
       var footprintModifier =
           vector * new Vector2(footprint.Footprint.Width / 2, footprint.Footprint.Height / 2);
-      if (PlacementComponent.GetSquareForPositon(placement.Position + footprintModifier)
+      if (PlacementComponent.GetSquareForPosition(placement.Position + footprintModifier)
           .Equals(targetSelection)) {
         // Selecting unit overlaps target square, select one further
         targetSelection += vector.ToPoint();

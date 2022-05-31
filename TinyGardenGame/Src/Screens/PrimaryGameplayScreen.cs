@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
@@ -8,8 +9,11 @@ using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
+using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Systems;
+using TinyGardenGame.Plants.Components;
+using TinyGardenGame.Plants.Systems;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.Systems;
 
@@ -35,6 +39,7 @@ namespace TinyGardenGame.Screens {
           .AddSystem(new PlayerInputSystem(game))
           .AddSystem(new CollisionSystem())
           .AddSystem(new MotionSystem())
+          .AddSystem(new GrowthSystem())
           .AddSystem(_cameraSystem)
           .AddSystem(_debugSystem)
           .Build();
@@ -46,10 +51,10 @@ namespace TinyGardenGame.Screens {
     
     public override void LoadContent() {
       // TODO probably remove or rework this clumsy dependency on Tiled.
-      _tiledMap = Content.Load<TiledMap>("maps/test-map");
+      _tiledMap = Content.Load<TiledMap>(Assets.TestTiledMap);
       _tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, _tiledMap);
       var playerSprite = new Sprite(
-          new TextureRegion2D(Content.Load<Texture2D>("sprites/Old hero"),
+          new TextureRegion2D(Content.Load<Texture2D>(Assets.TestPlayerSprite),
               19, 17, 10, 15)) {
           Origin = new Vector2(5, 15),
       };
@@ -75,7 +80,7 @@ namespace TinyGardenGame.Screens {
           .AttachAnd(new CameraFollowComponent())
           .AttachAnd(new MotionComponent(_game.Config.PlayerSpeed))
           .AttachAnd(new PlayerInputComponent())
-          .AttachAnd(new PlacementComponent(new Vector2(0, 0)))
+          .AttachAnd(new PlacementComponent(MapPlacementHelper.CenterOfMapTile(0, 0)))
           .AttachAnd(new CollisionFootprintComponent() {
               // TODO: For now assume the player takes up a whole square.
               // In the future, refine this.
@@ -87,18 +92,21 @@ namespace TinyGardenGame.Screens {
 
     private void LoadTestPlant() {
       var sprite = new Sprite(
-          new TextureRegion2D(Content.Load<Texture2D>("sprites/test_plant_sprites"),
+          new TextureRegion2D(
+              Content.Load<Texture2D>(Assets.TestPlantSprites),
               0, 0, 64, 48)) {
           // TODO create helpers for these magic numbers 
           // This is the middle of the would-be north-west square
-          Origin = new Vector2(32, 24),
+          Origin = new Vector2(32, 16),
       };
+      
       _testPlant
           .AttachAnd(sprite)
           .AttachAnd(new PlacementComponent(new Vector2(5, -5)))
           .AttachAnd(new CollisionFootprintComponent {
-              Footprint = new RectangleF(-0.5f, -0.5f, 2, 2),
-          });
+              Footprint = new RectangleF(0, -2, 2, 2),
+          })
+          .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(10)));
     }
   }
 }

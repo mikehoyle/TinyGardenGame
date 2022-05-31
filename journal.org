@@ -1,5 +1,40 @@
 #+TITLE Tiny Garden Game Journal
 
+* 05/30/2021
+  I built the framework for a loading screen which loads all the components
+  ahead of time, which means I can finally stop grieving over how I do my
+  mid-game loading of assets (and the game is so small it should never matter
+  *fingers crossed*).
+
+  I started the very simple components of a timed growth system, but want to add
+  in a progress bar, at the very least for debug, so I can see what the hell is
+  going on. This sort of thing is where the ECS really starts to be a pain in
+  the ass. I need to create a loading bar entity that's loosely tied to the
+  actual thing it's referencing. Or maybe a better idea I'm having as I write
+  this, simply include a sprite in every growth instance and have the renderer
+  handle that separately.
+
+  This is getting at the more pressing of the tasks I need to tackle ASAP:
+  layering in the rendering process. Right now there's essentially two stages:
+  render the map, then everything else in whatever order it was added. Obviously
+  not functional even now in the most basic state. My general plan moving
+  forward is to render in four primary layers:
+   - Map layer
+     - Rendered in order from N -> E, moving in rows to the S
+   - Sprite layer
+     - Each sprite will be rendered in order of how far "back" it should be from
+       the camera, based on its map position. There may be some significant
+       complications here for larger sprites, will have to cross that bridge
+       when I come to it
+   - Overlay layer
+     - Persistent overlay/HUD components such as health bars, etc
+   - Menu layer
+     - Overtop all the rest, UI menus.
+
+  Also, dear god I'm regretting making south be negative, it's against every
+  grain. Even after I *just* changed all tile coordinates to be the NW corner
+  rather than the center, I think I want to do another pass to reverse N & S.
+  Literally all the tooling assumes right & down are positive.
 * 05/29/2021
   Trying to build some very basic collision today. The Monogame Extended
   collision library, frustratingly, does not integrate with their ECS system, so

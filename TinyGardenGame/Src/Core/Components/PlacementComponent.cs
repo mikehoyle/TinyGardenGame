@@ -16,8 +16,7 @@ namespace TinyGardenGame.Core.Components {
 
     public Vector2 AbsolutePosition => MapPlacementHelper.MapCoordToAbsoluteCoord(Position);
     
-    // TODO I'm sure this logic needs revisiting
-    public Point CurrentSquare => GetSquareForPositon(Position);
+    public Point CurrentSquare => GetSquareForPosition(Position);
 
     public PlacementComponent(Vector2 position, Angle rotation = new Angle()) {
       Position = position;
@@ -31,8 +30,8 @@ namespace TinyGardenGame.Core.Components {
       }
     }
 
-    public static Point GetSquareForPositon(Vector2 position) {
-      return new Point((int)Math.Round(position.X), (int)Math.Round(position.Y));
+    public static Point GetSquareForPosition(Vector2 position) {
+      return new Point((int)Math.Floor(position.X), (int)Math.Ceiling(position.Y));
     }
   }
 }

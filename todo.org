@@ -1,7 +1,7 @@
 
 #+TITLE Tiny Garden Game TODO Tracker
 *
-* TODO Major changes [0/5]
+* TODO Major changes [0/6]
  - [-] Add console support with basic commands
    - See https://github.com/romanov/MonoGame-Console
    - [X] Console support
@@ -14,7 +14,10 @@
    - [X] Directly-adjacent selection
    - [X] Debug selection indicator
    - [ ] Enable diagonal selection
- - [ ] Add simple "building"//plant sprites
+ - [-] Add simple "building"//plant sprites
+   - [X] Create example sprite with collisions
+   - [X] Add basic "growth" component.
+   - [ ] Add growth progress/UI
  - [ ] Add basic collisions
    - [ ] Add collision component
    - [ ] Add collision system that prevents bad movement
@@ -22,11 +25,12 @@
    - [X] Add and use Config class
    - [ ] Add controls to config
    - [ ] Loading/unloading serialized config file
- - [ ] Layered rendering to prevent overlapped draws
-   - [ ] Normalize rendering origin for plants, etc. to avoid off-by-one pixel
+ - [-] Layered rendering to prevent overlapped draws
+   - [X] Normalize rendering origin for plants, etc. to avoid off-by-one pixel
      issues
      - Tile origin should be NW corner (i.e. top of sprite), not in its center
        (causing all sorts of issues).
+   - [ ] Actual layered rendering
  =- [ ] Move to procedurally-generated map & remove Tiled dependency
 *
 * TODO Lower priority [/]
