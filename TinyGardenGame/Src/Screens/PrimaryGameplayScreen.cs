@@ -19,59 +19,48 @@ using TinyGardenGame.Player.Systems;
 
 namespace TinyGardenGame.Screens {
   public class PrimaryGameplayScreen : GameScreen {
-    private TiledMap _tiledMap;
-    private TiledMapRenderer _tiledMapRenderer;
-    
     private readonly MainGame _game;
     private readonly World _world;
-    private readonly CameraSystem _cameraSystem;
     private readonly Entity _playerEntity;
     private readonly DebugSystem _debugSystem;
-    private readonly Entity _testPlant;
 
     public PrimaryGameplayScreen(MainGame game) : base(game) {
       _game = game;
-      _cameraSystem = new CameraSystem(
+      var cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _debugSystem = new DebugSystem(game);
       _world = new WorldBuilder()
-          .AddSystem(new RenderSystem(GraphicsDevice, _cameraSystem))
+          .AddSystem(new RenderSystem(
+              GraphicsDevice, cameraSystem, Content.Load<TiledMap>(Assets.TestTiledMap)))
           .AddSystem(new PlayerInputSystem(game))
           .AddSystem(new CollisionSystem())
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem())
-          .AddSystem(_cameraSystem)
+          .AddSystem(cameraSystem)
           .AddSystem(_debugSystem)
           .Build();
       _playerEntity = CreatePlayerCharacter();
       // TODO remove this hacky test thing once the player can place things
-      _testPlant = _world.CreateEntity();
+      CreateTestPlants();
       _debugSystem.PlayerEntity = _playerEntity;
     }
     
     public override void LoadContent() {
-      // TODO probably remove or rework this clumsy dependency on Tiled.
-      _tiledMap = Content.Load<TiledMap>(Assets.TestTiledMap);
-      _tiledMapRenderer = new TiledMapRenderer(GraphicsDevice, _tiledMap);
       var playerSprite = new Sprite(
           new TextureRegion2D(Content.Load<Texture2D>(Assets.TestPlayerSprite),
               19, 17, 10, 15)) {
           Origin = new Vector2(5, 15),
       };
       _playerEntity.Attach(playerSprite);
-      LoadTestPlant();
       _debugSystem.LoadContent();
       base.LoadContent();
     }
     
     public override void Update(GameTime gameTime) {
-      _tiledMapRenderer.Update(gameTime);
       _world.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime) {
-      GraphicsDevice.Clear(Color.CornflowerBlue);
-      _tiledMapRenderer.Draw(_cameraSystem.ViewMatrix);
       _world.Draw(gameTime);
     }
 
@@ -90,23 +79,35 @@ namespace TinyGardenGame.Screens {
       return player;
     }
 
-    private void LoadTestPlant() {
-      var sprite = new Sprite(
-          new TextureRegion2D(
-              Content.Load<Texture2D>(Assets.TestPlantSprites),
-              0, 0, 64, 48)) {
+    private void CreateTestPlants() {
+      var spriteSheet = Content.Load<Texture2D>(Assets.TestPlantSprites);
+      var widePlantSprite = new Sprite(
+          new TextureRegion2D(spriteSheet, 0, 0, 64, 52)) {
           // TODO create helpers for these magic numbers 
-          // This is the middle of the would-be north-west square
-          Origin = new Vector2(32, 16),
+          // This is the NW corner of the would-be north-west square
+          Origin = new Vector2(32, 20),
       };
       
-      _testPlant
-          .AttachAnd(sprite)
+      _world.CreateEntity()
+          .AttachAnd(widePlantSprite)
           .AttachAnd(new PlacementComponent(new Vector2(5, 5)))
           .AttachAnd(new CollisionFootprintComponent {
               Footprint = new RectangleF(0, 0, 2, 2),
           })
           .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(10)));
+
+      var tallPlantSprite = new Sprite(
+          new TextureRegion2D(spriteSheet, 96, 0, 32, 56)) {
+          Origin = new Vector2(16, 40),
+      };
+      
+      _world.CreateEntity()
+          .AttachAnd(tallPlantSprite)
+          .AttachAnd(new PlacementComponent(new Vector2(2, 6)))
+          .AttachAnd(new CollisionFootprintComponent {
+              Footprint = new RectangleF(0, 0, 1, 1),
+          })
+          .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(15)));
     }
   }
 }
