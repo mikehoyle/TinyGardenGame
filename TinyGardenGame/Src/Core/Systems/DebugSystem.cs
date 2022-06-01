@@ -33,7 +33,7 @@ namespace TinyGardenGame.Core.Systems {
       _spriteComponent = mapperService.GetMapper<Sprite>();
       _selectionComponent = mapperService.GetMapper<SelectionComponent>();
       
-      _selectionIndicatorEntity = CreateEntity();
+      _selectionIndicatorEntity = _game.Config.Debug.ShowSelectionIndicator ? CreateEntity() : null;
     }
 
     public void LoadContent() {
@@ -48,10 +48,11 @@ namespace TinyGardenGame.Core.Systems {
       if (_game.Config.Debug.ShowSelectionIndicator && PlayerEntity != null) {
         var tileSprites = _game.Content.Load<Texture2D>(Assets.TileSprites);
         var playerSelection = _selectionComponent.Get(PlayerEntity);
+        var sprite = new Sprite(new TextureRegion2D(tileSprites, 0, 0, 32, 16)) {
+            Origin = new Vector2(16, 0),
+        };
         _selectionIndicatorEntity
-            .AttachAnd(new Sprite(new TextureRegion2D(tileSprites, 0, 0, 32, 16)) {
-                Origin = new Vector2(16, 0),
-            })
+            .AttachAnd(new DrawableComponent(sprite, RenderLayer.Overlay))
             .Attach(new PlacementComponent(playerSelection.SelectedSquare));
       }
     }

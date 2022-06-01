@@ -51,7 +51,7 @@ namespace TinyGardenGame.Screens {
               19, 17, 10, 15)) {
           Origin = new Vector2(5, 15),
       };
-      _playerEntity.Attach(playerSprite);
+      _playerEntity.Attach(new DrawableComponent(playerSprite));
       _debugSystem.LoadContent();
       base.LoadContent();
     }
@@ -71,9 +71,9 @@ namespace TinyGardenGame.Screens {
           .AttachAnd(new PlayerInputComponent())
           .AttachAnd(new PlacementComponent(MapPlacementHelper.CenterOfMapTile(0, 0)))
           .AttachAnd(new CollisionFootprintComponent() {
-              // TODO: For now assume the player takes up a whole square.
-              // In the future, refine this.
-              Footprint = new RectangleF(-0.5f, -0.5f, 1f, 1f),
+              // TODO: For now assume the player takes up half a square,
+              // that may be refined in the future
+              Footprint = new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f),
           })
           .AttachAnd(new SelectionComponent());
       return player;
@@ -89,8 +89,8 @@ namespace TinyGardenGame.Screens {
       };
       
       _world.CreateEntity()
-          .AttachAnd(widePlantSprite)
-          .AttachAnd(new PlacementComponent(new Vector2(5, 5)))
+          .AttachAnd(new DrawableComponent(widePlantSprite))
+          .AttachAnd(new PlacementComponent(new Vector2(5, 5), footprintSize: new Vector2(2, 2)))
           .AttachAnd(new CollisionFootprintComponent {
               Footprint = new RectangleF(0, 0, 2, 2),
           })
@@ -102,8 +102,8 @@ namespace TinyGardenGame.Screens {
       };
       
       _world.CreateEntity()
-          .AttachAnd(tallPlantSprite)
-          .AttachAnd(new PlacementComponent(new Vector2(2, 6)))
+          .AttachAnd(new DrawableComponent(tallPlantSprite))
+          .AttachAnd(new PlacementComponent(new Vector2(2, 6), footprintSize: new Vector2(1, 1)))
           .AttachAnd(new CollisionFootprintComponent {
               Footprint = new RectangleF(0, 0, 1, 1),
           })

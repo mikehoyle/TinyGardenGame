@@ -1,5 +1,32 @@
 #+TITLE Tiny Garden Game Journal
 
+* 05/31/2021
+  Okay so, sprite rendering depth in isometric is hard. What I've started with
+  is simply sorting the sprites by the abolute (i.e. final rendering) Y value,
+  which is back-to-front from the viewers perspective. The issue is, the entire
+  sprite is rendered at that depth. So if I have for example my test plant
+  sprite, which is 2x2 tiles and one-ish tile high, that ends up meaning that
+  the player always renders in front of it properly (yay!), but when behind it,
+  will appear in front of it if the player happens to be below the origin of the
+  object (which is its NW-most point, i.e. top-most from the viewer's
+  perspective.
+
+  Time to do some reading, because this is surely a solved problem, and I'd
+  prefer to not bang my head against it longer than necessary. I fear I may have
+  to create some sort of secondary sprite for each sprite added that represents
+  depth information (although there would be worse things).
+
+  ...
+
+  I finally got something working well enough, for now. I have a sneaking
+  suspicion more complex sprites will seriously test the system and require some
+  refinement, but it's enough to move forward. As it stands, the system is this:
+  - Register sprite components in basic layers
+  - On render, sort all sprite components:
+    - If on different layers, sort to the lower layer, else
+    - Sort self "in front" if SE corner (which faces the player) is greater than
+      (X&Y) the comparee's origin (NW corner).
+  
 * 05/30/2021
   I built the framework for a loading screen which loads all the components
   ahead of time, which means I can finally stop grieving over how I do my

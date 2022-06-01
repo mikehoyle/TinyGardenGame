@@ -41,19 +41,9 @@ namespace TinyGardenGame {
     public static int TileHeightPixels => 16;
 
     public static Vector2 MapCoordToAbsoluteCoord(Vector2 mapCoord) {
-      // Start at origin
-      var absoluteCoord = MapOrigin;
-      // Translate X
-      absoluteCoord = absoluteCoord.Translate(
-          mapCoord.X * (TileWidthPixels / 2.0f),
-          mapCoord.X * (TileHeightPixels / 2.0f)
-      );
-      // Translate Y
-      absoluteCoord = absoluteCoord.Translate(
-          mapCoord.Y * (TileWidthPixels / 2.0f) * -1,
-          mapCoord.Y * (TileHeightPixels / 2.0f)
-      );
-      return absoluteCoord;
+      return MapOrigin.Translate(
+          (mapCoord.X - mapCoord.Y) * (TileWidthPixels / 2.0f),
+          (mapCoord.X + mapCoord.Y) * (TileHeightPixels / 2.0f));
     }
 
     public static Vector2 CenterOfMapTile<T>(T x, T y) where T : IConvertible {

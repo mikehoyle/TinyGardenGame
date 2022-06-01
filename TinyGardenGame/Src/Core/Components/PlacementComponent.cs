@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -13,14 +14,20 @@ namespace TinyGardenGame.Core.Components {
     
     // With 0 == right, 180deg == left
     public Angle Rotation { get; set; }
+    
+    // Assumes NW origin, so notably won't work for movable sprites that
+    // have origin at their feet.
+    public Vector2 FootprintSizeInTiles { get; }
 
     public Vector2 AbsolutePosition => MapPlacementHelper.MapCoordToAbsoluteCoord(Position);
-    
     public Point CurrentSquare => GetSquareForPosition(Position);
+    public Vector2 EffectiveRenderDepth => Position + FootprintSizeInTiles;
 
-    public PlacementComponent(Vector2 position, Angle rotation = new Angle()) {
+    public PlacementComponent(
+        Vector2 position, Angle rotation = new Angle(), Vector2 footprintSize = new Vector2()) {
       Position = position;
       Rotation = rotation;
+      FootprintSizeInTiles = footprintSize;
     }
     
     public void SetPositionFromMotionVector(Vector2 vector) {
