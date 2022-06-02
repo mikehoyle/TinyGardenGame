@@ -22,6 +22,7 @@ namespace TinyGardenGame.Core.Components {
     public Vector2 AbsolutePosition => MapPlacementHelper.MapCoordToAbsoluteCoord(Position);
     public Point CurrentSquare => GetSquareForPosition(Position);
     public Vector2 EffectiveRenderDepth => Position + FootprintSizeInTiles;
+    public Vector2 Center => Position + (FootprintSizeInTiles / 2);
 
     public PlacementComponent(
         Vector2 position, Angle rotation = new Angle(), Vector2 footprintSize = new Vector2()) {

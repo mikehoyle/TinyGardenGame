@@ -5,6 +5,7 @@ using MonoGame.Extended.Tiled;
 using static TinyGardenGame.Core.Assets;
 
 namespace TinyGardenGame.Core {
+  // TODO: Extend this idea to create TextureAtlas's for spritesheets
   public readonly struct Assets {
     // Tiles / Map
     public const string TestTiledMap = "maps/test-map";

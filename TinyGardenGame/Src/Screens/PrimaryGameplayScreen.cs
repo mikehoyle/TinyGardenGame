@@ -1,14 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Systems;
@@ -35,7 +33,7 @@ namespace TinyGardenGame.Screens {
           .AddSystem(new PlayerInputSystem(game))
           .AddSystem(new CollisionSystem())
           .AddSystem(new MotionSystem())
-          .AddSystem(new GrowthSystem())
+          .AddSystem(new GrowthSystem(game))
           .AddSystem(cameraSystem)
           .AddSystem(_debugSystem)
           .Build();

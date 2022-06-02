@@ -88,14 +88,18 @@ namespace TinyGardenGame.Core.Systems {
         // we shall see.
         var depth1 = _placementComponentMapper.Get(entity1).EffectiveRenderDepth;
         var depth2 = _placementComponentMapper.Get(entity2).Position;
-        return ((depth1.X > depth2.X) && (depth1.Y > depth2.Y)) ? 1 : -1;
+        if (depth1 == depth2) {
+          return _placementComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
+              ? -1 : 0;
+        }
+        return ((depth1.X >= depth2.X) && (depth1.Y >= depth2.Y)) ? 1 : -1;
       });
       
       // And now draw in order
       foreach (var entity in entities) {
         var drawable = _drawableComponentMapper.Get(entity);
         var absolutePosition = _placementComponentMapper.Get(entity).AbsolutePosition;
-        _spriteBatch.Draw(drawable.Sprite, absolutePosition);
+        drawable.Drawable.Draw(_spriteBatch, absolutePosition);
       }
 
       _spriteBatch.End();
