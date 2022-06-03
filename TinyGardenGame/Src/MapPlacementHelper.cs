@@ -39,11 +39,30 @@ namespace TinyGardenGame {
 
     public static int TileWidthPixels => 32;
     public static int TileHeightPixels => 16;
+    
+    // Commonly needed so provided for convenience;
+    public static float HalfTileWidthPixels => TileWidthPixels / 2.0f;
+    public static float HalfTileHeightPixels => TileHeightPixels / 2.0f;
 
+    /**
+     * Converts an isometric map coordinate (where 1 unit = 1 tile)
+     * into an absolute, orthographic screen coordinate.
+     */
     public static Vector2 MapCoordToAbsoluteCoord(Vector2 mapCoord) {
       return MapOrigin.Translate(
-          (mapCoord.X - mapCoord.Y) * (TileWidthPixels / 2.0f),
-          (mapCoord.X + mapCoord.Y) * (TileHeightPixels / 2.0f));
+          (mapCoord.X - mapCoord.Y) * HalfTileWidthPixels,
+          (mapCoord.X + mapCoord.Y) * HalfTileHeightPixels);
+    }
+    
+    /**
+     * The opposite of MapCoordToAbsoluteCoord.
+     */
+    public static Vector2 AbsoluteCoordToMapCoord(Vector2 absoluteCoord) {      
+      return MapOrigin.Translate(
+          ((absoluteCoord.X / HalfTileWidthPixels) + (absoluteCoord.Y / HalfTileHeightPixels))
+              / 2.0f,
+          ((absoluteCoord.Y / HalfTileHeightPixels) - (absoluteCoord.X / HalfTileWidthPixels))
+              / 2.0f);
     }
 
     public static Vector2 CenterOfMapTile<T>(T x, T y) where T : IConvertible {

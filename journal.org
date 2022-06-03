@@ -1,6 +1,105 @@
 #+TITLE Tiny Garden Game Journal
 
-* 05/31/2021
+* 06/02/2022
+  I've moved cleanly over to my own map generation and rendering and away from
+  Tiled (and the associated Extended tools that go with Tiled). This may be for
+  better or for worse -- for now, definitely worse -- but should give me the
+  flexibility to do some more of the fun generation stuff I hope to do.
+
+  Tiled may well provide that functionality, but in the same spirit of choosing
+  the Monogame framework in the first place, I'd rather spend a little more time
+  doing it myself and knowing exactly what's happening in-game than to spend
+  ages learning a specialized tool, and not really know what's going on inside
+  the magic black box.
+
+  I'm opening up a few questions for myself as I start this map generation. The
+  first is, assuming I want a bounded map, is loading the entire map (i.e. all
+  the metadata of all the tiles) into memory at once a good idea? That certainly
+  makes things a lot easier on myself, but I worry about memory constraints a
+  little. Hopefully modern machines having a ton a RAM just glazes over that
+  problem.
+
+  Let's do some quick math to figure out if my concerns are well-founded, before
+  I go creating some sort of unneccessary solution to a possible non-problem.
+
+  Estimating on the (hopefully) high end:
+
+  - Map = 1000 x 1000 tiles
+    - At current provisional player speed of 3 tiles/second, that's enough map
+      for the player  to travel from end to end in
+      (1000/3 = 333sec =) about 5.5 minutes.
+
+      That's pretty big. Assuming a brisk human jogging speed of 6mph (=2.6
+      meters/sec), that means the map would would be (1000 * (2.6/3) =) 866
+      meters wide, almost a kilometer.
+
+      Practically speaking, probably too big unless I were to introduce
+      teleportation or vehicle mechanics. Let's keep it as an upper bound just
+      in case. Who knows, both teleportation and vehicles are fun!
+  - Each tile holds 1000 bytes of state
+    - That's about 2 bytes for every pixel in a basic tile sprite, including
+      transparency. Which is.. completely arbitrary, and probably not
+      technically exactly possible due to C# memory management, but seems like a
+      pretty reasonable upper bound -- that's a lot of state
+
+  That leaves us with 1000*1000*1000 = 1_000_000_000 bytes = 1GB
+
+  Whew that's a lot of memory for a little game. Now my estimates were
+  intentionally high so practically we probably wouldn't expect even half that,
+  but that's *just* the map, and then there's the rest of the assets and game
+  state on top of that.
+
+  I could start to use a system where I load chunks into memory asynchronously,
+  but boy would that be a pain in the ass. Let's see if any additional
+  constraints help our case.
+
+  - Case: each tile only holds 16bytes state (C# minimum according to some
+    stackoverflow
+    - That's only *16MB*, which is incredibly manageable.
+
+  Honestly, do I need to go on from there? After all, how much complexity does a
+  single map tile really need? I've been playing around with the concept of
+  doing some clever animation stuff like procedurally generating an organization
+  of weeds and grass on a given tile, but tha could be done by just storing a
+  RNG seed and regenrating randomly every time.
+
+  Or, for such a small tile the data could likely even be munged into one or two
+  int32s.
+
+  This trades off some computational complexity, but most of that shouldn't be
+  needed unless the tile is actually on-screen, so shouldn't scale with number
+  of tiles. Other more complex, over-time calculations will probably be done
+  with other entities and handled in the ECS system.
+
+* 06/01/2022
+  A concise set of changes to introduce loading bars for "growing" components.
+  This should be the first step in the eventual direction to animate growth
+  entirely (one way or another).
+
+  Creating another drawable component that responds to progress reinforced what
+  I've already been experiencing: sticking strictly to the ECS framework is kind
+  of a pain-in-the-ass, and really isn't all as flexible as it's cut out to be.
+  I might start to break pretty soon and create some ECS anti-patterns, like
+  component inheritance (something I basically already did by making a Drawable
+  component contain an implementation of a generic interface).
+
+  All-in-all I doubt I really will need the ostensible performance gains an ECS
+  design will offer me, but hey, there may come a time where I feel like I do.
+
+  We're on the very fringe of getting into the intimidating actual work relevant
+  to the game. I'm not quite sure to start in many ways. Many of my ideas are
+  still pretty loose ideas, and it feels bad to commit hours of development work
+  to something that might not need to be there (even worse if that thing
+  requires changes that make it hard to rip back out once I'm done).
+
+  For now, I'm going to turn my eyes towards map generation. I'm tired of
+  looking at this ugly Tiled map I created, and procedural generation is
+  something I'm excited about.. even if I don't really have anything to
+  procedurally generate at the moment. Once a more "final" -- or at least
+  slightly less temporary -- map system is in place, I can start to add some
+  functional map components, like water.
+
+* 05/31/2022
   Okay so, sprite rendering depth in isometric is hard. What I've started with
   is simply sorting the sprites by the abolute (i.e. final rendering) Y value,
   which is back-to-front from the viewers perspective. The issue is, the entire
@@ -27,7 +126,7 @@
     - Sort self "in front" if SE corner (which faces the player) is greater than
       (X&Y) the comparee's origin (NW corner).
   
-* 05/30/2021
+* 05/30/2022
   I built the framework for a loading screen which loads all the components
   ahead of time, which means I can finally stop grieving over how I do my
   mid-game loading of assets (and the game is so small it should never matter
@@ -62,7 +161,7 @@
   grain. Even after I *just* changed all tile coordinates to be the NW corner
   rather than the center, I think I want to do another pass to reverse N & S.
   Literally all the tooling assumes right & down are positive.
-* 05/29/2021
+* 05/29/2022
   Trying to build some very basic collision today. The Monogame Extended
   collision library, frustratingly, does not integrate with their ECS system, so
   I'm trying to add a compatibiliy system to still ride on its coattail.

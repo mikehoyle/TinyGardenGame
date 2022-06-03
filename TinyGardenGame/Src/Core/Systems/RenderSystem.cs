@@ -1,14 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Collections;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Sprites;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Systems;
 
 namespace TinyGardenGame.Core.Systems {
@@ -26,21 +22,21 @@ namespace TinyGardenGame.Core.Systems {
    * 3. Overlay components
    * 4. Game GUI
    */
-  public class RenderSystem : EntityDrawSystem, IUpdateSystem {
+  public class RenderSystem : EntityDrawSystem {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
     private ComponentMapper<PlacementComponent> _placementComponentMapper;
-    private readonly TiledMapRenderer _tiledMapRenderer;
+    private readonly MapRenderer _mapRenderer;
 
-    public RenderSystem(GraphicsDevice graphicsDevice, CameraSystem cameraSystem, TiledMap map)
+    public RenderSystem(
+        MainGame game, GraphicsDevice graphicsDevice, CameraSystem cameraSystem, GameMap map)
         : base(Aspect.All(typeof(DrawableComponent), typeof(PlacementComponent))) {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
-      // TODO probably remove or rework this clumsy dependency on Tiled.
-      _tiledMapRenderer = new TiledMapRenderer(graphicsDevice, map);
       _spriteBatch = new SpriteBatch(graphicsDevice);
+      _mapRenderer = new MapRenderer(game, _spriteBatch, map);
     }
     
     public override void Initialize(IComponentMapperService mapperService) {
@@ -48,26 +44,24 @@ namespace TinyGardenGame.Core.Systems {
       _placementComponentMapper = mapperService.GetMapper<PlacementComponent>();
     }
 
-    public void Update(GameTime gameTime) {
-      _tiledMapRenderer.Update(gameTime);
-    }
-
     public override void Draw(GameTime gameTime) {
-      DrawMap(gameTime);
-      DrawSprites(gameTime);
-    }
-
-    private void DrawMap(GameTime gameTime) {
-      _graphicsDevice.Clear(Color.CornflowerBlue);
-      _tiledMapRenderer.Draw(_cameraSystem.ViewMatrix);
-    }
-
-    private void DrawSprites(GameTime gameTime) {
       _spriteBatch.Begin(
           sortMode: SpriteSortMode.Deferred,
           samplerState: SamplerState.PointClamp,
           transformMatrix: _cameraSystem.Camera.GetViewMatrix());
+      
+      DrawMap(gameTime);
+      DrawSprites(gameTime);
 
+      _spriteBatch.End();
+    }
+
+    private void DrawMap(GameTime gameTime) {
+      _graphicsDevice.Clear(Color.CornflowerBlue);
+      _mapRenderer.Draw(_cameraSystem.Camera.BoundingRectangle);
+    }
+
+    private void DrawSprites(GameTime gameTime) {
       // Sort the entities by depth
       var entities = ActiveEntities.ToList();
       entities.Sort((entity1, entity2) => {
@@ -101,8 +95,6 @@ namespace TinyGardenGame.Core.Systems {
         var absolutePosition = _placementComponentMapper.Get(entity).AbsolutePosition;
         drawable.Drawable.Draw(_spriteBatch, absolutePosition);
       }
-
-      _spriteBatch.End();
     }
   }
 }

@@ -1,7 +1,12 @@
 
 #+TITLE Tiny Garden Game TODO Tracker
 *
-* TODO Major changes [3/6]
+* TODO Major changes [4/9]
+ - [ ] Create water
+   - [ ] Generate water tiles
+   - [ ] Water collisions (prevent movement over water
+   - [ ] Allow player interaction to dig trenches
+ - [ ] Allow player to place plants.
  - [ ] Move to procedurally-generated map & remove Tiled dependency
  - [-] Controller/config support
    - [X] Add and use Config class
@@ -12,12 +17,11 @@
    - [X] Directly-adjacent selection
    - [X] Debug selection indicator
    - [ ] Enable diagonal selection
- - [-] Add console support with basic commands
+ - [X] Add console support with basic commands
    - See https://github.com/romanov/MonoGame-Console
    - [X] Console support
    - [X] Move player
      - Command added but not implemented
-   - [ ] Get player's position
    - Other?
  - [X] Add basic collisions
    - [X] Add collision component

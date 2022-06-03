@@ -6,10 +6,10 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
-using MonoGame.Extended.Tiled;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Systems;
+using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Plants.Components;
 using TinyGardenGame.Plants.Systems;
 using TinyGardenGame.Player.Components;
@@ -27,9 +27,9 @@ namespace TinyGardenGame.Screens {
       var cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _debugSystem = new DebugSystem(game);
+      var map = new MapGenerator().GenerateMap();
       _world = new WorldBuilder()
-          .AddSystem(new RenderSystem(
-              GraphicsDevice, cameraSystem, Content.Load<TiledMap>(Assets.TestTiledMap)))
+          .AddSystem(new RenderSystem(game, GraphicsDevice, cameraSystem, map))
           .AddSystem(new PlayerInputSystem(game))
           .AddSystem(new CollisionSystem())
           .AddSystem(new MotionSystem())
