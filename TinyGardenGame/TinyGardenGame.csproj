@@ -4,6 +4,8 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <PublishReadyToRun>false</PublishReadyToRun>
         <TieredCompilation>false</TieredCompilation>
+        <LangVersion>8</LangVersion>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>

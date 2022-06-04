@@ -1,5 +1,11 @@
 #+TITLE Tiny Garden Game Journal
 
+* 06/03/2022
+  Very quick update today. We have water! Well, the appearance of water at
+  least, with no functionality. Also uncovered the extreme uncleanliness of code
+  rendering tiles which have awareness of their surroundings. It's really messy
+  right now, but is at least enough to work with.
+  
 * 06/02/2022
   I've moved cleanly over to my own map generation and rendering and away from
   Tiled (and the associated Extended tools that go with Tiled). This may be for
