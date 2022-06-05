@@ -27,12 +27,12 @@ namespace TinyGardenGame.Core.Systems {
     private readonly CameraSystem _cameraSystem;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
-    private ComponentMapper<PlacementComponent> _placementComponentMapper;
+    private ComponentMapper<PositionComponent> _positionComponentMapper;
     private readonly MapRenderer _mapRenderer;
 
     public RenderSystem(
         MainGame game, GraphicsDevice graphicsDevice, CameraSystem cameraSystem, GameMap map)
-        : base(Aspect.All(typeof(DrawableComponent), typeof(PlacementComponent))) {
+        : base(Aspect.All(typeof(DrawableComponent), typeof(PositionComponent))) {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
       _spriteBatch = new SpriteBatch(graphicsDevice);
@@ -41,7 +41,7 @@ namespace TinyGardenGame.Core.Systems {
     
     public override void Initialize(IComponentMapperService mapperService) {
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
-      _placementComponentMapper = mapperService.GetMapper<PlacementComponent>();
+      _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
     }
 
     public override void Draw(GameTime gameTime) {
@@ -80,10 +80,10 @@ namespace TinyGardenGame.Core.Systems {
         // This is only sound given some assumptions about the entities
         // (that they don't overlap, and take up about a tile). Those may break in the future
         // we shall see.
-        var depth1 = _placementComponentMapper.Get(entity1).EffectiveRenderDepth;
-        var depth2 = _placementComponentMapper.Get(entity2).Position;
+        var depth1 = _positionComponentMapper.Get(entity1).EffectiveRenderDepth;
+        var depth2 = _positionComponentMapper.Get(entity2).Position;
         if (depth1 == depth2) {
-          return _placementComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
+          return _positionComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
               ? -1 : 0;
         }
         return ((depth1.X >= depth2.X) && (depth1.Y >= depth2.Y)) ? 1 : -1;
@@ -92,7 +92,7 @@ namespace TinyGardenGame.Core.Systems {
       // And now draw in order
       foreach (var entity in entities) {
         var drawable = _drawableComponentMapper.Get(entity);
-        var absolutePosition = _placementComponentMapper.Get(entity).AbsolutePosition;
+        var absolutePosition = _positionComponentMapper.Get(entity).AbsolutePosition;
         drawable.Drawable.Draw(_spriteBatch, absolutePosition);
       }
     }

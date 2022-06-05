@@ -15,7 +15,7 @@ namespace TinyGardenGame.Core.Systems {
     private readonly MainGame _game;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponent;
     private ComponentMapper<MotionComponent> _motionComponent;
-    private ComponentMapper<PlacementComponent> _placementComponent;
+    private ComponentMapper<PositionComponent> _positionComponent;
     private ComponentMapper<Sprite> _spriteComponent;
     private ComponentMapper<SelectionComponent> _selectionComponent;
     private Entity _selectionIndicatorEntity;
@@ -29,7 +29,7 @@ namespace TinyGardenGame.Core.Systems {
     public override void Initialize(IComponentMapperService mapperService) {
       _collisionComponent = mapperService.GetMapper<CollisionFootprintComponent>();
       _motionComponent = mapperService.GetMapper<MotionComponent>();
-      _placementComponent = mapperService.GetMapper<PlacementComponent>();
+      _positionComponent = mapperService.GetMapper<PositionComponent>();
       _spriteComponent = mapperService.GetMapper<Sprite>();
       _selectionComponent = mapperService.GetMapper<SelectionComponent>();
       
@@ -53,14 +53,14 @@ namespace TinyGardenGame.Core.Systems {
         };
         _selectionIndicatorEntity
             .AttachAnd(new DrawableComponent(sprite, RenderLayer.Overlay))
-            .Attach(new PlacementComponent(playerSelection.SelectedSquare));
+            .Attach(new PositionComponent(playerSelection.SelectedSquare));
       }
     }
 
     private void UpdateSelectionIndicator() {
       if (PlayerEntity != null && _selectionIndicatorEntity != null) {
         var playerSelection = _selectionComponent.Get(PlayerEntity);
-        var indicatorPlacement = _placementComponent.Get(_selectionIndicatorEntity);
+        var indicatorPlacement = _positionComponent.Get(_selectionIndicatorEntity);
         indicatorPlacement.Position = playerSelection.SelectedSquare;
       }
     }

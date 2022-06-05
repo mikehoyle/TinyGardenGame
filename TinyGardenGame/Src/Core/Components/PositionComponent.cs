@@ -7,7 +7,7 @@ namespace TinyGardenGame.Core.Components {
   /**
    * Where/how an entity is placed on the map 
    */
-  public class PlacementComponent {
+  public class PositionComponent {
     
     // Position is based on isometric top-right = north
     public Vector2 Position { get; set; }
@@ -24,7 +24,7 @@ namespace TinyGardenGame.Core.Components {
     public Vector2 EffectiveRenderDepth => Position + FootprintSizeInTiles;
     public Vector2 Center => Position + (FootprintSizeInTiles / 2);
 
-    public PlacementComponent(
+    public PositionComponent(
         Vector2 position, Angle rotation = new Angle(), Vector2 footprintSize = new Vector2()) {
       Position = position;
       Rotation = rotation;

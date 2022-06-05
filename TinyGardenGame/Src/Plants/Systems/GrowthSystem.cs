@@ -18,20 +18,20 @@ namespace TinyGardenGame.Plants.Systems {
     private ComponentMapper<GrowthComponent> _growthComponentMapper;
     private TextureRegion2D _progressBarFullSprite;
     private TextureRegion2D _progressBarEmptySprite;
-    private ComponentMapper<PlacementComponent> _placementComponentMapper;
+    private ComponentMapper<PositionComponent> _positionComponentMapper;
     // Maps growing entity to its progress bar
     private readonly Dictionary<int, int> _progressBars;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
 
     public GrowthSystem(MainGame game)
-        : base(Aspect.All(typeof(GrowthComponent), typeof(PlacementComponent))) {
+        : base(Aspect.All(typeof(GrowthComponent), typeof(PositionComponent))) {
       _game = game;
       _progressBars = new Dictionary<int, int>();
     }
     
     public override void Initialize(IComponentMapperService mapperService) {
       _growthComponentMapper = mapperService.GetMapper<GrowthComponent>();
-      _placementComponentMapper = mapperService.GetMapper<PlacementComponent>();
+      _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
       
       var spriteTexture = _game.Content.Load<Texture2D>(Assets.TestPlantSprites);
@@ -62,14 +62,14 @@ namespace TinyGardenGame.Plants.Systems {
     }
 
     private Entity CreateProgressBar(int growingEntity, GrowthComponent growthComponent) {
-      var targetPlacement = _placementComponentMapper.Get(growingEntity);
+      var targetPlacement = _positionComponentMapper.Get(growingEntity);
       var progressBarDrawable =new ProgressBarDrawable(
           _progressBarEmptySprite,
           _progressBarFullSprite,
           growthComponent.CurrentGrowthPercentage);
       return CreateEntity()
           .AttachAnd(new DrawableComponent(progressBarDrawable, RenderLayer.Overlay))
-          .AttachAnd(new PlacementComponent(targetPlacement.Center));
+          .AttachAnd(new PositionComponent(targetPlacement.Center));
     }
   }
 }

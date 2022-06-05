@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.Sprites;
-using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
 using static TinyGardenGame.MapPlacementHelper;
+using static TinyGardenGame.MapPlacementHelper.Direction;
 
 namespace TinyGardenGame.MapGeneration {
   /**
@@ -61,9 +60,15 @@ namespace TinyGardenGame.MapGeneration {
           if (_map.Contains(x, y)
               && _textures.TryGetValue(_map[x, y].GetType(), out var textureList)) {
             RenderTile(textureList[_map[x, y].TextureVariant], x, y);
-            if (_map[x, y].ContainsWater) {
-              RenderWater(x, y);
-            }
+          }
+        }
+      }
+      
+      // For now, draw water in a second pass so it never is occluded
+      for (var x = leftBound; x <= rightBound; x++) {
+        for (var y = topBound; y <= bottomBound; y++) {
+          if (_map.Contains(x, y) && _map[x, y].Has(TileFlags.ContainsWater)) {
+            RenderWater(x, y);
           }
         }
       }
@@ -92,55 +97,52 @@ namespace TinyGardenGame.MapGeneration {
      * There are surely better ways. It will work fine for now.
      */
     private void RenderWater(int x, int y) {
-      // Clockwise starting at N
-      var connections = new[] { false, false, false, false };
       var totalConnections = 0;
       // Check all adjacent coords
-      for (var i = 0; i < connections.Length; i ++) {
-        var xDiff = i % 2 == 1 ? (i - 2) * -1 : 0;
-        var yDiff = i % 2 == 0 ? i - 1 : 0;
-        if (_map.Contains(x + xDiff, y + yDiff) && _map[x + xDiff, y + yDiff].ContainsWater) {
-          connections[i] = true;
+      var connections = ForEachAdjacentTile(x, y, (direction, adjX, adjY) => {
+        if (_map.Contains(adjX, adjY) && _map[adjX, adjY].Has(TileFlags.ContainsWater)) {
           totalConnections++;
+          return true;
         }
-      }
+        return false;
+      });
 
       if (totalConnections == 0) {
         RenderTile(_waterTextures[0], x, y);
       } else if (totalConnections == 1) {
         var effects = SpriteEffects.None;
-        if (connections[0] || connections[1]) {
+        if (connections[(int)North] || connections[(int)East]) {
           effects |= SpriteEffects.FlipHorizontally;
         }
 
-        if (connections[1] || connections[2]) {
+        if (connections[(int)East] || connections[(int)South]) {
           effects |= SpriteEffects.FlipVertically;
         }
         RenderTile(_waterTextures[1], x, y, effects);
       } else if (totalConnections == 2) {
         // Corner cases
-        if (connections[0] && connections[1]) {
+        if (connections[(int)North] && connections[(int)East]) {
           RenderTile(_waterTextures[3], x, y, SpriteEffects.FlipHorizontally);
-        } else if (connections[1] && connections[2]) {
+        } else if (connections[(int)East] && connections[(int)South]) {
           RenderTile(_waterTextures[2], x, y, SpriteEffects.FlipVertically);
-        } else if (connections[2] && connections[3]) {
+        } else if (connections[(int)South] && connections[(int)West]) {
           RenderTile(_waterTextures[3], x, y);
-        } else if (connections[3] && connections[0]) {
+        } else if (connections[(int)West] && connections[(int)North]) {
           RenderTile(_waterTextures[2], x, y);
         }
 
         // Straight across cases
-        else if (connections[0] && connections[2]) {
+        else if (connections[(int)North] && connections[(int)South]) {
           RenderTile(_waterTextures[4], x, y, SpriteEffects.FlipHorizontally);
-        } else if (connections[1] && connections[3]) {
+        } else if (connections[(int)East] && connections[(int)West]) {
           RenderTile(_waterTextures[4], x, y);
         }
       } else if (totalConnections == 3) {
         var effects = SpriteEffects.None;
-        if (!connections[0] || !connections[1]) {
+        if (!connections[(int)North] || !connections[(int)East]) {
           effects |= SpriteEffects.FlipHorizontally;
         }
-        if (!connections[0] || !connections[3]) {
+        if (!connections[(int)North] || !connections[(int)West]) {
           effects |= SpriteEffects.FlipVertically;
         }
         RenderTile(_waterTextures[5], x, y, effects);

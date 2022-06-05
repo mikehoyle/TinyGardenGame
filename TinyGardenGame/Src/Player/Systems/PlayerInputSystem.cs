@@ -24,7 +24,7 @@ namespace TinyGardenGame.Player.Systems {
 
     private readonly MainGame _game;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
-    private ComponentMapper<PlacementComponent> _placementComponentMapper;
+    private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
 
@@ -32,7 +32,7 @@ namespace TinyGardenGame.Player.Systems {
         : base(Aspect.All(
             typeof(PlayerInputComponent),
             typeof(MotionComponent),
-            typeof(PlacementComponent),
+            typeof(PositionComponent),
             typeof(SelectionComponent),
             typeof(CollisionFootprintComponent))) {
       _game = game;
@@ -41,7 +41,7 @@ namespace TinyGardenGame.Player.Systems {
     
     public override void Initialize(IComponentMapperService mapperService) {
       _motionComponentMapper = mapperService.GetMapper<MotionComponent>();
-      _placementComponentMapper = mapperService.GetMapper<PlacementComponent>();
+      _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _selectionComponentMapper = mapperService.GetMapper<SelectionComponent>();
       _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
     }
@@ -75,7 +75,7 @@ namespace TinyGardenGame.Player.Systems {
 
     private void TeleportPlayer(int x, int y) {
       if (ActiveEntities.Count == 1) {
-        _placementComponentMapper.Get(ActiveEntities[0])
+        _positionComponentMapper.Get(ActiveEntities[0])
             .Position = new Vector2(x, y);
       } else {
         _game.Console.WriteLine(

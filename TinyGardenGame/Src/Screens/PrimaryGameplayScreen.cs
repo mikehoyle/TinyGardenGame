@@ -31,7 +31,7 @@ namespace TinyGardenGame.Screens {
       _world = new WorldBuilder()
           .AddSystem(new RenderSystem(game, GraphicsDevice, cameraSystem, map))
           .AddSystem(new PlayerInputSystem(game))
-          .AddSystem(new CollisionSystem())
+          .AddSystem(new CollisionSystem(map))
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem(game))
           .AddSystem(cameraSystem)
@@ -67,12 +67,10 @@ namespace TinyGardenGame.Screens {
           .AttachAnd(new CameraFollowComponent())
           .AttachAnd(new MotionComponent(_game.Config.PlayerSpeed))
           .AttachAnd(new PlayerInputComponent())
-          .AttachAnd(new PlacementComponent(MapPlacementHelper.CenterOfMapTile(0, 0)))
-          .AttachAnd(new CollisionFootprintComponent() {
-              // TODO: For now assume the player takes up half a square,
-              // that may be refined in the future
-              Footprint = new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f),
-          })
+          .AttachAnd(new PositionComponent(MapPlacementHelper.CenterOfMapTile(0, 0)))
+          // TODO: For now assume the player takes up half a square,
+          // that may be refined in the future
+          .AttachAnd(new CollisionFootprintComponent(new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f)))
           .AttachAnd(new SelectionComponent());
       return player;
     }
@@ -88,10 +86,8 @@ namespace TinyGardenGame.Screens {
       
       _world.CreateEntity()
           .AttachAnd(new DrawableComponent(widePlantSprite))
-          .AttachAnd(new PlacementComponent(new Vector2(5, 5), footprintSize: new Vector2(2, 2)))
-          .AttachAnd(new CollisionFootprintComponent {
-              Footprint = new RectangleF(0, 0, 2, 2),
-          })
+          .AttachAnd(new PositionComponent(new Vector2(5, 5), footprintSize: new Vector2(2, 2)))
+          .AttachAnd(new CollisionFootprintComponent(new RectangleF(0, 0, 2, 2)))
           .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(10)));
 
       var tallPlantSprite = new Sprite(
@@ -101,10 +97,8 @@ namespace TinyGardenGame.Screens {
       
       _world.CreateEntity()
           .AttachAnd(new DrawableComponent(tallPlantSprite))
-          .AttachAnd(new PlacementComponent(new Vector2(2, 6), footprintSize: new Vector2(1, 1)))
-          .AttachAnd(new CollisionFootprintComponent {
-              Footprint = new RectangleF(0, 0, 1, 1),
-          })
+          .AttachAnd(new PositionComponent(new Vector2(2, 6), footprintSize: new Vector2(1, 1)))
+          .AttachAnd(new CollisionFootprintComponent(new RectangleF(0, 0, 1, 1)))
           .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(15)));
     }
   }

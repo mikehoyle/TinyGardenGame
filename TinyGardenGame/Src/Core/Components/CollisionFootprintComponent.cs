@@ -10,5 +10,10 @@ namespace TinyGardenGame.Core.Components {
    */
   public class CollisionFootprintComponent {
     public RectangleF Footprint { get; set; }
+
+
+    public CollisionFootprintComponent(RectangleF footprint) {
+      Footprint = footprint;
+    }
   }
 }

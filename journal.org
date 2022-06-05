@@ -1,5 +1,52 @@
 #+TITLE Tiny Garden Game Journal
 
+* 06/04/2022
+  Today I went in with the goal of making water non-walkable, and then making it
+  so the player can interact and "trench" water, which I imagine to be one of
+  the game mechanics.
+
+  The first challenge was collisions. For a bit I contended with how water
+  collsions should work without seeming super tedious before it dawned on me:
+  Just allow the "edge" of water to be walkable, and only consider "deep" water
+  (i.e. tiles that are fully surrounded by water themselves) to be
+  non-traversable.
+
+  So moving forward on that I first procrastinated with a bunch of
+  not-really-necessary refactoring, and then moved on to the actual map
+  collisions.
+
+  And.. that kind of vexxed me. The easiest way that came to me was simply
+  adding all the non-traversable tiles as collision actors in the plug-and-play
+  Monogame.Extended library I've been using, but that gave me a lot of concerns.
+  Just to take a shot in the dark (and in the spirit of "use it if it works
+  right now") I tried it and my fears were confirmed. Adding a ton of extra
+  collision components was just not worth it.
+
+  In the end, the Extended collision library doesn't exactly fit my needs for
+  many reasons:
+  - It seems to be mainly intended for physics simulations with many moving
+    actors, but my game has few moving actors (right now..) and many stationary
+    ones.
+  - There's no way to differentiate between stationary actors, which could never
+    collide with anything on their own accord, and moving actors, which are
+    really the only ones to be concerned about.
+  - The integration with ECS was clumsy in the first place, and required a lot
+    of allocation of "mirror" objects that represented entities but weren't,
+    which felt like an antipattern ready to rear its ugly head at any moment.
+  - There is no good way to represent the current viewport, even though in many
+    cases collisions aren't really very relevant away from sight (at least, not
+    right now).
+
+  The main takeaway is that I probably just need to build my own. It hopefully
+  shouldn't be too terribly complicated, but a close eye needs to be kept on
+  efficiency. I will probably highjack anything and everything I can from the
+  ECS system, but better accomodate the constraints above.
+
+  This feels like a left field back into engine-work when I was hoping to really
+  proceed with game mechanics, but it should at the very least be interesting
+  work, and I think even in the short term I'll appreciate having significantly
+  more control over the collisions logic.
+  
 * 06/03/2022
   Very quick update today. We have water! Well, the appearance of water at
   least, with no functionality. Also uncovered the extreme uncleanliness of code

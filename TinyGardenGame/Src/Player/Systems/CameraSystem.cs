@@ -13,13 +13,13 @@ namespace TinyGardenGame.Player.Systems {
     private readonly int _resolutionY;
     private readonly Game _game;
     private Vector2 _cameraPosition;
-    private ComponentMapper<PlacementComponent> _positionComponentMapper;
+    private ComponentMapper<PositionComponent> _positionComponentMapper;
 
     public OrthographicCamera Camera { get; private set; }
     public Matrix ViewMatrix => Camera.GetViewMatrix();
 
     public CameraSystem(Game game, int resolutionX, int resolutionY)
-        : base(Aspect.All(typeof(PlacementComponent), typeof(CameraFollowComponent))) {
+        : base(Aspect.All(typeof(PositionComponent), typeof(CameraFollowComponent))) {
       _resolutionX = resolutionX;
       _resolutionY = resolutionY;
       _game = game;
@@ -30,7 +30,7 @@ namespace TinyGardenGame.Player.Systems {
       Camera = new OrthographicCamera(
           new BoxingViewportAdapter(
               _game.Window, _game.GraphicsDevice, _resolutionX, _resolutionY));
-      _positionComponentMapper = mapperService.GetMapper<PlacementComponent>();
+      _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
     }
 
     public override void Update(GameTime gameTime) {

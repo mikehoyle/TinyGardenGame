@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using static TinyGardenGame.MapPlacementHelper.Direction;
 
 namespace TinyGardenGame {
   /**
@@ -19,19 +20,19 @@ namespace TinyGardenGame {
    * Positive directions are East and South.
    */
   public static class MapPlacementHelper {
-    public enum Direction {
-      North,
-      South,
-      East,
-      West,
+    public enum Direction : uint {
+      East = 0,
+      South = 1,
+      West = 2,
+      North = 3,
     }
     
     public static readonly Dictionary<Direction, Vector2> DirectionUnitVectors =
         new Dictionary<Direction, Vector2> {
-            { Direction.East, Vector2.UnitX },
-            { Direction.South, Vector2.UnitY },
-            { Direction.West, Vector2.UnitX * -1 },
-            { Direction.North, Vector2.UnitY * -1 },
+            { East, Vector2.UnitX },
+            { South, Vector2.UnitY },
+            { West, Vector2.UnitX * -1 },
+            { North, Vector2.UnitY * -1 },
         };
     
     // Tile location at NW / top of tile, same for map coords & absolute rendering coords
@@ -74,5 +75,22 @@ namespace TinyGardenGame {
     public static Vector2 CenterOfMapTile(Vector2 coords) {
       return CenterOfMapTile(coords.X, coords.Y);
     }
+
+    /**
+     * Executes for each adjacent tile, starting at the East tile and moving clockwise.
+     * Aggregates the results in an array indexed by Direction.
+     */
+    public static T[] ForEachAdjacentTile<T>(
+        int x, int y, Func<Direction, int /* x */, int /* y */, T> action) {
+      var result = new T[4];
+      foreach (var direction in new[] { North, East, South, West }) {
+        result[(uint)direction] = action(
+            direction,
+            x + (int)DirectionUnitVectors[direction].X,
+            y + (int)DirectionUnitVectors[direction].Y);
+      }
+
+      return result;
+    } 
   }
 }

@@ -40,16 +40,16 @@ namespace TinyGardenGame.Player.Components {
     public Vector2 SelectedSquare { get; set; }
 
     public void SetFromMapPlacement(
-        PlacementComponent placement, CollisionFootprintComponent footprint) {
+        PositionComponent position, CollisionFootprintComponent footprint) {
       var selectionDirection = SelectionBounds
           .FirstOrDefault(
-              entry => Angle.IsBetween(placement.Rotation, entry.Value.Item1, entry.Value.Item2))
+              entry => Angle.IsBetween(position.Rotation, entry.Value.Item1, entry.Value.Item2))
           .Key;
       var vector = DirectionUnitVectors[selectionDirection];
-      var targetSelection = placement.CurrentSquare + vector.ToPoint();
+      var targetSelection = position.CurrentSquare + vector.ToPoint();
       var footprintModifier =
           vector * new Vector2(footprint.Footprint.Width / 2, footprint.Footprint.Height / 2);
-      if (PlacementComponent.GetSquareForPosition(placement.Position + footprintModifier)
+      if (PositionComponent.GetSquareForPosition(position.Position + footprintModifier)
           .Equals(targetSelection)) {
         // Selecting unit overlaps target square, select one further
         targetSelection += vector.ToPoint();
