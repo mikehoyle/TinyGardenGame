@@ -36,7 +36,7 @@ namespace TinyGardenGame.MapGeneration {
       for (var x = 0; x < Map.GetLength(0); x++) {
         for (var y = 0; y < Map.GetLength(1); y++) {
           if (Map[x, y] != null) {
-            action(x, y, Map[x, y]);
+            action(x - OriginTile.X, y - OriginTile.Y, Map[x, y]);
           }
         }
       }

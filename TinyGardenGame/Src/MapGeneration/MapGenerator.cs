@@ -40,25 +40,20 @@ namespace TinyGardenGame.MapGeneration {
      * terrain.
      */
     private void PostProcess(GameMap map) {
-      for (short x = 0; x < MapWidth; x++) {
-        for (short y = 0; y < MapHeight; y++) {
-          var surroundedWaterTiles = 0;
-          ForEachAdjacentTile<object>(x, y, (direction, adjX, adjY) => {
-            if (adjX >=0 && adjY >= 0 && adjX < MapWidth && adjY < MapHeight &&
-                map.Map[adjX, adjY] != null) {
-              if (map.Map[adjX, adjY].Has(TileFlags.ContainsWater)) {
-                surroundedWaterTiles++;
-                if (surroundedWaterTiles == 4) {
-                  map.Map[adjX, adjY].Flags |= TileFlags.IsNonTraversable;
-                }
-              }
+      map.ForEach((x, y, tile) => {
+        var surroundedWaterTiles = 0;
+        ForEachAdjacentTile<object>(x, y, (direction, adjX, adjY) => {
+          if (map.Contains(adjX, adjY)) {
+            if (map[adjX, adjY].Has(TileFlags.ContainsWater)) {
+              surroundedWaterTiles++;
             }
-
-            return null;
-          });
-          
+          }
+          return null;
+        });
+        if (surroundedWaterTiles == 4) {
+          tile.Flags |= TileFlags.IsNonTraversable;
         }
-      }
+      });
     }
   }
 }

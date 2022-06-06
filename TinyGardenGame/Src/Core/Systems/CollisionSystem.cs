@@ -6,6 +6,7 @@ using QuadTrees;
 using QuadTrees.QTreeRectF;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.MapGeneration;
+using TinyGardenGame.MapGeneration.MapTiles;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace TinyGardenGame.Core.Systems {
@@ -31,6 +32,18 @@ namespace TinyGardenGame.Core.Systems {
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
       _motionComponentMapper = mapperService.GetMapper<MotionComponent>();
+      AddMapCollisions();
+    }
+
+    private void AddMapCollisions() {
+      _map.ForEach((x, y, tile) => {
+        if (tile.Has(TileFlags.IsNonTraversable)) {
+          CreateEntity()
+              .AttachAnd(new PositionComponent(new Vector2(x, y)))
+              .AttachAnd(new CollisionFootprintComponent(
+                  new MonoGame.Extended.RectangleF(0, 0, 1, 1)));
+        }
+      });
     }
 
     // TODO: Handle edge of map collision
