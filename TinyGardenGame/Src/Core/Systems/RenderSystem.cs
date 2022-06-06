@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Systems;
@@ -93,7 +94,8 @@ namespace TinyGardenGame.Core.Systems {
       foreach (var entity in entities) {
         var drawable = _drawableComponentMapper.Get(entity);
         var absolutePosition = _positionComponentMapper.Get(entity).AbsolutePosition;
-        drawable.Drawable.Draw(_spriteBatch, absolutePosition);
+        drawable.Update(gameTime);
+        drawable.Draw(_spriteBatch, absolutePosition);
       }
     }
   }

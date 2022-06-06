@@ -6,9 +6,10 @@ using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core.Systems;
 
 namespace TinyGardenGame.Core.Components.Drawables {
-  public class ProgressBarDrawable : IRenderSystemDrawable {
+  public class ProgressBarDrawable : BaseDrawable {
     private readonly TextureRegion2D _emptyTexture;
     private readonly TextureRegion2D _fullTexture;
+    private readonly Vector2 _textureOrigin;
     private double _progressPercentage;
 
     public int BorderSizePx { get; set; } = 1;
@@ -26,28 +27,22 @@ namespace TinyGardenGame.Core.Components.Drawables {
       ProgressPercentage = currentProgress;
       _emptyTexture = emptyTexture;
       _fullTexture = fullTexture;
+      _textureOrigin = new Vector2(_emptyTexture.Width / 2f, 0);
     }
     
-    public void Draw(SpriteBatch spriteBatch, Vector2 position) {
+    public override void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects) {
       var fullBounds = _fullTexture.Bounds;
       fullBounds.Width = (int)(_progressPercentage * (_emptyTexture.Width - (BorderSizePx * 2)))
                    + BorderSizePx;
-      SpriteBatchDraw(spriteBatch, _emptyTexture.Texture, position, _emptyTexture.Bounds);
-      SpriteBatchDraw(spriteBatch, _fullTexture.Texture, position, fullBounds);
-    }
-    
-    private void SpriteBatchDraw(
-        SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle bounds) {
-      spriteBatch.Draw(
-          texture,
+      SpriteBatchDraw(
+          spriteBatch,
+          _emptyTexture.Texture,
           position,
-          bounds,
-          Color.White,
-          rotation: 0f,
-          origin: new Vector2(_emptyTexture.Width / 2f, 0),
-          scale: Vector2.One,
-          SpriteEffects.None,
-          0f);
+          _textureOrigin,
+          effects,
+          _emptyTexture.Bounds);
+      SpriteBatchDraw(
+          spriteBatch, _fullTexture.Texture, position, _textureOrigin, effects, fullBounds);
     }
   }
 }

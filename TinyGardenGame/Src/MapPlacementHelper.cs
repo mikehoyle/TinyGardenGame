@@ -35,6 +35,30 @@ namespace TinyGardenGame {
             { North, Vector2.UnitY * -1 },
         };
     
+    // Maps directions to their angular bounds
+    // These overlap intentionally, a preference towards a direction is better than gaps,
+    // And realistically the player will often be travelling directly on these bounds (as they
+    // are the cardinal directions) so we need to choose one way or the other.
+    public static readonly Dictionary<Direction, (Angle, Angle)> DirectionBounds =
+        new Dictionary<Direction, (Angle, Angle)> {
+            {
+                East,
+                (new Angle(-0.125f, AngleType.Revolution), new Angle(0.125f, AngleType.Revolution))
+            },
+            {
+                South,
+                (new Angle(-0.375f, AngleType.Revolution), new Angle(-0.125f, AngleType.Revolution))
+            },
+            {
+                West,
+                (new Angle(0.375f, AngleType.Revolution), new Angle(-0.375f, AngleType.Revolution))
+            },
+            {
+                North,
+                (new Angle(0.125f, AngleType.Revolution), new Angle(0.375f, AngleType.Revolution))
+            },
+        };
+    
     // Tile location at NW / top of tile, same for map coords & absolute rendering coords
     public static Vector2 MapOrigin { get; set; } = Vector2.Zero;
 

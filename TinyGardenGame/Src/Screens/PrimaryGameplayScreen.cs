@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Aseprite.Documents;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
@@ -8,12 +9,14 @@ using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Plants.Components;
 using TinyGardenGame.Plants.Systems;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.Systems;
+using AnimatedSprite = MonoGame.Aseprite.Graphics.AnimatedSprite;
 
 namespace TinyGardenGame.Screens {
   public class PrimaryGameplayScreen : GameScreen {
@@ -44,12 +47,11 @@ namespace TinyGardenGame.Screens {
     }
     
     public override void LoadContent() {
-      var playerSprite = new Sprite(
-          new TextureRegion2D(Content.Load<Texture2D>(Assets.TestPlayerSprite),
-              19, 17, 10, 15)) {
-          Origin = new Vector2(5, 15),
+      var playerSprite = new AnimatedSprite(
+          Content.Load<AsepriteDocument>(Assets.TestAnimatedPlayerSprite)) {
+          Origin = new Vector2(10, 32),
       };
-      _playerEntity.Attach(new DrawableComponent(playerSprite));
+      _playerEntity.Attach(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)));
       _debugSystem.LoadContent();
       base.LoadContent();
     }
@@ -62,15 +64,13 @@ namespace TinyGardenGame.Screens {
       _world.Draw(gameTime);
     }
 
-    private Entity CreatePlayerCharacter() { 
+    private Entity CreatePlayerCharacter() {
       var player = _world.CreateEntity()
           .AttachAnd(new CameraFollowComponent())
           .AttachAnd(new MotionComponent(_game.Config.PlayerSpeed))
           .AttachAnd(new PlayerInputComponent())
           .AttachAnd(new PositionComponent(MapPlacementHelper.CenterOfMapTile(0, 0)))
-          // TODO: For now assume the player takes up half a square,
-          // that may be refined in the future
-          .AttachAnd(new CollisionFootprintComponent(new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f)))
+          .AttachAnd(new CollisionFootprintComponent(new RectangleF(-0.35f, -0.35f, 0.6f, 0.6f)))
           .AttachAnd(new SelectionComponent());
       return player;
     }

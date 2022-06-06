@@ -1,8 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Player.Components;
+using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Core.Systems {
   /**
@@ -18,6 +24,7 @@ namespace TinyGardenGame.Core.Systems {
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
+    private ComponentMapper<DrawableComponent> _drawableComponentMapper;
 
     public MotionSystem() :
         base(Aspect.All(typeof(PositionComponent), typeof(MotionComponent))) { }
@@ -27,6 +34,7 @@ namespace TinyGardenGame.Core.Systems {
       _motionComponentMapper = mapperService.GetMapper<MotionComponent>();
       _selectionComponentMapper = mapperService.GetMapper<SelectionComponent>();
       _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
+      _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
     }
 
     public override void Update(GameTime gameTime) {
@@ -34,11 +42,45 @@ namespace TinyGardenGame.Core.Systems {
         var currentMotion = _motionComponentMapper.Get(entity).CurrentMotion;
         var positionComponent = _positionComponentMapper.Get(entity);
         positionComponent.SetPositionFromMotionVector(currentMotion);
+        UpdateAnimation(entity, currentMotion);
         // TODO: These has/gets could be inefficient and warrant another system if there 
         // end up being many moving elements.
         if (_selectionComponentMapper.Has(entity) && _collisionComponentMapper.Has(entity)) {
           _selectionComponentMapper.Get(entity)
               .SetFromMapPlacement(positionComponent, _collisionComponentMapper.Get(entity));
+        }
+      }
+    }
+
+    private void UpdateAnimation(int entityId, Vector2 currentMotion) {
+      if (_drawableComponentMapper.Has(entityId)) {
+        var drawable = _drawableComponentMapper.Get(entityId);
+        drawable.SpriteEffects = SpriteEffects.None;
+        if (currentMotion == Vector2.Zero) {
+          // TODO define these in a class
+          drawable.SetAnimation("s_idle");
+          return;
+        }
+        
+        var movementDirection = DirectionBounds
+            .FirstOrDefault(
+                entry => Angle.IsBetween(
+                    Angle.FromVector(currentMotion), entry.Value.Item1, entry.Value.Item2)).Key;
+        switch (movementDirection) {
+          case Direction.South:
+            drawable.SetAnimation("s_walk");
+            break;
+          case Direction.West:
+            drawable.SetAnimation("w_walk");
+            break;
+          case Direction.North:
+            drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
+            drawable.SetAnimation("w_walk");
+            break;
+          case Direction.East:
+            drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
+            drawable.SetAnimation("s_walk");
+            break;
         }
       }
     }

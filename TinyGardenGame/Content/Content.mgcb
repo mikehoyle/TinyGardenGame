@@ -11,6 +11,7 @@
 #-------------------------------- References --------------------------------#
 
 /reference:..\..\..\..\.nuget\packages\monogame.extended.content.pipeline\3.8.0\tools\MonoGame.Extended.Content.Pipeline.dll
+/reference:..\..\..\..\.nuget\packages\monogame.aseprite\2.0.5\contentFiles\netstandard2.0\MonoGame.Aseprite.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -26,10 +27,17 @@
 /processorParam:TextureFormat=Color
 /build:8x8text_whiteShadow.png
 
-#begin maps/test-map.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:maps/test-map.tmx
+#begin sprites/ffa_test_spritesheet.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/ffa_test_spritesheet.aseprite
 
 #begin sprites/Old hero.png
 /importer:TextureImporter
