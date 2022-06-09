@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite.Documents;
-using MonoGame.Extended.Tiled;
 using static TinyGardenGame.Core.Assets;
 
 namespace TinyGardenGame.Core {
@@ -17,6 +16,8 @@ namespace TinyGardenGame.Core {
     
     // Aseprite spritesheets
     public const string TestAnimatedPlayerSprite = "sprites/ffa_test_spritesheet";
+    public const string InventoryContainer = "sprites/inventory_border";
+    public const string InventorySelected = "sprites/inventory_selected";
       
     // Fonts
     public const string ConsoleFont = "ConsoleFont";
@@ -30,7 +31,7 @@ namespace TinyGardenGame.Core {
     };
     
     private static readonly List<string> AsepriteAssets = new List<string> {
-        TestAnimatedPlayerSprite,
+        TestAnimatedPlayerSprite, InventoryContainer, InventorySelected,
     };
 
     private static readonly List<string> SpriteFontAssets = new List<string> { ConsoleFont };

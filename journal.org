@@ -1,5 +1,50 @@
 #+TITLE Tiny Garden Game Journal
 
+* 06/06/2022
+  While I was wanting to move on to more functional game features, I couldn't
+  really get over how unappealing it was having the main character be a hovering
+  sidescroller sprite. As a result, I took a turn towards the animation
+  direction, and did some re-tooling to better enable animated sprites.
+
+  This will definitely need to be refined in the future, but will work for now.
+
+  I also spent a lot of time acquainting myself with pixel art work in general,
+  and isometric art specifics. After some playing around, my takeaway is that I
+  will need a LOT more practice if it's something I want to be even remotely
+  acceptable at. The upside is there's really no requirement for me to be
+  acceptible at all. I could always make a fully functional game and then
+  commission the art.
+
+  All that is dangerously forward-looking at this stage, because it presumes I
+  make a fully functional game in the first place. So, time to turn my eyes back
+  towards that.
+
+  The main things in my sights right now are:
+
+  1. Placing "plants"
+  2. Digging water
+
+  Likely for both, but definitely for the first, I think I really will want some
+  way to select what will be placed, and for that, I need to introduce a HUD.
+  That is especially important because I am intent on making a controller-first
+  game, so I don't/won't just have a million hotkeys to work with.
+
+  That will be the next focus then, pre-empting the others. It should be easy
+  enough, because it will not be involved in the ECS system and I can just bang
+  out a system of my own. Also, because the viewport is a fixed set of pixels in
+  resolution that will just be scaled, I can make the stand-in assets really
+  easily as well.
+
+  We are getting dangerously close to me needing to actually have some concrete
+  game mechanics figured out, which I am still very wish-washy on. I need a few
+  more dedicated brainstorms of the mechanics alone.
+
+  There's a little bit of an unfortunate chicken-egg problem there, where I
+  really want to be able to toy with mechanics real-time in a prototype, but I
+  don't want to code in gameplay for mechanics there's no chance I'll use.
+  Hopefully I'll clarify some things for myself mentally in the next few days
+  before moving much further.
+
 * 06/04/2022
   Today I went in with the goal of making water non-walkable, and then making it
   so the player can interact and "trench" water, which I imagine to be one of

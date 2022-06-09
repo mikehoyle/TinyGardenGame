@@ -24,12 +24,12 @@ namespace TinyGardenGame.Player.Systems {
       _resolutionY = resolutionY;
       _game = game;
       _cameraPosition = Vector2.Zero;
-    }
-
-    public override void Initialize(IComponentMapperService mapperService) {
       Camera = new OrthographicCamera(
           new BoxingViewportAdapter(
               _game.Window, _game.GraphicsDevice, _resolutionX, _resolutionY));
+    }
+
+    public override void Initialize(IComponentMapperService mapperService) {
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
     }
 

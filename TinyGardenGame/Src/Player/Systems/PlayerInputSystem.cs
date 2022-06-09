@@ -6,9 +6,10 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using MonoGame.Extended.Input.InputListeners;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Hud;
 using TinyGardenGame.Player.Components;
-using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
@@ -22,13 +23,18 @@ namespace TinyGardenGame.Player.Systems {
           {Keys.Left, Vector2.UnitX * -1},
         };
 
+    private Dictionary<Keys, Action> _actionControls;
+
+
     private readonly MainGame _game;
+    private readonly HeadsUpDisplay _hud;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
+    private readonly KeyboardListener _keyboardListener;
 
-    public PlayerInputSystem(MainGame game)
+    public PlayerInputSystem(MainGame game, HeadsUpDisplay hud)
         : base(Aspect.All(
             typeof(PlayerInputComponent),
             typeof(MotionComponent),
@@ -36,7 +42,16 @@ namespace TinyGardenGame.Player.Systems {
             typeof(SelectionComponent),
             typeof(CollisionFootprintComponent))) {
       _game = game;
+      _hud = hud;
+      _keyboardListener = new KeyboardListener(new KeyboardListenerSettings() {
+          RepeatPress = false,
+      });
+      _keyboardListener.KeyPressed += OnKeyPressed;
       _game.Console.MovePlayer += TeleportPlayer;
+      _actionControls = new Dictionary<Keys, Action>() {
+          {Keys.OemMinus, MoveSelectionLeft},
+          {Keys.OemPlus, MoveSelectionRight},
+      };
     }
     
     public override void Initialize(IComponentMapperService mapperService) {
@@ -47,12 +62,16 @@ namespace TinyGardenGame.Player.Systems {
     }
 
     public override void Update(GameTime gameTime) {
+      // Motion controls use input directly, while more concise button-press actions use
+      // input listeners.
       var movementDirection = GetMovementDirection();
       foreach (var entity in ActiveEntities) {
         var motionComponent = _motionComponentMapper.Get(entity);
         motionComponent.SetMotionFromCardinalVector(
             GetMovementVector(gameTime, movementDirection, motionComponent.SpeedTilesPerSec));
       }
+
+      _keyboardListener.Update(gameTime);
     }
 
     private static Vector2 GetMovementVector(
@@ -81,6 +100,20 @@ namespace TinyGardenGame.Player.Systems {
         _game.Console.WriteLine(
             $"Need exactly one entity to move but found {ActiveEntities.Count}");
       }
+    }
+    
+    private void OnKeyPressed(object sender, KeyboardEventArgs args) {
+      if (_actionControls.TryGetValue(args.Key, out var action)) {
+        action.Invoke();
+      }
+    }
+
+    private void MoveSelectionLeft() {
+      _hud.Inventory.CurrentlySelectedSlot--;
+    }
+    
+    private void MoveSelectionRight() {
+      _hud.Inventory.CurrentlySelectedSlot++;
     }
 
     void IDisposable.Dispose() {

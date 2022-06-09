@@ -11,6 +11,7 @@ using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
+using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Plants.Components;
 using TinyGardenGame.Plants.Systems;
@@ -24,6 +25,7 @@ namespace TinyGardenGame.Screens {
     private readonly World _world;
     private readonly Entity _playerEntity;
     private readonly DebugSystem _debugSystem;
+    private readonly HeadsUpDisplay _hud;
 
     public PrimaryGameplayScreen(MainGame game) : base(game) {
       _game = game;
@@ -31,9 +33,11 @@ namespace TinyGardenGame.Screens {
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _debugSystem = new DebugSystem(game);
       var map = new MapGenerator().GenerateMap();
+      _hud = new HeadsUpDisplay(
+          Content, GraphicsDevice, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _world = new WorldBuilder()
-          .AddSystem(new RenderSystem(game, GraphicsDevice, cameraSystem, map))
-          .AddSystem(new PlayerInputSystem(game))
+          .AddSystem(new RenderSystem(game, GraphicsDevice, cameraSystem, map, _hud))
+          .AddSystem(new PlayerInputSystem(game, _hud))
           .AddSystem(new CollisionSystem(map))
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem(game))
@@ -49,7 +53,7 @@ namespace TinyGardenGame.Screens {
     public override void LoadContent() {
       var playerSprite = new AnimatedSprite(
           Content.Load<AsepriteDocument>(Assets.TestAnimatedPlayerSprite)) {
-          Origin = new Vector2(10, 32),
+          Origin = new Vector2(10, 28),
       };
       _playerEntity.Attach(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)));
       _debugSystem.LoadContent();

@@ -5,6 +5,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Systems;
 
@@ -26,16 +27,22 @@ namespace TinyGardenGame.Core.Systems {
   public class RenderSystem : EntityDrawSystem {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;
+    private readonly HeadsUpDisplay _hud;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private readonly MapRenderer _mapRenderer;
 
     public RenderSystem(
-        MainGame game, GraphicsDevice graphicsDevice, CameraSystem cameraSystem, GameMap map)
+        MainGame game,
+        GraphicsDevice graphicsDevice,
+        CameraSystem cameraSystem,
+        GameMap map, 
+        HeadsUpDisplay hud)
         : base(Aspect.All(typeof(DrawableComponent), typeof(PositionComponent))) {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
+      _hud = hud;
       _spriteBatch = new SpriteBatch(graphicsDevice);
       _mapRenderer = new MapRenderer(game, _spriteBatch, map);
     }
@@ -49,15 +56,14 @@ namespace TinyGardenGame.Core.Systems {
       _spriteBatch.Begin(
           sortMode: SpriteSortMode.Deferred,
           samplerState: SamplerState.PointClamp,
-          transformMatrix: _cameraSystem.Camera.GetViewMatrix());
-      
-      DrawMap(gameTime);
+          transformMatrix: _cameraSystem.ViewMatrix);
+      DrawMap();
       DrawSprites(gameTime);
-
       _spriteBatch.End();
+      _hud.Draw(_spriteBatch, gameTime);
     }
 
-    private void DrawMap(GameTime gameTime) {
+    private void DrawMap() {
       _graphicsDevice.Clear(Color.CornflowerBlue);
       _mapRenderer.Draw(_cameraSystem.Camera.BoundingRectangle);
     }
