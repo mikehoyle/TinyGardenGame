@@ -9,7 +9,7 @@ using TinyGardenGame.Core;
 
 namespace TinyGardenGame.Hud {
   public class Inventory {
-    private const int InventoryBottomMarginPx = 3; 
+    private const int InventoryBottomMarginPx = 2; 
     private const int InventoryWidth = 10;
     
     private readonly ScalingViewportAdapter _hudScale;

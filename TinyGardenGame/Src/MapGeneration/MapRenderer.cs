@@ -111,38 +111,38 @@ namespace TinyGardenGame.MapGeneration {
         RenderTile(_waterTextures[0], x, y);
       } else if (totalConnections == 1) {
         var effects = SpriteEffects.None;
-        if (connections[(int)North] || connections[(int)East]) {
+        if (connections[North] || connections[East]) {
           effects |= SpriteEffects.FlipHorizontally;
         }
 
-        if (connections[(int)East] || connections[(int)South]) {
+        if (connections[East] || connections[South]) {
           effects |= SpriteEffects.FlipVertically;
         }
         RenderTile(_waterTextures[1], x, y, effects);
       } else if (totalConnections == 2) {
         // Corner cases
-        if (connections[(int)North] && connections[(int)East]) {
+        if (connections[North] && connections[East]) {
           RenderTile(_waterTextures[3], x, y, SpriteEffects.FlipHorizontally);
-        } else if (connections[(int)East] && connections[(int)South]) {
+        } else if (connections[East] && connections[South]) {
           RenderTile(_waterTextures[2], x, y, SpriteEffects.FlipVertically);
-        } else if (connections[(int)South] && connections[(int)West]) {
+        } else if (connections[South] && connections[West]) {
           RenderTile(_waterTextures[3], x, y);
-        } else if (connections[(int)West] && connections[(int)North]) {
+        } else if (connections[West] && connections[North]) {
           RenderTile(_waterTextures[2], x, y);
         }
 
         // Straight across cases
-        else if (connections[(int)North] && connections[(int)South]) {
+        else if (connections[North] && connections[South]) {
           RenderTile(_waterTextures[4], x, y, SpriteEffects.FlipHorizontally);
-        } else if (connections[(int)East] && connections[(int)West]) {
+        } else if (connections[East] && connections[West]) {
           RenderTile(_waterTextures[4], x, y);
         }
       } else if (totalConnections == 3) {
         var effects = SpriteEffects.None;
-        if (!connections[(int)North] || !connections[(int)East]) {
+        if (!connections[North] || !connections[East]) {
           effects |= SpriteEffects.FlipHorizontally;
         }
-        if (!connections[(int)North] || !connections[(int)West]) {
+        if (!connections[North] || !connections[West]) {
           effects |= SpriteEffects.FlipVertically;
         }
         RenderTile(_waterTextures[5], x, y, effects);

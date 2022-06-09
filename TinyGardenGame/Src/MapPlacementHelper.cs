@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using static MonoGame.Extended.AngleType;
 using static TinyGardenGame.MapPlacementHelper.Direction;
 
 namespace TinyGardenGame {
@@ -22,17 +23,25 @@ namespace TinyGardenGame {
   public static class MapPlacementHelper {
     public enum Direction : uint {
       East = 0,
-      South = 1,
-      West = 2,
-      North = 3,
+      SouthEast = 1,
+      South = 2,
+      SouthWest = 3,
+      West = 4,
+      NorthWest = 5,
+      North = 6,
+      NorthEast = 7,
     }
     
     public static readonly Dictionary<Direction, Vector2> DirectionUnitVectors =
         new Dictionary<Direction, Vector2> {
             { East, Vector2.UnitX },
+            { SouthEast, Vector2.UnitX + Vector2.UnitY},
             { South, Vector2.UnitY },
-            { West, Vector2.UnitX * -1 },
-            { North, Vector2.UnitY * -1 },
+            { SouthWest, -Vector2.UnitX + Vector2.UnitY},
+            { West, -Vector2.UnitX },
+            { NorthWest, -Vector2.UnitX - Vector2.UnitY},
+            { North, -Vector2.UnitY },
+            { NorthEast, Vector2.UnitX -Vector2.UnitY},
         };
     
     // Maps directions to their angular bounds
@@ -43,19 +52,35 @@ namespace TinyGardenGame {
         new Dictionary<Direction, (Angle, Angle)> {
             {
                 East,
-                (new Angle(-0.125f, AngleType.Revolution), new Angle(0.125f, AngleType.Revolution))
+                (new Angle(-1/16f, Revolution), new Angle(1/16f, Revolution))
+            },
+            {
+                SouthEast,
+                (new Angle(-3/16f, Revolution), new Angle(-1/16f, Revolution))
             },
             {
                 South,
-                (new Angle(-0.375f, AngleType.Revolution), new Angle(-0.125f, AngleType.Revolution))
+                (new Angle(-5/16f, Revolution), new Angle(-3/16f, Revolution))
+            },
+            {
+                SouthWest,
+                (new Angle(-7/16f, Revolution), new Angle(-5/16f, Revolution))
             },
             {
                 West,
-                (new Angle(0.375f, AngleType.Revolution), new Angle(-0.375f, AngleType.Revolution))
+                (new Angle(7/16f, Revolution), new Angle(-7/16f, Revolution))
+            },
+            {
+                NorthWest,
+                (new Angle(5/16f, Revolution), new Angle(7/16f, Revolution))
             },
             {
                 North,
-                (new Angle(0.125f, AngleType.Revolution), new Angle(0.375f, AngleType.Revolution))
+                (new Angle(3/16f, Revolution), new Angle(5/16f, Revolution))
+            },
+            {
+                NorthEast,
+                (new Angle(1/16f, Revolution), new Angle(3/16f, Revolution))
             },
         };
     
@@ -104,11 +129,11 @@ namespace TinyGardenGame {
      * Executes for each adjacent tile, starting at the East tile and moving clockwise.
      * Aggregates the results in an array indexed by Direction.
      */
-    public static T[] ForEachAdjacentTile<T>(
+    public static Dictionary<Direction, T> ForEachAdjacentTile<T>(
         int x, int y, Func<Direction, int /* x */, int /* y */, T> action) {
-      var result = new T[4];
+      var result = new Dictionary<Direction, T>();
       foreach (var direction in new[] { North, East, South, West }) {
-        result[(uint)direction] = action(
+        result[direction] = action(
             direction,
             x + (int)DirectionUnitVectors[direction].X,
             y + (int)DirectionUnitVectors[direction].Y);

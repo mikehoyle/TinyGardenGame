@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -8,7 +6,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Player.Components;
-using static TinyGardenGame.MapPlacementHelper;
+using static TinyGardenGame.MapPlacementHelper.Direction;
 
 namespace TinyGardenGame.Core.Systems {
   /**
@@ -62,22 +60,26 @@ namespace TinyGardenGame.Core.Systems {
           return;
         }
         
-        var movementDirection = DirectionBounds
+        var movementDirection = MapPlacementHelper.DirectionBounds
             .FirstOrDefault(
                 entry => Angle.IsBetween(
                     Angle.FromVector(currentMotion), entry.Value.Item1, entry.Value.Item2)).Key;
         switch (movementDirection) {
-          case Direction.South:
+          case South:
+          case SouthWest:
             drawable.SetAnimation("s_walk");
             break;
-          case Direction.West:
+          case West:
+          case NorthWest:
             drawable.SetAnimation("w_walk");
             break;
-          case Direction.North:
+          case North:
+          case NorthEast:
             drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
             drawable.SetAnimation("w_walk");
             break;
-          case Direction.East:
+          case East:
+          case SouthEast:
             drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
             drawable.SetAnimation("s_walk");
             break;
