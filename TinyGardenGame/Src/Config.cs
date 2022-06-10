@@ -16,5 +16,6 @@
   public class DebugConfig {
     public readonly bool ShowSelectionIndicator = true;
     public readonly bool EnableConsole = true;
+    public readonly bool EnableFpsDisplay = true;
   }
 }

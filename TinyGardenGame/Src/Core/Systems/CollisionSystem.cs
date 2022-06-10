@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using QuadTrees;
@@ -19,6 +21,8 @@ namespace TinyGardenGame.Core.Systems {
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private readonly QuadTreeRectF<CollidableObject> _collisionQuadTree;
+    
+    public delegate bool IsSpaceBuildableDel(RectangleF target);
 
     public CollisionSystem(GameMap map) : base(Aspect.All(
         typeof(PositionComponent), typeof(CollisionFootprintComponent), typeof(MotionComponent))) {
@@ -115,6 +119,33 @@ namespace TinyGardenGame.Core.Systems {
     
     protected override void OnEntityRemoved(int entityId) {
       _collisionQuadTree.Remove(new CollidableObject(entityId));
+    }
+
+    public bool IsSpaceBuildable(RectangleF target) {
+      if (_collisionQuadTree.GetObjects(target).Count > 0) {
+        return false;
+      }
+
+      foreach (var tile in IntersectingTiles(target)) {
+        if (tile.Has(TileFlags.ContainsWater) || tile.Has(TileFlags.IsNonTraversable)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    private List<AbstractTile> IntersectingTiles(RectangleF target) {
+      var result = new List<AbstractTile>();
+      for (var x = (int)target.Left; x <= (int)target.Right; x++) {
+        for (var y = (int)target.Top; y <= (int)target.Bottom; y++) {
+          if (_map.Contains(x, y)) {
+            result.Add(_map[x,y]);
+          }
+        }
+      }
+
+      return result;
     }
   }
 

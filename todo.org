@@ -1,13 +1,13 @@
 
 #+TITLE Tiny Garden Game TODO Tracker
 *
-* TODO Major changes [6/10]
+* TODO Major changes [8/11]
  - [ ] Tranlucent objects when player is behind them
  - [-] Create water
    - [X] Generate water tiles
    - [X] Water collisions (prevent movement over water
    - [ ] Allow player interaction to dig trenches
- - [ ] Allow player to place plants.
+ - [X] Allow player to place plants.
  - [-] Controller/config support
    - [X] Add and use Config class
    - [ ] Add controls to config
@@ -40,4 +40,4 @@
    - [X] Add growth progress/UI
 *
 * TODO Lower priority [/]
- - [ ] FPS counter
+ - [X] FPS counter

@@ -8,8 +8,11 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Input.InputListeners;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Core.Systems;
 using TinyGardenGame.Hud;
+using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
@@ -33,8 +36,10 @@ namespace TinyGardenGame.Player.Systems {
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
     private readonly KeyboardListener _keyboardListener;
+    private readonly PlantEntityFactory _plantFactory;
 
-    public PlayerInputSystem(MainGame game, HeadsUpDisplay hud)
+    public PlayerInputSystem(
+        MainGame game, HeadsUpDisplay hud, CollisionSystem.IsSpaceBuildableDel isSpaceBuildable)
         : base(Aspect.All(
             typeof(PlayerInputComponent),
             typeof(MotionComponent),
@@ -48,12 +53,14 @@ namespace TinyGardenGame.Player.Systems {
       });
       _keyboardListener.KeyPressed += OnKeyPressed;
       _game.Console.MovePlayer += TeleportPlayer;
+      _plantFactory = new PlantEntityFactory(game.Content, CreateEntity, isSpaceBuildable);
       _actionControls = new Dictionary<Keys, Action>() {
           {Keys.OemMinus, MoveSelectionLeft},
           {Keys.OemPlus, MoveSelectionRight},
+          {Keys.Q, PlacePlant},
       };
     }
-    
+
     public override void Initialize(IComponentMapperService mapperService) {
       _motionComponentMapper = mapperService.GetMapper<MotionComponent>();
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
@@ -114,6 +121,11 @@ namespace TinyGardenGame.Player.Systems {
     
     private void MoveSelectionRight() {
       _hud.Inventory.CurrentlySelectedSlot++;
+    }
+
+    private void PlacePlant() {
+      var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
+      _plantFactory.CreatePlant(PlantType.TallTestPlant, placement);
     }
 
     void IDisposable.Dispose() {

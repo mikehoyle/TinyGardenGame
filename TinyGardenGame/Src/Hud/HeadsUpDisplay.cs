@@ -7,16 +7,18 @@ using MonoGame.Extended.ViewportAdapters;
 namespace TinyGardenGame.Hud {
   public class HeadsUpDisplay : IUpdate {
     private readonly ScalingViewportAdapter _hudScale;
-    
+    private readonly DebugOverlay _debugOverlay;
+
     public Inventory Inventory { get; }
 
     public HeadsUpDisplay(
-        ContentManager contentManager,
+        MainGame game,
         GraphicsDevice graphicsDevice,
         int renderWidth,
         int renderHeight) {
       _hudScale = new ScalingViewportAdapter(graphicsDevice, renderWidth, renderHeight);
-      Inventory = new Inventory(contentManager, _hudScale);
+      Inventory = new Inventory(game.Content, _hudScale);
+      _debugOverlay = new DebugOverlay(game, _hudScale);
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
@@ -26,6 +28,7 @@ namespace TinyGardenGame.Hud {
           samplerState: SamplerState.PointClamp);
       
       Inventory.Draw(spriteBatch, gameTime);
+      _debugOverlay.Draw(spriteBatch, gameTime);
       
       spriteBatch.End();
     }
