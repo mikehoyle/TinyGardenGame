@@ -20,6 +20,16 @@ namespace TinyGardenGame.MapGeneration {
           && translatedY >= 0 && translatedY < Map.GetLength(1)
           && Map[translatedX,translatedY] != null;
     }
+
+    public bool TryGet(int x, int y, out AbstractTile tile) {
+      if (Contains(x, y)) {
+        tile = this[x, y];
+        return true;
+      }
+
+      tile = null;
+      return false;
+    }
     
     public AbstractTile? this[int x, int y] {
       get => Map[x + OriginTile.X, y + OriginTile.Y];

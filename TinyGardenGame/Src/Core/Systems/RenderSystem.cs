@@ -89,11 +89,11 @@ namespace TinyGardenGame.Core.Systems {
         // we shall see.
         var depth1 = _positionComponentMapper.Get(entity1).EffectiveRenderDepth;
         var depth2 = _positionComponentMapper.Get(entity2).Position;
-        if (depth1 == depth2) {
+        if (depth1.X == depth2.X || depth1.Y == depth2.Y) {
           return _positionComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
               ? -1 : 0;
         }
-        return ((depth1.X >= depth2.X) && (depth1.Y >= depth2.Y)) ? 1 : -1;
+        return ((depth1.X > depth2.X) && (depth1.Y > depth2.Y)) ? 1 : -1;
       });
       
       // And now draw in order

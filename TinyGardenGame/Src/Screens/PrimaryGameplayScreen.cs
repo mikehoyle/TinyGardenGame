@@ -33,7 +33,7 @@ namespace TinyGardenGame.Screens {
           game, GraphicsDevice, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _world = new WorldBuilder()
           .AddSystem(new RenderSystem(game, GraphicsDevice, cameraSystem, map, _hud))
-          .AddSystem(new PlayerInputSystem(game, _hud, collisionSystem.IsSpaceBuildable))
+          .AddSystem(new PlayerInputSystem(game, _hud, map, collisionSystem.IsSpaceBuildable))
           .AddSystem(collisionSystem)
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem(game))

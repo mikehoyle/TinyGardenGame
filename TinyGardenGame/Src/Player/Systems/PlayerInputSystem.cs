@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -10,9 +11,10 @@ using MonoGame.Extended.Input.InputListeners;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.Hud;
+using TinyGardenGame.MapGeneration;
+using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
-using RectangleF = System.Drawing.RectangleF;
 
 namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
@@ -26,11 +28,12 @@ namespace TinyGardenGame.Player.Systems {
           {Keys.Left, Vector2.UnitX * -1},
         };
 
-    private Dictionary<Keys, Action> _actionControls;
+    private readonly Dictionary<Keys, Action> _actionControls;
 
 
     private readonly MainGame _game;
     private readonly HeadsUpDisplay _hud;
+    private readonly GameMap _map;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
@@ -39,7 +42,10 @@ namespace TinyGardenGame.Player.Systems {
     private readonly PlantEntityFactory _plantFactory;
 
     public PlayerInputSystem(
-        MainGame game, HeadsUpDisplay hud, CollisionSystem.IsSpaceBuildableDel isSpaceBuildable)
+        MainGame game,
+        HeadsUpDisplay hud,
+        GameMap map,
+        CollisionSystem.IsSpaceBuildableDel isSpaceBuildable)
         : base(Aspect.All(
             typeof(PlayerInputComponent),
             typeof(MotionComponent),
@@ -48,6 +54,7 @@ namespace TinyGardenGame.Player.Systems {
             typeof(CollisionFootprintComponent))) {
       _game = game;
       _hud = hud;
+      _map = map;
       _keyboardListener = new KeyboardListener(new KeyboardListenerSettings() {
           RepeatPress = false,
       });
@@ -58,6 +65,7 @@ namespace TinyGardenGame.Player.Systems {
           {Keys.OemMinus, MoveSelectionLeft},
           {Keys.OemPlus, MoveSelectionRight},
           {Keys.Q, PlacePlant},
+          {Keys.W, DigTrench},
       };
     }
 
@@ -126,6 +134,47 @@ namespace TinyGardenGame.Player.Systems {
     private void PlacePlant() {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
       _plantFactory.CreatePlant(PlantType.TallTestPlant, placement);
+    }
+
+    // TODO: Check whether a tile is unoccupied first.
+    private void DigTrench() {
+      var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
+      int x = (int)placement.X;
+      int y = (int)placement.Y;
+      if (_map.Contains(x, y)) {
+        if (!_map[x, y].Has(TileFlags.ContainsWater) && _map[x, y].Has(TileFlags.CanContainWater)) {
+          var hasAdjacentWater = false;
+          var waterTiles = MapPlacementHelper.ForEachAdjacentTile(x, y, (_, adjX, adjY) => {
+            if (_map.Contains(adjX, adjY) && _map[adjX, adjY].Has(TileFlags.ContainsWater)) {
+              hasAdjacentWater = true;
+              return _map[adjX, adjY];
+            }
+            return null;
+          });
+
+          if (hasAdjacentWater) {
+            _map[x, y].Flags |= TileFlags.ContainsWater;
+            // Update non-traversable tiles
+            // TODO: Move this logic to some sort of Map system, where tiles are marked dirty
+            //   and reprocessed.
+            // TODO: This doesn't work.
+            foreach (var tile in waterTiles.Values.Where(tile => tile != null)) {
+              var surroundingWaterTiles = 0;
+              MapPlacementHelper.ForEachAdjacentTile<object>(x, y, (_, adjX, adjY) => {
+                if (_map.TryGet(adjX, adjY, out var adjTile)
+                    && adjTile.Has(TileFlags.ContainsWater)) {
+                  surroundingWaterTiles++;
+                }
+
+                return null;
+              });
+              if (surroundingWaterTiles == 4) {
+                tile.Flags |= TileFlags.IsNonTraversable;
+              }
+            }
+          }
+        }
+      }
     }
 
     void IDisposable.Dispose() {

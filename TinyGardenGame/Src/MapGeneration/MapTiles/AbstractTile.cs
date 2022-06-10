@@ -6,7 +6,8 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
   public enum TileFlags: uint {
     None = 0,
     ContainsWater = 1 << 0,
-    IsNonTraversable = 1 << 1,
+    CanContainWater = 1 << 1,
+    IsNonTraversable = 1 << 2,
   }
   
   /**
