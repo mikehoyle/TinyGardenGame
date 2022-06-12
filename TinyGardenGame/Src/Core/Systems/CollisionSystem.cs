@@ -15,7 +15,7 @@ namespace TinyGardenGame.Core.Systems {
    * Detects and resolves collisions. Note: must come after other
    * movement systems.
    */
-  public class CollisionSystem : EntityUpdateSystem {
+  public class CollisionSystem : EntityUpdateSystem, IIsSpaceOccupied {
     private readonly GameMap _map;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
@@ -121,31 +121,8 @@ namespace TinyGardenGame.Core.Systems {
       _collisionQuadTree.Remove(new CollidableObject(entityId));
     }
 
-    public bool IsSpaceBuildable(RectangleF target) {
-      if (_collisionQuadTree.GetObjects(target).Count > 0) {
-        return false;
-      }
-
-      foreach (var tile in IntersectingTiles(target)) {
-        if (tile.Has(TileFlags.ContainsWater) || tile.Has(TileFlags.IsNonTraversable)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    private List<AbstractTile> IntersectingTiles(RectangleF target) {
-      var result = new List<AbstractTile>();
-      for (var x = (int)target.Left; x <= (int)target.Right; x++) {
-        for (var y = (int)target.Top; y <= (int)target.Bottom; y++) {
-          if (_map.Contains(x, y)) {
-            result.Add(_map[x,y]);
-          }
-        }
-      }
-
-      return result;
+    public bool IsSpaceOccupied(RectangleF target) {
+      return _collisionQuadTree.GetObjects(target).Count > 0;
     }
   }
 

@@ -7,6 +7,9 @@
   public class Config {
     public readonly float PlayerSpeed = 3.0f;
     public readonly int FpsCap = 144;
+    public readonly bool ShowBuildHints = true;
+    public readonly bool ShowBuildGhost = true;
+    public readonly float BuildGhostOpacity = 0.45f;
     public readonly DebugConfig Debug = new DebugConfig();
   }
 

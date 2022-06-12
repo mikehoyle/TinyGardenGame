@@ -34,18 +34,18 @@ namespace TinyGardenGame.Player.Systems {
     private readonly MainGame _game;
     private readonly HeadsUpDisplay _hud;
     private readonly GameMap _map;
+    private readonly ObjectPlacementSystem _objectPlacementSystem;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
     private readonly KeyboardListener _keyboardListener;
-    private readonly PlantEntityFactory _plantFactory;
 
     public PlayerInputSystem(
         MainGame game,
         HeadsUpDisplay hud,
         GameMap map,
-        CollisionSystem.IsSpaceBuildableDel isSpaceBuildable)
+        ObjectPlacementSystem objectPlacementSystem)
         : base(Aspect.All(
             typeof(PlayerInputComponent),
             typeof(MotionComponent),
@@ -55,17 +55,18 @@ namespace TinyGardenGame.Player.Systems {
       _game = game;
       _hud = hud;
       _map = map;
+      _objectPlacementSystem = objectPlacementSystem;
       _keyboardListener = new KeyboardListener(new KeyboardListenerSettings() {
           RepeatPress = false,
       });
       _keyboardListener.KeyPressed += OnKeyPressed;
       _game.Console.MovePlayer += TeleportPlayer;
-      _plantFactory = new PlantEntityFactory(game.Content, CreateEntity, isSpaceBuildable);
       _actionControls = new Dictionary<Keys, Action>() {
           {Keys.OemMinus, MoveSelectionLeft},
           {Keys.OemPlus, MoveSelectionRight},
           {Keys.Q, PlacePlant},
           {Keys.W, DigTrench},
+          {Keys.A, ToggleHoverPlant},
       };
     }
 
@@ -133,7 +134,18 @@ namespace TinyGardenGame.Player.Systems {
 
     private void PlacePlant() {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
-      _plantFactory.CreatePlant(PlantType.TallTestPlant, placement);
+      if (_objectPlacementSystem.AttemptPlantPlacement(PlantType.TallTestPlant, placement)) {
+        _objectPlacementSystem.HoveredPlant = null;
+      }
+    }
+
+    private void ToggleHoverPlant() {
+      if (_objectPlacementSystem.HoveredPlant == null) {
+        // TODO use inventory to actually select plant
+        _objectPlacementSystem.HoveredPlant = PlantType.TallTestPlant;
+      } else {
+        _objectPlacementSystem.HoveredPlant = null;
+      }
     }
 
     // TODO: Check whether a tile is unoccupied first.

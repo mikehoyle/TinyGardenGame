@@ -29,15 +29,15 @@ namespace TinyGardenGame.Plants {
     }
 
     private readonly Dictionary<PlantType, PlantMetadata> _plantAssets;
+    private readonly Config _config;
     private readonly Func<Entity> _createEntity;
-    private readonly CollisionSystem.IsSpaceBuildableDel _isSpaceBuildable;
 
     public PlantEntityFactory(
+        Config config,
         ContentManager contentManager,
-        Func<Entity> createEntity,
-        CollisionSystem.IsSpaceBuildableDel isSpaceBuildable) {
+        Func<Entity> createEntity) {
+      _config = config;
       _createEntity = createEntity;
-      _isSpaceBuildable = isSpaceBuildable;
       var spriteSheet = contentManager.Load<Texture2D>(Assets.TestPlantSprites);
       _plantAssets = new Dictionary<PlantType, PlantMetadata> {
           [WideTestPlant] = new PlantMetadata {
@@ -61,20 +61,33 @@ namespace TinyGardenGame.Plants {
       };
     }
 
-    /**
-     * @returns Entity Id of new plant entity.
-     */
+    public Vector2 GetPlantFootprintSize(PlantType type) {
+      return _plantAssets[type].FootprintSize;
+    }
+    
     public void CreatePlant(PlantType type, Vector2 position) {
       var metadata = _plantAssets[type];
-      if (!_isSpaceBuildable(new System.Drawing.RectangleF(
-              position.X, position.Y, metadata.FootprintSize.X, metadata.FootprintSize.Y))) {
-        return;
-      }
       _createEntity()
           .AttachAnd(new DrawableComponent(metadata.Sprite))
           .AttachAnd(new PositionComponent(position, footprintSize: metadata.FootprintSize))
           .AttachAnd(new CollisionFootprintComponent(metadata.CollisionFootprint))
           .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(metadata.GrowthTimeSecs)));
+    }
+
+    /**
+     * Creates a no-collision ghost plant for use as a visual indicator.
+     * @returns entity id of the new entity.
+     */
+    public int CreateGhostPlant(PlantType type, Vector2 position) {
+      var metadata = _plantAssets[type];
+      var sprite = new Sprite(metadata.Sprite.TextureRegion) {
+          Origin = metadata.Sprite.Origin,
+          Alpha = _config.BuildGhostOpacity,
+      };
+      return _createEntity()
+          .AttachAnd(new DrawableComponent(sprite))
+          .AttachAnd(new PositionComponent(position, footprintSize: metadata.FootprintSize))
+          .Id;
     }
   }
 }

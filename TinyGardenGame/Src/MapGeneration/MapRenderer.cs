@@ -47,31 +47,18 @@ namespace TinyGardenGame.MapGeneration {
     }
 
     public void Draw(RectangleF viewBounds) {
-      // First we create bounds that are slightly bigger than the viewport, to not attempt
-      // to render far more than is necessary
-      // +Extra margin of error on N & W to accomodate for viewport cutting off mid-tile
-      var leftBound = (int)AbsoluteCoordToMapCoord(viewBounds.TopLeft).X - 1;
-      var topBound = (int)AbsoluteCoordToMapCoord(viewBounds.TopRight).Y - 1;
-      var rightBound = (int)AbsoluteCoordToMapCoord(viewBounds.BottomRight).X;
-      var bottomBound = (int)AbsoluteCoordToMapCoord(viewBounds.BottomLeft).Y;
-
-      for (var x = leftBound; x <= rightBound; x++) {
-        for (var y = topBound; y <= bottomBound; y++) {
-          if (_map.Contains(x, y)
-              && _textures.TryGetValue(_map[x, y].GetType(), out var textureList)) {
-            RenderTile(textureList[_map[x, y].TextureVariant], x, y);
-          }
+      ForEachTileInBounds(_map, viewBounds, (x, y, tile) => {
+        if (_textures.TryGetValue(tile.GetType(), out var textureList)) {
+          RenderTile(textureList[tile.TextureVariant], x, y);
         }
-      }
+      });
       
       // For now, draw water in a second pass so it never is occluded
-      for (var x = leftBound; x <= rightBound; x++) {
-        for (var y = topBound; y <= bottomBound; y++) {
-          if (_map.Contains(x, y) && _map[x, y].Has(TileFlags.ContainsWater)) {
-            RenderWater(x, y);
-          }
+      ForEachTileInBounds(_map, viewBounds, (x, y, tile) => {
+        if (tile.Has(TileFlags.ContainsWater)) {
+          RenderWater(x, y);
         }
-      }
+      });
     }
 
     private void RenderTile(

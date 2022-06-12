@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using TinyGardenGame.MapGeneration;
+using TinyGardenGame.MapGeneration.MapTiles;
 using static MonoGame.Extended.AngleType;
 using static TinyGardenGame.MapPlacementHelper.Direction;
 
@@ -140,6 +143,37 @@ namespace TinyGardenGame {
       }
 
       return result;
-    } 
+    }
+
+    public static void ForEachTileInBounds(
+        GameMap map, RectangleF bounds, Action<int /* x*/, int /* y */, AbstractTile> action) {
+      // +Extra margin of error on N & W to accomodate for bounds cutting off mid-tile
+      var leftBound = (int)AbsoluteCoordToMapCoord(bounds.TopLeft).X - 1;
+      var topBound = (int)AbsoluteCoordToMapCoord(bounds.TopRight).Y - 1;
+      var rightBound = (int)AbsoluteCoordToMapCoord(bounds.BottomRight).X;
+      var bottomBound = (int)AbsoluteCoordToMapCoord(bounds.BottomLeft).Y;
+
+      for (var x = leftBound; x <= rightBound; x++) {
+        for (var y = topBound; y <= bottomBound; y++) {
+          if (map.TryGet(x, y, out var tile)) {
+            action(x, y, tile);
+          }
+        }
+      }
+    }
+
+    public static List<(int X, int Y, AbstractTile Tile)> GetIntersectingTiles(
+        GameMap map, System.Drawing.RectangleF target) {
+      var result = new List<(int, int, AbstractTile)>();
+      for (var x = (int)target.Left; x < (int)target.Right; x++) {
+        for (var y = (int)target.Top; y < (int)target.Bottom; y++) {
+          if (map.TryGet(x, y, out var tile)) {
+            result.Add((x, y, tile));
+          }
+        }
+      }
+
+      return result;
+    }
   }
 }
