@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using QuadTrees;
@@ -35,22 +33,10 @@ namespace TinyGardenGame.Core.Systems {
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
       _motionComponentMapper = mapperService.GetMapper<MotionComponent>();
-      AddMapCollisions();
-    }
-
-    private void AddMapCollisions() {
-      _map.ForEach((x, y, tile) => {
-        if (tile.Has(TileFlags.IsNonTraversable)) {
-          CreateEntity()
-              .AttachAnd(new PositionComponent(new Vector2(x, y)))
-              .AttachAnd(new CollisionFootprintComponent(
-                  new MonoGame.Extended.RectangleF(0, 0, 1, 1)));
-        }
-      });
     }
 
     // TODO: Handle edge of map collision
-    // This currently only handles collisison of moving entities (such as the player) into
+    // This currently only handles collision of moving entities (such as the player) into
     // stationary entities. That may need to expand in the future.
     public override void Update(GameTime gameTime) {
       foreach (var entity in ActiveEntities) {
@@ -66,6 +52,14 @@ namespace TinyGardenGame.Core.Systems {
           // ever intersect two objects in different axes. It may need revisiting to not
           // overcorrect if that assumption ever fails.
           correctionVec += CalculatePenetrationVector(collisionRect, collisionTarget.Rect);
+        }
+
+        foreach (var collidingTile in _map.GetIntersectingTiles(collisionRect)) {
+          // TODO fix, tile collisions are broken
+          if (collidingTile.Tile.Has(TileFlags.IsNonTraversable)) {
+            correctionVec += CalculatePenetrationVector(
+                collisionRect, new RectangleF(collidingTile.X, collidingTile.Y, 1, 1));
+          }
         }
 
         // To avoid possible overcorrecting, which might create a jitter effect, we

@@ -153,37 +153,18 @@ namespace TinyGardenGame.Player.Systems {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
       int x = (int)placement.X;
       int y = (int)placement.Y;
-      if (_map.Contains(x, y)) {
-        if (!_map[x, y].Has(TileFlags.ContainsWater) && _map[x, y].Has(TileFlags.CanContainWater)) {
+      if (_map.TryGet(x, y, out var t)) {
+        if (!t.Has(TileFlags.ContainsWater) && t.Has(TileFlags.CanContainWater)) {
           var hasAdjacentWater = false;
-          var waterTiles = MapPlacementHelper.ForEachAdjacentTile(x, y, (_, adjX, adjY) => {
-            if (_map.Contains(adjX, adjY) && _map[adjX, adjY].Has(TileFlags.ContainsWater)) {
+          _map.ForEachAdjacentTile(x, y, (_, adjX, adjY, adjTile) => {
+            if (adjTile.Has(TileFlags.ContainsWater)) {
               hasAdjacentWater = true;
-              return _map[adjX, adjY];
             }
-            return null;
           });
 
           if (hasAdjacentWater) {
-            _map[x, y].Flags |= TileFlags.ContainsWater;
-            // Update non-traversable tiles
-            // TODO: Move this logic to some sort of Map system, where tiles are marked dirty
-            //   and reprocessed.
-            // TODO: This doesn't work.
-            foreach (var tile in waterTiles.Values.Where(tile => tile != null)) {
-              var surroundingWaterTiles = 0;
-              MapPlacementHelper.ForEachAdjacentTile<object>(x, y, (_, adjX, adjY) => {
-                if (_map.TryGet(adjX, adjY, out var adjTile)
-                    && adjTile.Has(TileFlags.ContainsWater)) {
-                  surroundingWaterTiles++;
-                }
-
-                return null;
-              });
-              if (surroundingWaterTiles == 4) {
-                tile.Flags |= TileFlags.IsNonTraversable;
-              }
-            }
+            t.Flags |= TileFlags.ContainsWater;
+            _map.MarkTileDirty(x, y);
           }
         }
       }

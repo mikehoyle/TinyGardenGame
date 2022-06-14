@@ -24,14 +24,14 @@ namespace TinyGardenGame.Core.Systems {
    * 3. Overlay components
    * 4. Game GUI
    */
-  public class RenderSystem : EntityDrawSystem {
+  public class RenderSystem : EntityDrawSystem, IUpdateSystem {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;
     private readonly HeadsUpDisplay _hud;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
-    private readonly MapRenderer _mapRenderer;
+    private readonly MapProcessor _mapProcessor;
 
     public RenderSystem(
         MainGame game,
@@ -44,7 +44,7 @@ namespace TinyGardenGame.Core.Systems {
       _cameraSystem = cameraSystem;
       _hud = hud;
       _spriteBatch = new SpriteBatch(graphicsDevice);
-      _mapRenderer = new MapRenderer(game, _spriteBatch, map);
+      _mapProcessor = new MapProcessor(game, _spriteBatch, map);
     }
     
     public override void Initialize(IComponentMapperService mapperService) {
@@ -65,7 +65,7 @@ namespace TinyGardenGame.Core.Systems {
 
     private void DrawMap() {
       _graphicsDevice.Clear(Color.CornflowerBlue);
-      _mapRenderer.Draw(_cameraSystem.Camera.BoundingRectangle);
+      _mapProcessor.Draw(_cameraSystem.Camera.BoundingRectangle);
     }
 
     private void DrawSprites(GameTime gameTime) {
@@ -103,6 +103,10 @@ namespace TinyGardenGame.Core.Systems {
         drawable.Update(gameTime);
         drawable.Draw(_spriteBatch, absolutePosition);
       }
+    }
+
+    public void Update(GameTime gameTime) {
+      _mapProcessor.Update(gameTime);
     }
   }
 }

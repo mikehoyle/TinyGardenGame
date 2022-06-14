@@ -13,7 +13,7 @@ namespace TinyGardenGame.MapGeneration {
    * Note that map management exists outside of the ECS framework,
    * for now.
    */
-  public class MapRenderer {
+  public class MapProcessor {
     private static int[] SpriteRows = { 0, 16 };
     private static int[] SpriteRowHeights = { 16, 24 };
     
@@ -26,7 +26,7 @@ namespace TinyGardenGame.MapGeneration {
     // 0, 1 (W), 2 (N & W), 2 (S & W), 2 (W & E), 3 (N & W & E), 4 (all)
     private readonly (int X, int Y)[] _waterTextures;
 
-    public MapRenderer(MainGame game, SpriteBatch spriteBatch, GameMap map) {
+    public MapProcessor(MainGame game, SpriteBatch spriteBatch, GameMap map) {
       _spriteBatch = spriteBatch;
       _map = map;
       _tileSpriteSheet = game.Content.Load<Texture2D>(Assets.TileSprites);
@@ -47,14 +47,14 @@ namespace TinyGardenGame.MapGeneration {
     }
 
     public void Draw(RectangleF viewBounds) {
-      ForEachTileInBounds(_map, viewBounds, (x, y, tile) => {
+      _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
         if (_textures.TryGetValue(tile.GetType(), out var textureList)) {
           RenderTile(textureList[tile.TextureVariant], x, y);
         }
       });
       
       // For now, draw water in a second pass so it never is occluded
-      ForEachTileInBounds(_map, viewBounds, (x, y, tile) => {
+      _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
         if (tile.Has(TileFlags.ContainsWater)) {
           RenderWater(x, y);
         }
@@ -86,12 +86,17 @@ namespace TinyGardenGame.MapGeneration {
     private void RenderWater(int x, int y) {
       var totalConnections = 0;
       // Check all adjacent coords
-      var connections = ForEachAdjacentTile(x, y, (direction, adjX, adjY) => {
-        if (_map.Contains(adjX, adjY) && _map[adjX, adjY].Has(TileFlags.ContainsWater)) {
+      Dictionary<Direction, bool> connections = new Dictionary<Direction, bool> {
+          {North, false},
+          {East, false},
+          {South, false},
+          {West, false},
+      };
+      _map.ForEachAdjacentTile(x, y, (direction, adjX, adjY, tile) => {
+        if (tile.Has(TileFlags.ContainsWater)) {
           totalConnections++;
-          return true;
+          connections[direction] = true;
         }
-        return false;
       });
 
       if (totalConnections == 0) {
@@ -135,6 +140,38 @@ namespace TinyGardenGame.MapGeneration {
         RenderTile(_waterTextures[5], x, y, effects);
       } else {
         RenderTile(_waterTextures[6], x, y);
+      }
+    }
+
+    public void Update(GameTime gameTime) {
+      foreach (var dirtyTile in _map.DirtyTiles) {
+        if (_map[dirtyTile.X, dirtyTile.Y].Has(TileFlags.ContainsWater)) {
+          UpdateSurroundingWaterTiles(dirtyTile.X, dirtyTile.Y);
+        }
+      }
+      _map.DirtyTiles.Clear();
+    }
+
+    private void UpdateSurroundingWaterTiles(int dirtyTileX, int dirtyTileY) {
+      // Update non-traversable tiles for dirty tile and all surrounding water tiles
+      // TODO: consider caching this information to prevent taxing extra calculations.
+      MarkWaterNonTraversableIfSurrounded(
+          North /* unused */, dirtyTileX, dirtyTileY, _map[dirtyTileX, dirtyTileY]);
+      _map.ForEachAdjacentTile(dirtyTileX, dirtyTileY, MarkWaterNonTraversableIfSurrounded);
+    }
+
+    private void MarkWaterNonTraversableIfSurrounded(
+        Direction _, int x, int y, AbstractTile tile) {
+      if (tile.Has(TileFlags.ContainsWater)) {
+        var surroundingWaterTiles = 0;
+        _map.ForEachAdjacentTile(x, y, (_, adjX, adjY, adjTile) => {
+          if (adjTile.Has(TileFlags.ContainsWater)) {
+            surroundingWaterTiles++;
+          }
+        });
+        if (surroundingWaterTiles == 4) {
+          tile.Flags |= TileFlags.IsNonTraversable;
+        }
       }
     }
 

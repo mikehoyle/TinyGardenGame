@@ -127,53 +127,5 @@ namespace TinyGardenGame {
     public static Vector2 CenterOfMapTile(Vector2 coords) {
       return CenterOfMapTile(coords.X, coords.Y);
     }
-
-    /**
-     * Executes for each adjacent tile, starting at the East tile and moving clockwise.
-     * Aggregates the results in an array indexed by Direction.
-     */
-    public static Dictionary<Direction, T> ForEachAdjacentTile<T>(
-        int x, int y, Func<Direction, int /* x */, int /* y */, T> action) {
-      var result = new Dictionary<Direction, T>();
-      foreach (var direction in new[] { North, East, South, West }) {
-        result[direction] = action(
-            direction,
-            x + (int)DirectionUnitVectors[direction].X,
-            y + (int)DirectionUnitVectors[direction].Y);
-      }
-
-      return result;
-    }
-
-    public static void ForEachTileInBounds(
-        GameMap map, RectangleF bounds, Action<int /* x*/, int /* y */, AbstractTile> action) {
-      // +Extra margin of error on N & W to accomodate for bounds cutting off mid-tile
-      var leftBound = (int)AbsoluteCoordToMapCoord(bounds.TopLeft).X - 1;
-      var topBound = (int)AbsoluteCoordToMapCoord(bounds.TopRight).Y - 1;
-      var rightBound = (int)AbsoluteCoordToMapCoord(bounds.BottomRight).X;
-      var bottomBound = (int)AbsoluteCoordToMapCoord(bounds.BottomLeft).Y;
-
-      for (var x = leftBound; x <= rightBound; x++) {
-        for (var y = topBound; y <= bottomBound; y++) {
-          if (map.TryGet(x, y, out var tile)) {
-            action(x, y, tile);
-          }
-        }
-      }
-    }
-
-    public static List<(int X, int Y, AbstractTile Tile)> GetIntersectingTiles(
-        GameMap map, System.Drawing.RectangleF target) {
-      var result = new List<(int, int, AbstractTile)>();
-      for (var x = (int)target.Left; x < (int)target.Right; x++) {
-        for (var y = (int)target.Top; y < (int)target.Bottom; y++) {
-          if (map.TryGet(x, y, out var tile)) {
-            result.Add((x, y, tile));
-          }
-        }
-      }
-
-      return result;
-    }
   }
 }

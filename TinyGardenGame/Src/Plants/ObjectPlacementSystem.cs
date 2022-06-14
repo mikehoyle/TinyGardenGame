@@ -57,7 +57,7 @@ namespace TinyGardenGame.Plants {
       UpdateBuildGhost();
 
       if (_gameScreen.Game.Config.ShowBuildHints && HoveredPlant != null) {
-        ForEachTileInBounds(_map, _cameraSystem.Camera.BoundingRectangle, (x, y, tile) => {
+        _map.ForEachTileInBounds(_cameraSystem.Camera.BoundingRectangle, (x, y, tile) => {
           // TODO update cache
         });
       }
@@ -114,7 +114,7 @@ namespace TinyGardenGame.Plants {
         return false;
       }
 
-      foreach (var tile in GetIntersectingTiles(_map, candidateFootprint)) {
+      foreach (var tile in _map.GetIntersectingTiles(candidateFootprint)) {
         if (tile.Tile.Has(TileFlags.ContainsWater)
             || tile.Tile.Has(TileFlags.IsNonTraversable)) {
           return false;
