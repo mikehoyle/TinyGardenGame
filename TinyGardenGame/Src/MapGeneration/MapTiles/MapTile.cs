@@ -8,6 +8,8 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
    * pulled into memory.
    */
   public abstract class MapTile {
+    public const short MaxWaterProximity = 8;
+
     private static readonly BitVector32.Section ContainsWaterMask;
     private static readonly BitVector32.Section CanContainWaterMask;
     private static readonly BitVector32.Section IsNonTraversableMask;
@@ -45,7 +47,7 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
       ContainsWaterMask = BitVector32.CreateSection(1);
       CanContainWaterMask = BitVector32.CreateSection(1, ContainsWaterMask);
       IsNonTraversableMask = BitVector32.CreateSection(1, CanContainWaterMask);
-      WaterProximityMask = BitVector32.CreateSection(8, IsNonTraversableMask);
+      WaterProximityMask = BitVector32.CreateSection(MaxWaterProximity, IsNonTraversableMask);
       TextureVariantMask = BitVector32.CreateSection(4, WaterProximityMask);
     }
 

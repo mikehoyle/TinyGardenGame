@@ -6,9 +6,8 @@ using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.Components {
   /**
-   * Defines a selectable area. Currently only supports adjacent selection.
-   * TODO: Allow much more intuitive diagonal selection as well, and ultimately smart-selection
-   *   based on what's nearby. 
+   * Defines a selectable area.
+   * TODO: Allow smart-selection based on what's nearby. 
    */
   public class SelectionComponent {
     public Vector2 SelectedSquare { get; set; }

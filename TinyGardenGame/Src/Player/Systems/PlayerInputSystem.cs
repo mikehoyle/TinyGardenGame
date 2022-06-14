@@ -147,27 +147,10 @@ namespace TinyGardenGame.Player.Systems {
         _objectPlacementSystem.HoveredPlant = null;
       }
     }
-
-    // TODO: Check whether a tile is unoccupied first.
+    
     private void DigTrench() {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
-      int x = (int)placement.X;
-      int y = (int)placement.Y;
-      if (_map.TryGet(x, y, out var t)) {
-        if (!t.ContainsWater && t.CanContainWater) {
-          var hasAdjacentWater = false;
-          _map.ForEachAdjacentTile(x, y, (_, adjX, adjY, adjTile) => {
-            if (adjTile.ContainsWater) {
-              hasAdjacentWater = true;
-            }
-          });
-
-          if (hasAdjacentWater) {
-            t.ContainsWater = true;
-            _map.MarkTileDirty(x, y);
-          }
-        }
-      }
+      _objectPlacementSystem.AttemptDigTrench((int)placement.X, (int)placement.Y);
     }
 
     void IDisposable.Dispose() {

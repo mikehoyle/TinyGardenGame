@@ -33,7 +33,7 @@ namespace TinyGardenGame.Plants {
     private readonly Config _config;
     private readonly Func<Entity> _createEntity;
 
-    private delegate bool CanGrowOn(MapTile tile);
+    public delegate bool CanGrowOn(MapTile tile);
 
     public PlantEntityFactory(
         Config config,
@@ -53,6 +53,7 @@ namespace TinyGardenGame.Plants {
               FootprintSize = new Vector2(2, 2),
               CollisionFootprint = new RectangleF(0, 0, 2, 2),
               GrowthTimeSecs = 20,
+              GrowthCondition = WaterProximityGrowthCondition(4),
           },
           [TallTestPlant] = new PlantMetadata {
               Sprite = new Sprite(
@@ -60,12 +61,17 @@ namespace TinyGardenGame.Plants {
                   Origin = new Vector2(16, 40),
               },
               GrowthTimeSecs = 25,
+              GrowthCondition = WaterProximityGrowthCondition(3),
           },
       };
     }
 
     public Vector2 GetPlantFootprintSize(PlantType type) {
       return _plantAssets[type].FootprintSize;
+    }
+
+    public CanGrowOn GetPlantGrowthCondition(PlantType type) {
+      return _plantAssets[type].GrowthCondition;
     }
     
     public void CreatePlant(PlantType type, Vector2 position) {
@@ -94,10 +100,10 @@ namespace TinyGardenGame.Plants {
     }
 
     private static CanGrowOn WaterProximityGrowthCondition(int proximity) {
-      return tile => {
-        // TODO
-        return true;
-      };
+      return tile => !tile.ContainsWater
+                     && !tile.IsNonTraversable
+                     && tile.WaterProximity != 0
+                     && tile.WaterProximity <= proximity;
     }
   }
 }

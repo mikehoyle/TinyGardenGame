@@ -18,6 +18,7 @@ namespace TinyGardenGame.Core {
     public const string TestAnimatedPlayerSprite = "sprites/ffa_test_spritesheet";
     public const string InventoryContainer = "sprites/inventory_border";
     public const string InventorySelected = "sprites/inventory_selected";
+    public const string ValidSquare = "sprites/valid_square";
       
     // Fonts
     public const string ConsoleFont = "ConsoleFont";
@@ -31,7 +32,7 @@ namespace TinyGardenGame.Core {
     };
     
     private static readonly List<string> AsepriteAssets = new List<string> {
-        TestAnimatedPlayerSprite, InventoryContainer, InventorySelected,
+        TestAnimatedPlayerSprite, InventoryContainer, InventorySelected, ValidSquare,
     };
 
     private static readonly List<string> SpriteFontAssets = new List<string> { ConsoleFont };

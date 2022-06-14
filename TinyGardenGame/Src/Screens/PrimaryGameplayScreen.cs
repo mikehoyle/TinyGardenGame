@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using MonoGame.Aseprite.Documents;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -36,7 +37,8 @@ namespace TinyGardenGame.Screens {
       var objectPlacementSystem =
           new ObjectPlacementSystem(this, map, collisionSystem, cameraSystem);
       _world = new WorldBuilder()
-          .AddSystem(new RenderSystem(game, GraphicsDevice, cameraSystem, map, _hud))
+          .AddSystem(new RenderSystem(
+              game, GraphicsDevice, cameraSystem, map, objectPlacementSystem.Draw, _hud.Draw))
           .AddSystem(new PlayerInputSystem(game, _hud, map, objectPlacementSystem))
           .AddSystem(objectPlacementSystem)
           .AddSystem(collisionSystem)

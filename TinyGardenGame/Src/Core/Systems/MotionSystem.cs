@@ -41,7 +41,7 @@ namespace TinyGardenGame.Core.Systems {
         var positionComponent = _positionComponentMapper.Get(entity);
         positionComponent.SetPositionFromMotionVector(currentMotion);
         UpdateAnimation(entity, currentMotion);
-        // TODO: These has/gets could be inefficient and warrant another system if there 
+        // OPTIMIZE: These has/gets could be inefficient and warrant another system if there 
         // end up being many moving elements.
         if (_selectionComponentMapper.Has(entity) && _collisionComponentMapper.Has(entity)) {
           _selectionComponentMapper.Get(entity)

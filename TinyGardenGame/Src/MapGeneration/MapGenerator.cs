@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using TinyGardenGame.MapGeneration.MapTiles;
 using static TinyGardenGame.MapPlacementHelper;
 
@@ -41,14 +42,9 @@ namespace TinyGardenGame.MapGeneration {
      */
     private void PostProcess(GameMap map) {
       map.ForEach((x, y, tile) => {
-        var surroundedWaterTiles = 0;
-        map.ForEachAdjacentTile(x, y, (direction, adjX, adjY, adjTile) => {
-          if (adjTile.ContainsWater) {
-            surroundedWaterTiles++;
-          }
-        });
-        if (surroundedWaterTiles == 4) {
-          tile.IsNonTraversable = true;
+        if (tile.ContainsWater) {
+          MapProcessor.ProcessWaterProximity(map, x, y, tile);
+          MapProcessor.MarkWaterNonTraversableIfSurrounded(map, x, y, tile);
         }
       });
     }

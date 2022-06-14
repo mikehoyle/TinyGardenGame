@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Aseprite.Documents;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core;
@@ -7,11 +9,9 @@ using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
-using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.Systems;
 using TinyGardenGame.Screens;
-using static TinyGardenGame.MapPlacementHelper;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace TinyGardenGame.Plants {
@@ -20,7 +20,7 @@ namespace TinyGardenGame.Plants {
    *
    * Also the display of placement overlay 
    */
-  public class ObjectPlacementSystem : EntityUpdateSystem, IDrawSystem, IAttemptPlantPlacement {
+  public class ObjectPlacementSystem : EntityUpdateSystem, IAttemptPlantPlacement {
     private readonly PrimaryGameplayScreen _gameScreen;
     private readonly GameMap _map;
     private readonly IIsSpaceOccupied _isSpaceOccupied;
@@ -30,6 +30,7 @@ namespace TinyGardenGame.Plants {
     private GhostPlant? _ghostPlant;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
+    private readonly Texture2D _validSquareSprite;
 
     // i.e. hovered in inventory, attempting to build
     public PlantType? HoveredPlant { get; set; }
@@ -45,6 +46,8 @@ namespace TinyGardenGame.Plants {
       _cameraSystem = cameraSystem;
       _plantFactory = new PlantEntityFactory(
           gameScreen.Game.Config, gameScreen.Game.Content, CreateEntity);
+      _validSquareSprite = gameScreen.Game.Content.Load<AsepriteDocument>(Assets.ValidSquare)
+          .Texture;
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -94,8 +97,26 @@ namespace TinyGardenGame.Plants {
       }
     }
 
-    public void Draw(GameTime gameTime) {
-      // TODO draw overlay
+    // TODO Cache these values on update to prevent draw lag
+    public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
+      if (!HoveredPlant.HasValue || !_gameScreen.Game.Config.ShowBuildHints) {
+        return;
+      }
+      var growthCondition = _plantFactory.GetPlantGrowthCondition(HoveredPlant.Value);
+      _map.ForEachTileInBounds(_cameraSystem.Camera.BoundingRectangle, (x, y, tile) => {
+        if (growthCondition(tile)) {
+          spriteBatch.Draw(
+              _validSquareSprite,
+              MapPlacementHelper.MapCoordToAbsoluteCoord(new Vector2(x, y)),
+              null,
+              Color.White,
+              rotation: 0f,
+              origin: new Vector2(16, 0),
+              scale: Vector2.One,
+              SpriteEffects.None,
+              0f);
+        }
+      });
     }
     
     public bool AttemptPlantPlacement(PlantType type, Vector2 location) {
@@ -106,6 +127,28 @@ namespace TinyGardenGame.Plants {
       return false;
     }
 
+    public void AttemptDigTrench(int x, int y) {
+      if (!CanDigTrench(x, y)) {
+        return;
+      }
+      
+      if (_map.TryGet(x, y, out var t)) {
+        if (!t.ContainsWater && t.CanContainWater) {
+          var hasAdjacentWater = false;
+          _map.ForEachAdjacentTile(x, y, (_, adjX, adjY, adjTile) => {
+            if (adjTile.ContainsWater) {
+              hasAdjacentWater = true;
+            }
+          });
+
+          if (hasAdjacentWater) {
+            t.ContainsWater = true;
+            _map.MarkTileDirty(x, y);
+          }
+        }
+      }
+    }
+
     private bool CanPlacePlant(PlantType type, Vector2 location) {
       var footprintSize = _plantFactory.GetPlantFootprintSize(type);
       var candidateFootprint = new RectangleF(
@@ -114,12 +157,17 @@ namespace TinyGardenGame.Plants {
         return false;
       }
 
+      var growthCondition = _plantFactory.GetPlantGrowthCondition(type);
       foreach (var tile in _map.GetIntersectingTiles(candidateFootprint)) {
-        if (tile.Tile.ContainsWater || tile.Tile.IsNonTraversable) {
+        if (!growthCondition(tile.Tile)) {
           return false;
         }
       };
       return true;
+    }
+
+    private bool CanDigTrench(int x, int y) {
+      return !_isSpaceOccupied.IsSpaceOccupied(new RectangleF(x, y, 1, 1));
     }
 
     private struct GhostPlant {

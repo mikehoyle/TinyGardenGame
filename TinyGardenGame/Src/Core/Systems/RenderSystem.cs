@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
@@ -11,40 +12,46 @@ using TinyGardenGame.Player.Systems;
 
 namespace TinyGardenGame.Core.Systems {
   public enum RenderLayer {
-    Map = 1,
-    GameObject = 2,
-    Overlay = 3,
-    Menu = 4,
+    GameObject = 1,
+    Overlay = 2,
+    Menu = 3,
   }
   
   /**
    * Render in ordered stages:
-   * 1. Map
-   * 2. Sprites (in order, back to front)
-   * 3. Overlay components
-   * 4. Game GUI
+   * - Map
+   * - Map overlay
+   * - Sprites (in order, back to front)
+   * - Overlay components
+   * - HUD
+   * - Menus
    */
   public class RenderSystem : EntityDrawSystem, IUpdateSystem {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;
-    private readonly HeadsUpDisplay _hud;
+    private readonly RenderSystemDraw _drawMapOverlay;
+    private readonly RenderSystemDraw _drawHud;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private readonly MapProcessor _mapProcessor;
+
+    public delegate void RenderSystemDraw(SpriteBatch spriteBatch, GameTime gameTime);
 
     public RenderSystem(
         MainGame game,
         GraphicsDevice graphicsDevice,
         CameraSystem cameraSystem,
         GameMap map, 
-        HeadsUpDisplay hud)
+        RenderSystemDraw drawMapOverlay,
+        RenderSystemDraw drawHud)
         : base(Aspect.All(typeof(DrawableComponent), typeof(PositionComponent))) {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
-      _hud = hud;
+      _drawMapOverlay = drawMapOverlay;
+      _drawHud = drawHud;
       _spriteBatch = new SpriteBatch(graphicsDevice);
-      _mapProcessor = new MapProcessor(game, _spriteBatch, map);
+      _mapProcessor = new MapProcessor(game, map);
     }
     
     public override void Initialize(IComponentMapperService mapperService) {
@@ -58,21 +65,23 @@ namespace TinyGardenGame.Core.Systems {
           samplerState: SamplerState.PointClamp,
           transformMatrix: _cameraSystem.ViewMatrix);
       DrawMap();
+      _drawMapOverlay(_spriteBatch, gameTime);
       DrawSprites(gameTime);
       _spriteBatch.End();
-      _hud.Draw(_spriteBatch, gameTime);
+      // Hud uses its own batch
+      _drawHud(_spriteBatch, gameTime);
     }
 
     private void DrawMap() {
       _graphicsDevice.Clear(Color.CornflowerBlue);
-      _mapProcessor.Draw(_cameraSystem.Camera.BoundingRectangle);
+      _mapProcessor.Draw(_spriteBatch, _cameraSystem.Camera.BoundingRectangle);
     }
 
     private void DrawSprites(GameTime gameTime) {
       // Sort the entities by depth
       var entities = ActiveEntities.ToList();
       entities.Sort((entity1, entity2) => {
-        // TODO: These lookups should be fast (O(1)), but may still be an efficiency issue
+        // OPTIMIZE: These lookups should be fast (O(1)), but may still be an efficiency issue
         // This is also far more continued sorting than is really necessary, as many of
         // the game components will never move.
         // In short, look here if optimization is needed
