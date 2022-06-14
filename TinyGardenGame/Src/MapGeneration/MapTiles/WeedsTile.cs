@@ -1,7 +1,7 @@
 ﻿namespace TinyGardenGame.MapGeneration.MapTiles {
-  public class WeedsTile : AbstractTile {
+  public class WeedsTile : MapTile {
     public WeedsTile() : base() {
-      Flags |= TileFlags.CanContainWater;
+      CanContainWater = true;
     }
   }
 }

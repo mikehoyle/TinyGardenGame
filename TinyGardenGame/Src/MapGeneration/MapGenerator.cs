@@ -26,13 +26,13 @@ namespace TinyGardenGame.MapGeneration {
     private void AddTestWater(GameMap map) {
       for (var x = 5; x < 8; x++) {
         for (var y = -4; y < 1; y++) {
-          map[x, y].Flags |= TileFlags.ContainsWater;
+          map[x, y].ContainsWater = true;
         }
       }
 
-      map[4, -2].Flags |= TileFlags.ContainsWater;
-      map[7, -5].Flags |= TileFlags.ContainsWater;
-      map[7, -6].Flags |= TileFlags.ContainsWater;
+      map[4, -2].ContainsWater = true;
+      map[7, -5].ContainsWater = true;
+      map[7, -6].ContainsWater = true;
     }
 
     /**
@@ -43,12 +43,12 @@ namespace TinyGardenGame.MapGeneration {
       map.ForEach((x, y, tile) => {
         var surroundedWaterTiles = 0;
         map.ForEachAdjacentTile(x, y, (direction, adjX, adjY, adjTile) => {
-          if (adjTile.Has(TileFlags.ContainsWater)) {
+          if (adjTile.ContainsWater) {
             surroundedWaterTiles++;
           }
         });
         if (surroundedWaterTiles == 4) {
-          tile.Flags |= TileFlags.IsNonTraversable;
+          tile.IsNonTraversable = true;
         }
       });
     }

@@ -5,7 +5,6 @@ using QuadTrees;
 using QuadTrees.QTreeRectF;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.MapGeneration;
-using TinyGardenGame.MapGeneration.MapTiles;
 using RectangleF = System.Drawing.RectangleF;
 
 namespace TinyGardenGame.Core.Systems {
@@ -56,7 +55,7 @@ namespace TinyGardenGame.Core.Systems {
 
         foreach (var collidingTile in _map.GetIntersectingTiles(collisionRect)) {
           // TODO fix, tile collisions are broken
-          if (collidingTile.Tile.Has(TileFlags.IsNonTraversable)) {
+          if (collidingTile.Tile.IsNonTraversable) {
             correctionVec += CalculatePenetrationVector(
                 collisionRect, new RectangleF(collidingTile.X, collidingTile.Y, 1, 1));
           }

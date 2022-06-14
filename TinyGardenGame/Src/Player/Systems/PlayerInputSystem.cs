@@ -154,16 +154,16 @@ namespace TinyGardenGame.Player.Systems {
       int x = (int)placement.X;
       int y = (int)placement.Y;
       if (_map.TryGet(x, y, out var t)) {
-        if (!t.Has(TileFlags.ContainsWater) && t.Has(TileFlags.CanContainWater)) {
+        if (!t.ContainsWater && t.CanContainWater) {
           var hasAdjacentWater = false;
           _map.ForEachAdjacentTile(x, y, (_, adjX, adjY, adjTile) => {
-            if (adjTile.Has(TileFlags.ContainsWater)) {
+            if (adjTile.ContainsWater) {
               hasAdjacentWater = true;
             }
           });
 
           if (hasAdjacentWater) {
-            t.Flags |= TileFlags.ContainsWater;
+            t.ContainsWater = true;
             _map.MarkTileDirty(x, y);
           }
         }

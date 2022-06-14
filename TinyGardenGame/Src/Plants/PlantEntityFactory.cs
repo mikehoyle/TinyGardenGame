@@ -9,9 +9,8 @@ using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
-using TinyGardenGame.Core.Systems;
+using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants.Components;
-using TinyGardenGame.Player.Systems;
 using static TinyGardenGame.Plants.PlantType;
 
 namespace TinyGardenGame.Plants {
@@ -26,11 +25,15 @@ namespace TinyGardenGame.Plants {
       public Vector2 FootprintSize { get; set; } = Vector2.One;
       public RectangleF CollisionFootprint { get; set; } = new RectangleF(0, 0, 1, 1);
       public double GrowthTimeSecs { get; set; }
+      
+      public CanGrowOn GrowthCondition { get; set; }
     }
 
     private readonly Dictionary<PlantType, PlantMetadata> _plantAssets;
     private readonly Config _config;
     private readonly Func<Entity> _createEntity;
+
+    private delegate bool CanGrowOn(MapTile tile);
 
     public PlantEntityFactory(
         Config config,
@@ -88,6 +91,13 @@ namespace TinyGardenGame.Plants {
           .AttachAnd(new DrawableComponent(sprite))
           .AttachAnd(new PositionComponent(position, footprintSize: metadata.FootprintSize))
           .Id;
+    }
+
+    private static CanGrowOn WaterProximityGrowthCondition(int proximity) {
+      return tile => {
+        // TODO
+        return true;
+      };
     }
   }
 }

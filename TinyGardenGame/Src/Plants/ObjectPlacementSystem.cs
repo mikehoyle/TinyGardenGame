@@ -115,8 +115,7 @@ namespace TinyGardenGame.Plants {
       }
 
       foreach (var tile in _map.GetIntersectingTiles(candidateFootprint)) {
-        if (tile.Tile.Has(TileFlags.ContainsWater)
-            || tile.Tile.Has(TileFlags.IsNonTraversable)) {
+        if (tile.Tile.ContainsWater || tile.Tile.IsNonTraversable) {
           return false;
         }
       };

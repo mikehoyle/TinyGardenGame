@@ -1,5 +1,17 @@
 #+TITLE Tiny Garden Game Journal
 
+* 06/13/2022
+  Continued procrastination through refactorization with slow solid progres. I
+  added simple plant placement (with no real meaning to adding them), and trench
+  digging.
+
+  I refactored tile flags to include a water proximity to more easily determine
+  specific plant placement.
+
+  I feel like there were many other small things, but they escape me. More
+  attention was given to collisions once again (to remove map collisionsn from
+  the quadtree, which was silly in the first place).
+
 * 06/06/2022
   While I was wanting to move on to more functional game features, I couldn't
   really get over how unappealing it was having the main character be a hovering

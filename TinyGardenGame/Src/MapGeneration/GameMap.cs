@@ -11,7 +11,7 @@ namespace TinyGardenGame.MapGeneration {
     public List<(int X, int Y)> DirtyTiles { get; }
     
     // Oh my memory consumption...
-    public AbstractTile?[,] Map { get; }
+    public MapTile?[,] Map { get; }
     public Point OriginTile { get; }
 
     public RectangleF Bounds { get; }
@@ -24,7 +24,7 @@ namespace TinyGardenGame.MapGeneration {
           && Map[translatedX,translatedY] != null;
     }
 
-    public bool TryGet(int x, int y, out AbstractTile tile) {
+    public bool TryGet(int x, int y, out MapTile tile) {
       if (Contains(x, y)) {
         tile = this[x, y];
         return true;
@@ -34,14 +34,14 @@ namespace TinyGardenGame.MapGeneration {
       return false;
     }
     
-    public AbstractTile? this[int x, int y] {
+    public MapTile? this[int x, int y] {
       get => Map[x + OriginTile.X, y + OriginTile.Y];
       set => Map[x + OriginTile.X, y + OriginTile.Y] = value;
     }
 
     public GameMap(int width, int height) {
       DirtyTiles = new List<(int X, int Y)>();
-      Map = new AbstractTile?[width, height];
+      Map = new MapTile?[width, height];
       OriginTile = new Point(width / 2, height / 2);
       Bounds = new RectangleF(OriginTile.X * -1, OriginTile.Y * -1, width, height);
     }
@@ -50,7 +50,7 @@ namespace TinyGardenGame.MapGeneration {
       DirtyTiles.Add((x, y));
     }
 
-    public void ForEach(Action<int, int, AbstractTile> action) {
+    public void ForEach(Action<int, int, MapTile> action) {
       for (var x = 0; x < Map.GetLength(0); x++) {
         for (var y = 0; y < Map.GetLength(1); y++) {
           if (Map[x, y] != null) {
@@ -61,7 +61,7 @@ namespace TinyGardenGame.MapGeneration {
     }
 
     public void ForEachTileInBounds(
-        RectangleF bounds, Action<int, int, AbstractTile> action) {
+        RectangleF bounds, Action<int, int, MapTile> action) {
       // +Extra margin of error on N & W to accomodate for bounds cutting off mid-tile
       var leftBound = (int)MapPlacementHelper.AbsoluteCoordToMapCoord(bounds.TopLeft).X - 1;
       var topBound = (int)MapPlacementHelper.AbsoluteCoordToMapCoord(bounds.TopRight).Y - 1;
@@ -77,9 +77,9 @@ namespace TinyGardenGame.MapGeneration {
       }
     }
 
-    public List<(int X, int Y, AbstractTile Tile)> GetIntersectingTiles(
+    public List<(int X, int Y, MapTile Tile)> GetIntersectingTiles(
         System.Drawing.RectangleF target) {
-      var result = new List<(int, int, AbstractTile)>();
+      var result = new List<(int, int, MapTile)>();
       for (var x = Convert.ToInt32(Math.Floor(target.X)); x < target.Right; x++) {
         for (var y = Convert.ToInt32(Math.Floor(target.Y)); y < target.Bottom; y++) {
           if (TryGet(x, y, out var tile)) {
@@ -96,7 +96,7 @@ namespace TinyGardenGame.MapGeneration {
      * Aggregates the results in an array indexed by Direction.
      */
     public void ForEachAdjacentTile(
-        int x, int y, Action<Direction, int /* x */, int /* y */, AbstractTile> action) {
+        int x, int y, Action<Direction, int /* x */, int /* y */, MapTile> action) {
       foreach (var direction in new[] {
                    Direction.North, Direction.East, Direction.South, Direction.West}) {
         var adjX = x + (int)DirectionUnitVectors[direction].X;
