@@ -1,5 +1,12 @@
 #+TITLE Tiny Garden Game Journal
 
+* 06/14/2022
+  Another quick idea dump:
+  - Birds that kill pests but require a perch to be built (reeds + ?) and a
+    fruit bush to feed them
+  - Scarecrows
+  - Vining plants that need nearby structure to grow.
+
 * 06/13/2022
   Continued procrastination through refactorization with slow solid progres. I
   added simple plant placement (with no real meaning to adding them), and trench

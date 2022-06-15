@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Aseprite.Documents;
+using MonoGame.Aseprite.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
-using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants.Components;
 using static TinyGardenGame.Plants.PlantType;
@@ -16,17 +17,28 @@ using static TinyGardenGame.Plants.PlantType;
 namespace TinyGardenGame.Plants {
   public enum PlantType {
     WideTestPlant,
-    TallTestPlant,
+    Marigold,
   }
   
   public class PlantEntityFactory {
+    
     private class PlantMetadata {
-      public Sprite Sprite { get; set; }
+      private int _growthStages;
+      public Func<AnimatedSprite> Sprite { get; set; }
       public Vector2 FootprintSize { get; set; } = Vector2.One;
       public RectangleF CollisionFootprint { get; set; } = new RectangleF(0, 0, 1, 1);
       public double GrowthTimeSecs { get; set; }
       
       public CanGrowOn GrowthCondition { get; set; }
+
+      public int GrowthStages {
+        get {
+          if (_growthStages == 0) {
+            _growthStages = GetGrowthStages(Sprite());
+          }
+          return _growthStages;
+        }
+      }
     }
 
     private readonly Dictionary<PlantType, PlantMetadata> _plantAssets;
@@ -37,31 +49,19 @@ namespace TinyGardenGame.Plants {
 
     public PlantEntityFactory(
         Config config,
-        ContentManager contentManager,
+        ContentManager content,
         Func<Entity> createEntity) {
       _config = config;
       _createEntity = createEntity;
-      var spriteSheet = contentManager.Load<Texture2D>(Assets.TestPlantSprites);
       _plantAssets = new Dictionary<PlantType, PlantMetadata> {
-          [WideTestPlant] = new PlantMetadata {
-              Sprite = new Sprite(
-                  new TextureRegion2D(spriteSheet, 0, 0, 64, 52)) {
-                  // TODO create helpers for these magic numbers 
-                  // This is the NW corner of the would-be north-west square
-                  Origin = new Vector2(32, 20),
+          [Marigold] = new PlantMetadata {
+              Sprite = () => new AnimatedSprite(
+                  content.Load<AsepriteDocument>(Assets.FirstFlower)) {
+                  Origin = new Vector2(16, 32),
               },
-              FootprintSize = new Vector2(2, 2),
-              CollisionFootprint = new RectangleF(0, 0, 2, 2),
-              GrowthTimeSecs = 20,
-              GrowthCondition = WaterProximityGrowthCondition(4),
-          },
-          [TallTestPlant] = new PlantMetadata {
-              Sprite = new Sprite(
-                  new TextureRegion2D(spriteSheet, 96, 0, 32, 56)) {
-                  Origin = new Vector2(16, 40),
-              },
-              GrowthTimeSecs = 25,
+              GrowthTimeSecs = 45,
               GrowthCondition = WaterProximityGrowthCondition(3),
+              CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
           },
       };
     }
@@ -76,11 +76,15 @@ namespace TinyGardenGame.Plants {
     
     public void CreatePlant(PlantType type, Vector2 position) {
       var metadata = _plantAssets[type];
+      var drawable = new DrawableComponent(new AnimatedSpriteDrawable(metadata.Sprite()));
+      var growth = new GrowthComponent(
+          TimeSpan.FromSeconds(metadata.GrowthTimeSecs), metadata.GrowthStages);
+      drawable.SetAnimation(growth.CurrentGrowthAnimationName());
       _createEntity()
-          .AttachAnd(new DrawableComponent(metadata.Sprite))
+          .AttachAnd(drawable)
+          .AttachAnd(growth)
           .AttachAnd(new PositionComponent(position, footprintSize: metadata.FootprintSize))
-          .AttachAnd(new CollisionFootprintComponent(metadata.CollisionFootprint))
-          .AttachAnd(new GrowthComponent(TimeSpan.FromSeconds(metadata.GrowthTimeSecs)));
+          .AttachAnd(new CollisionFootprintComponent(metadata.CollisionFootprint));
     }
 
     /**
@@ -88,14 +92,16 @@ namespace TinyGardenGame.Plants {
      * @returns entity id of the new entity.
      */
     public int CreateGhostPlant(PlantType type, Vector2 position) {
-      var metadata = _plantAssets[type];
-      var sprite = new Sprite(metadata.Sprite.TextureRegion) {
-          Origin = metadata.Sprite.Origin,
+      var originalSprite = _plantAssets[type].Sprite();
+      var sprite = new MonoGame.Extended.Sprites.Sprite(
+          new TextureRegion2D(originalSprite.Texture, originalSprite.Frames[0].Bounds)) {
+          Origin = originalSprite.Origin,
           Alpha = _config.BuildGhostOpacity,
       };
       return _createEntity()
           .AttachAnd(new DrawableComponent(sprite))
-          .AttachAnd(new PositionComponent(position, footprintSize: metadata.FootprintSize))
+          .AttachAnd(new PositionComponent(
+              position, footprintSize: _plantAssets[type].FootprintSize))
           .Id;
     }
 
@@ -104,6 +110,16 @@ namespace TinyGardenGame.Plants {
                      && !tile.IsNonTraversable
                      && tile.WaterProximity != 0
                      && tile.WaterProximity <= proximity;
+    }
+
+    private static int GetGrowthStages(AnimatedSprite sprite) {
+      int stages = 1;
+      while (sprite.Animations.ContainsKey(
+                 $"{GrowthComponent.GrowthAnimationPrefix}{stages + 1}")) {
+        stages++;
+      }
+
+      return stages;
     }
   }
 }

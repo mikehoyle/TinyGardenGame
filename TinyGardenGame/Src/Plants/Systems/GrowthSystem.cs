@@ -44,6 +44,7 @@ namespace TinyGardenGame.Plants.Systems {
       foreach (var entity in ActiveEntities) {
         var growthComponent = _growthComponentMapper.Get(entity); 
         if (growthComponent.IncrementGrowth(gameTime.ElapsedGameTime)) {
+          SetAnimation(entity, growthComponent);
           _growthComponentMapper.Delete(entity);
           if (_progressBars.ContainsKey(entity)) {
             DestroyEntity(_progressBars[entity]);
@@ -51,13 +52,21 @@ namespace TinyGardenGame.Plants.Systems {
           }
           continue;
         }
-        
+
+        SetAnimation(entity, growthComponent);
         if (!_progressBars.ContainsKey(entity)) {
           _progressBars[entity] = CreateProgressBar(entity, growthComponent).Id;
         }
 
         ((ProgressBarDrawable)_drawableComponentMapper.Get(_progressBars[entity]).Drawable)
             .ProgressPercentage = growthComponent.CurrentGrowthPercentage;
+      }
+    }
+
+    private void SetAnimation(int entity, GrowthComponent growthComponent) {
+      if (_drawableComponentMapper.Has(entity)) {
+        var drawable = _drawableComponentMapper.Get(entity);
+        drawable.SetAnimation(growthComponent.CurrentGrowthAnimationName());
       }
     }
 

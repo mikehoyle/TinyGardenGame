@@ -12,13 +12,15 @@ namespace TinyGardenGame.Core {
       
     // Sprites
     public const string TestPlantSprites = "sprites/test_plant_sprites";
-    public const string TestPlayerSprite = "sprites/Old hero";
     
     // Aseprite spritesheets
     public const string TestAnimatedPlayerSprite = "sprites/ffa_test_spritesheet";
     public const string InventoryContainer = "sprites/inventory_border";
     public const string InventorySelected = "sprites/inventory_selected";
     public const string ValidSquare = "sprites/valid_square";
+    
+    // Aseprite spritesheets: Plants
+    public const string FirstFlower = "sprites/first_flower";
       
     // Fonts
     public const string ConsoleFont = "ConsoleFont";
@@ -28,11 +30,11 @@ namespace TinyGardenGame.Core {
     
     
     private static readonly List<string> Texture2dAssets = new List<string> {
-            TileSprites, TestPlantSprites, TestPlayerSprite,
+            TileSprites, TestPlantSprites, 
     };
     
     private static readonly List<string> AsepriteAssets = new List<string> {
-        TestAnimatedPlayerSprite, InventoryContainer, InventorySelected, ValidSquare,
+        TestAnimatedPlayerSprite, InventoryContainer, InventorySelected, ValidSquare, FirstFlower,
     };
 
     private static readonly List<string> SpriteFontAssets = new List<string> { ConsoleFont };

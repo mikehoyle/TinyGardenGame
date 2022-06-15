@@ -2,13 +2,18 @@
 
 namespace TinyGardenGame.Plants.Components {
   public class GrowthComponent {
+    public const string GrowthAnimationPrefix = "growth";
+    private const string GrownPostfix = "_full";
+    
     // Total time to grow, in seconds
     public TimeSpan GrowthTime { get; set; }
+    public int GrowthStages { get; }
     public double CurrentGrowthPercentage { get; set; }
     public bool IsFullyGrown { get; set; } = false;
 
-    public GrowthComponent(TimeSpan growthTime) {
+    public GrowthComponent(TimeSpan growthTime, int growthStages = 1) {
       GrowthTime = growthTime;
+      GrowthStages = growthStages;
     }
 
     /**
@@ -23,6 +28,17 @@ namespace TinyGardenGame.Plants.Components {
       }
       
       return IsFullyGrown;
+    }
+
+    public string CurrentGrowthAnimationName() {
+      if (IsFullyGrown) {
+        return $"{GrowthAnimationPrefix}{GrownPostfix}";
+      }
+
+      // +1 because sprite animations are 1-indexed
+      var currentStage = Convert.ToInt32(
+          Math.Floor(CurrentGrowthPercentage * GrowthStages)) + 1;
+      return $"{GrowthAnimationPrefix}{currentStage}";
     }
   }
 }

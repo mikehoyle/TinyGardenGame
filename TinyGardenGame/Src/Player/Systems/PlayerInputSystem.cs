@@ -134,7 +134,7 @@ namespace TinyGardenGame.Player.Systems {
 
     private void PlacePlant() {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
-      if (_objectPlacementSystem.AttemptPlantPlacement(PlantType.TallTestPlant, placement)) {
+      if (_objectPlacementSystem.AttemptPlantPlacement(PlantType.Marigold, placement)) {
         _objectPlacementSystem.HoveredPlant = null;
       }
     }
@@ -142,7 +142,7 @@ namespace TinyGardenGame.Player.Systems {
     private void ToggleHoverPlant() {
       if (_objectPlacementSystem.HoveredPlant == null) {
         // TODO use inventory to actually select plant
-        _objectPlacementSystem.HoveredPlant = PlantType.TallTestPlant;
+        _objectPlacementSystem.HoveredPlant = PlantType.Marigold;
       } else {
         _objectPlacementSystem.HoveredPlant = null;
       }
