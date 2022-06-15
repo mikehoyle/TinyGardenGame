@@ -78,7 +78,8 @@ namespace TinyGardenGame.Plants.Systems {
           growthComponent.CurrentGrowthPercentage);
       return CreateEntity()
           .AttachAnd(new DrawableComponent(progressBarDrawable, RenderLayer.Overlay))
-          .AttachAnd(new PositionComponent(targetPlacement.Center));
+          .AttachAnd(new PositionComponent(
+              targetPlacement.Position + targetPlacement.FootprintSizeInTiles));
     }
   }
 }
