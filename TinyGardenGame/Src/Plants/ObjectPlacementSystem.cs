@@ -46,7 +46,7 @@ namespace TinyGardenGame.Plants {
       _cameraSystem = cameraSystem;
       _plantFactory = new PlantEntityFactory(
           gameScreen.Game.Config, gameScreen.Game.Content, CreateEntity);
-      _validSquareSprite = gameScreen.Game.Content.Load<AsepriteDocument>(Assets.ValidSquare)
+      _validSquareSprite = gameScreen.Game.Content.Load<AsepriteDocument>(Assets.ValidSquare.Path)
           .Texture;
     }
 
@@ -108,10 +108,10 @@ namespace TinyGardenGame.Plants {
           spriteBatch.Draw(
               _validSquareSprite,
               MapPlacementHelper.MapCoordToAbsoluteCoord(new Vector2(x, y)),
-              null,
+              Assets.ValidSquare[SpriteName.ValidTileSprite].Region,
               Color.White,
               rotation: 0f,
-              origin: new Vector2(16, 0),
+              origin: Assets.ValidSquare[SpriteName.ValidTileSprite].Origin,
               scale: Vector2.One,
               SpriteEffects.None,
               0f);
