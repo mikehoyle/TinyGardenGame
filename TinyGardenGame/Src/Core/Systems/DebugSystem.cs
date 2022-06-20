@@ -5,6 +5,7 @@ using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Player.Components;
 
 namespace TinyGardenGame.Core.Systems {
@@ -46,11 +47,8 @@ namespace TinyGardenGame.Core.Systems {
 
     private void LoadSelectionIndicator() {
       if (_game.Config.Debug.ShowSelectionIndicator && PlayerEntity != null) {
-        var tileSprites = _game.Content.Load<Texture2D>(Assets.TileSprites);
         var playerSelection = _selectionComponent.Get(PlayerEntity);
-        var sprite = new Sprite(new TextureRegion2D(tileSprites, 0, 0, 32, 16)) {
-            Origin = new Vector2(16, 0),
-        };
+        var sprite = _game.Content.LoadSprite(SpriteName.SelectedTileOverlay);
         _selectionIndicatorEntity
             .AttachAnd(new DrawableComponent(sprite, RenderLayer.Overlay))
             .Attach(new PositionComponent(playerSelection.SelectedSquare));

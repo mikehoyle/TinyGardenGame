@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using TinyGardenGame.Core;
 
 namespace TinyGardenGame.MapGeneration.MapTiles {
   /**
@@ -17,6 +18,8 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
     private static readonly BitVector32.Section TextureVariantMask;
     
     private BitVector32 _metadata;
+
+    public abstract SpriteName Sprite { get; }
 
     public bool ContainsWater {
       get => GetFlag(ContainsWaterMask);

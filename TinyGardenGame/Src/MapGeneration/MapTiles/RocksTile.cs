@@ -1,22 +1,22 @@
 ﻿using TinyGardenGame.Core;
 
 namespace TinyGardenGame.MapGeneration.MapTiles {
-  public class WeedsTile : MapTile {
+  public class RocksTile : MapTile {
     public override SpriteName Sprite {
       get {
         switch (TextureVariant) {
           case 1:
           default:
-            return SpriteName.Weeds1;
+            return SpriteName.Rocks1;
           case 2:
-            return SpriteName.Weeds2;
+            return SpriteName.Rocks2;
           case 3:
-            return SpriteName.Weeds3;
+            return SpriteName.Rocks3;
         }
       }
     }
     
-    public WeedsTile() : base() {
+    public RocksTile() : base() {
       CanContainWater = true;
     }
   }

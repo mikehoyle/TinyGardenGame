@@ -7,6 +7,7 @@ using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
 using static TinyGardenGame.MapPlacementHelper;
 using static TinyGardenGame.MapPlacementHelper.Direction;
+using static TinyGardenGame.Core.SpriteName;
 
 namespace TinyGardenGame.MapGeneration {
   /**
@@ -14,41 +15,17 @@ namespace TinyGardenGame.MapGeneration {
    * for now.
    */
   public class MapProcessor {
-    private static int[] SpriteRows = { 0, 16 };
-    private static int[] SpriteRowHeights = { 16, 24 };
-    
+    private readonly MainGame _game;
     private readonly GameMap _map;
-    private readonly Texture2D _tileSpriteSheet;
-    // Maps types to their options in the spritesheet
-    private readonly Dictionary<Type, (int X, int Y)[]> _textures;
-    // Seven water textures, by connection:
-    // 0, 1 (W), 2 (N & W), 2 (S & W), 2 (W & E), 3 (N & W & E), 4 (all)
-    private readonly (int X, int Y)[] _waterTextures;
 
     public MapProcessor(MainGame game, GameMap map) {
+      _game = game;
       _map = map;
-      _tileSpriteSheet = game.Content.Load<Texture2D>(Assets.TileSprites);
-      _textures = new Dictionary<Type, (int X, int Y)[]>();
-      _waterTextures = new (int X, int Y)[7];
-      BuildTexturesMap();
-    }
-
-    private void BuildTexturesMap() {
-      _textures.Add(
-          typeof(WeedsTile), new []{ (0, 1) }
-      );
-
-      var waterTextureStartX = 2;
-      for (var i = 0; i < 7; i++) {
-        _waterTextures[i] = (i + waterTextureStartX, 0);
-      }
     }
 
     public void Draw(SpriteBatch spriteBatch, RectangleF viewBounds) {
       _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
-        if (_textures.TryGetValue(tile.GetType(), out var textureList)) {
-          RenderTile(spriteBatch, textureList[tile.TextureVariant], x, y);
-        }
+        RenderTile(spriteBatch, tile.Sprite, x, y);
       });
       
       // For now, draw water in a second pass so it never is occluded
@@ -61,18 +38,19 @@ namespace TinyGardenGame.MapGeneration {
 
     private void RenderTile(
         SpriteBatch spriteBatch,
-        (int X, int Y) spriteSheetCoords,
+        SpriteName spriteName,
         int x,
         int y,
         SpriteEffects effects = SpriteEffects.None) {
+      var sprite = _game.Content.LoadAnimated(spriteName);
       // TODO create a helper for this ridiculously complicated call
       spriteBatch.Draw(
-          _tileSpriteSheet,
+          sprite.Texture,
           MapCoordToAbsoluteCoord(new Vector2(x, y)),
-          GetBounds(spriteSheetCoords.X, spriteSheetCoords.Y),
+          sprite.SourceRectangle,
           Color.White,
           rotation: 0f,
-          origin: GetSpriteOrigin(spriteSheetCoords.Y),
+          sprite.Origin,
           scale: Vector2.One,
           effects,
           0f);
@@ -99,7 +77,7 @@ namespace TinyGardenGame.MapGeneration {
       });
 
       if (totalConnections == 0) {
-        RenderTile(spriteBatch, _waterTextures[0], x, y);
+        RenderTile(spriteBatch, Water0, x, y);
       } else if (totalConnections == 1) {
         var effects = SpriteEffects.None;
         if (connections[North] || connections[East]) {
@@ -109,24 +87,24 @@ namespace TinyGardenGame.MapGeneration {
         if (connections[East] || connections[South]) {
           effects |= SpriteEffects.FlipVertically;
         }
-        RenderTile(spriteBatch, _waterTextures[1], x, y, effects);
+        RenderTile(spriteBatch, Water1, x, y, effects);
       } else if (totalConnections == 2) {
         // Corner cases
         if (connections[North] && connections[East]) {
-          RenderTile(spriteBatch, _waterTextures[3], x, y, SpriteEffects.FlipHorizontally);
+          RenderTile(spriteBatch, Water2Sw, x, y, SpriteEffects.FlipHorizontally);
         } else if (connections[East] && connections[South]) {
-          RenderTile(spriteBatch, _waterTextures[2], x, y, SpriteEffects.FlipVertically);
+          RenderTile(spriteBatch, Water2Nw, x, y, SpriteEffects.FlipVertically);
         } else if (connections[South] && connections[West]) {
-          RenderTile(spriteBatch, _waterTextures[3], x, y);
+          RenderTile(spriteBatch, Water2Sw, x, y);
         } else if (connections[West] && connections[North]) {
-          RenderTile(spriteBatch, _waterTextures[2], x, y);
+          RenderTile(spriteBatch, Water2Nw, x, y);
         }
 
         // Straight across cases
         else if (connections[North] && connections[South]) {
-          RenderTile(spriteBatch, _waterTextures[4], x, y, SpriteEffects.FlipHorizontally);
+          RenderTile(spriteBatch, Water2Ew, x, y, SpriteEffects.FlipHorizontally);
         } else if (connections[East] && connections[West]) {
-          RenderTile(spriteBatch, _waterTextures[4], x, y);
+          RenderTile(spriteBatch, Water2Ew, x, y);
         }
       } else if (totalConnections == 3) {
         var effects = SpriteEffects.None;
@@ -136,9 +114,9 @@ namespace TinyGardenGame.MapGeneration {
         if (!connections[North] || !connections[West]) {
           effects |= SpriteEffects.FlipVertically;
         }
-        RenderTile(spriteBatch, _waterTextures[5], x, y, effects);
+        RenderTile(spriteBatch, Water3, x, y, effects);
       } else {
-        RenderTile(spriteBatch, _waterTextures[6], x, y);
+        RenderTile(spriteBatch, Water4, x, y);
       }
     }
 
@@ -198,26 +176,6 @@ namespace TinyGardenGame.MapGeneration {
           }
         }
       }
-    }
-
-    /**
-     * x & y are row/column coords on the spritesheet
-     */
-    private Rectangle GetBounds(int x, int y) {
-      return new Rectangle(
-          x * TileWidthPixels,
-          SpriteRows[y],
-          TileWidthPixels,
-          SpriteRowHeights[y]);
-    }
-
-    /**
-     * x & y are row/column coords on the spritesheet
-     */
-    private Vector2 GetSpriteOrigin(int y) {
-      return new Vector2(
-          TileWidthPixels / 2 /* intentional truncation */,
-          SpriteRowHeights[y] - TileHeightPixels);
     }
   }
 }

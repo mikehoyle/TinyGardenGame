@@ -52,7 +52,7 @@ namespace TinyGardenGame.Screens {
     }
     
     public override void LoadContent() {
-      var playerSprite = Assets.Load(Game.Content, Assets.PlayerAsset, SpriteName.PlayerSprite);
+      var playerSprite = Game.Content.LoadAnimated(SpriteName.PlayerSprite);
       PlayerEntity.Attach(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)));
       _debugSystem.LoadContent();
       base.LoadContent();

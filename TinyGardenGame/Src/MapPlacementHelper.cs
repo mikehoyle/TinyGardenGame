@@ -128,4 +128,14 @@ namespace TinyGardenGame {
       return CenterOfMapTile(coords.X, coords.Y);
     }
   }
+
+  public static class RectangleExtensions {
+    public static Rectangle ToXna(this System.Drawing.Rectangle rect) {
+      return new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+    }
+    
+    public static System.Drawing.Rectangle ToDrawing(this Rectangle rect) {
+      return new System.Drawing.Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+    }
+  }
 }

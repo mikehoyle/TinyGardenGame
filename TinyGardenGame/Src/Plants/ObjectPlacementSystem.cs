@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Aseprite.Documents;
+using MonoGame.Aseprite.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core;
@@ -30,7 +30,7 @@ namespace TinyGardenGame.Plants {
     private GhostPlant? _ghostPlant;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
-    private readonly Texture2D _validSquareSprite;
+    private readonly AnimatedSprite _validSquareSprite;
 
     // i.e. hovered in inventory, attempting to build
     public PlantType? HoveredPlant { get; set; }
@@ -46,8 +46,8 @@ namespace TinyGardenGame.Plants {
       _cameraSystem = cameraSystem;
       _plantFactory = new PlantEntityFactory(
           gameScreen.Game.Config, gameScreen.Game.Content, CreateEntity);
-      _validSquareSprite = gameScreen.Game.Content.Load<AsepriteDocument>(Assets.ValidSquare.Path)
-          .Texture;
+      _validSquareSprite = gameScreen.Game.Content.LoadAnimated(
+          SpriteName.ValidTileSprite);
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -106,12 +106,12 @@ namespace TinyGardenGame.Plants {
       _map.ForEachTileInBounds(_cameraSystem.Camera.BoundingRectangle, (x, y, tile) => {
         if (growthCondition(tile)) {
           spriteBatch.Draw(
-              _validSquareSprite,
+              _validSquareSprite.Texture,
               MapPlacementHelper.MapCoordToAbsoluteCoord(new Vector2(x, y)),
-              Assets.ValidSquare[SpriteName.ValidTileSprite].Region,
+              _validSquareSprite.SourceRectangle,
               Color.White,
               rotation: 0f,
-              origin: Assets.ValidSquare[SpriteName.ValidTileSprite].Origin,
+              _validSquareSprite.Origin,
               scale: Vector2.One,
               SpriteEffects.None,
               0f);

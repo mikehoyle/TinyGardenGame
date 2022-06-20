@@ -55,8 +55,7 @@ namespace TinyGardenGame.Plants {
       _createEntity = createEntity;
       _plantAssets = new Dictionary<PlantType, PlantMetadata> {
           [Marigold] = new PlantMetadata {
-              Sprite = () => Assets.Load(
-                  content, Assets.SmallFlowersAsset, SpriteName.MarigoldSprite),
+              Sprite = () => content.LoadAnimated(SpriteName.MarigoldSprite),
               GrowthTimeSecs = 45,
               GrowthCondition = WaterProximityGrowthCondition(3),
               CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
