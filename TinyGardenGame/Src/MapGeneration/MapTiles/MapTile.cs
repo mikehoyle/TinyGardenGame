@@ -65,5 +65,9 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
     private void SetFlag(BitVector32.Section section, bool value) {
       _metadata[section] = Convert.ToInt32(value);
     }
+
+    protected void SetRandomTextureVariant(int numVariants) {
+      TextureVariant = new Random().Next(1, numVariants + 1);
+    }
   }
 }

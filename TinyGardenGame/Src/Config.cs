@@ -11,6 +11,10 @@
     public readonly bool ShowBuildGhost = true;
     public readonly float BuildGhostOpacity = 0.45f;
     public readonly DebugConfig Debug = new DebugConfig();
+
+    // Map Generation
+    public readonly int MapGenerationSeed = 42;
+    public readonly int OceanBorderWidth = 3;
   }
 
   /**

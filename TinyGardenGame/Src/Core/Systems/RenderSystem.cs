@@ -80,6 +80,7 @@ namespace TinyGardenGame.Core.Systems {
     private void DrawSprites(GameTime gameTime) {
       // Sort the entities by depth
       var entities = ActiveEntities.ToList();
+      // TODO: Fix this inconsistent sort
       entities.Sort((entity1, entity2) => {
         // OPTIMIZE: These lookups should be fast (O(1)), but may still be an efficiency issue
         // This is also far more continued sorting than is really necessary, as many of
@@ -96,13 +97,17 @@ namespace TinyGardenGame.Core.Systems {
         // This is only sound given some assumptions about the entities
         // (that they don't overlap, and take up about a tile). Those may break in the future
         // we shall see.
+        var pos1 = _positionComponentMapper.Get(entity1).Position;
         var depth1 = _positionComponentMapper.Get(entity1).EffectiveRenderDepth;
-        var depth2 = _positionComponentMapper.Get(entity2).Position;
-        if (depth1.X == depth2.X || depth1.Y == depth2.Y) {
+        var pos2 = _positionComponentMapper.Get(entity2).Position;
+        if (pos1 == pos2) {
+          return 0;
+        }
+        if (depth1.X == pos2.X || depth1.Y == pos2.Y) {
           return _positionComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
               ? -1 : 0;
         }
-        return ((depth1.X > depth2.X) && (depth1.Y > depth2.Y)) ? 1 : -1;
+        return ((depth1.X > pos2.X) && (depth1.Y > pos2.Y)) ? 1 : -1;
       });
       
       // And now draw in order

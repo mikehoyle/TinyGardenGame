@@ -181,22 +181,27 @@ namespace TinyGardenGame.Core {
   public static class ContentManagerExtensions {
     public static AnimatedSprite LoadAnimated(
         this ContentManager content, SpriteName spriteName) {
-      var item = Assets.GetItem(spriteName);
-      return new AnimatedSprite(
+      var item = GetItem(spriteName);
+      var sprite = new AnimatedSprite(
           content.Load<AsepriteDocument>(item.Path)) {
           Origin = item.Origin,
-          SourceRectangle = item.Region.GetValueOrDefault(),
       };
+      if (item.Region.HasValue) {
+        sprite.SourceRectangle = item.Region.Value;
+      }
+
+      return sprite;
     }
     
-    public static MonoGame.Extended.Sprites.Sprite LoadSprite(
+    public static Sprite LoadSprite(
         this ContentManager content, SpriteName spriteName) {
-      var item = Assets.GetItem(spriteName);
-      return new Sprite(
-          new TextureRegion2D(
-              content.Load<AsepriteDocument>(item.Path).Texture, item.Region.GetValueOrDefault())) {
-          Origin = item.Origin,
-      };
+      var item = GetItem(spriteName);
+      var sprite = item.Region.HasValue
+          ? new Sprite(new TextureRegion2D(
+              content.Load<AsepriteDocument>(item.Path).Texture, item.Region.Value))
+          : new Sprite(content.Load<AsepriteDocument>(item.Path).Texture);
+      sprite.Origin = item.Origin;
+      return sprite;
     }
   }
 

@@ -17,7 +17,8 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
     }
     
     public RocksTile() : base() {
-      CanContainWater = true;
+      SetRandomTextureVariant(3);
+      CanContainWater = false;
     }
   }
 }
