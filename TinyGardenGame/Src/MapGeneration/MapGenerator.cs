@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.MapGeneration.Noise;
 using static TinyGardenGame.MapPlacementHelper;
@@ -11,20 +12,28 @@ namespace TinyGardenGame.MapGeneration {
    * This is dead simple for now, but stands as a place for any future changes.
    */
   public class MapGenerator {
-    private const int MapWidth = 1000;
-    private const int MapHeight = 1000;
+    private readonly Config _config;
+    private readonly Random _random;
 
-    public GameMap GenerateMap(Config config) {
+    public MapGenerator(Config config) {
+      _config = config;
+      _random = new Random(config.MapGenerationSeed);
+    }
+
+    public GameMap GenerateMap() {
       // First, fill the entire map with Ocean
-      var map = new GameMap(MapWidth, MapHeight);
-      for (short i = 0; i < MapWidth; i++) {
-        for (short j = 0; j < MapHeight; j++) {
+      var map = new GameMap(_config.MapWidth, _config.MapHeight);
+      for (short i = 0; i < _config.MapWidth; i++) {
+        for (short j = 0; j < _config.MapHeight; j++) {
           map.Map[i, j] = new OceanTile();
         }
       }
       
       // Fill in land with noise
-      GenerateLandStructure(config, map);
+      GenerateLandStructure(map);
+      
+      // Ensure reasonable starting area.
+      AddStartingArea(map);
 
       // TODO: generate biomes
 
@@ -33,6 +42,28 @@ namespace TinyGardenGame.MapGeneration {
       //AddTestWater(map);
       PostProcess(map);
       return map;
+    }
+
+    private void AddStartingArea(GameMap map) {
+      var radius = _config.StartingAreaRadius;
+      for (var x = -radius; x <= radius; x++) {
+        for (var y = -radius; y <= radius; y++) {
+          // Add fuzziness on the edges
+          if (Math.Abs(x) == radius - 1 || Math.Abs(y) == radius - 1) {
+            if (_random.NextDouble() > 0.85) {
+              continue;
+            }
+          }
+
+          if (Math.Abs(x) == radius || Math.Abs(y) == radius) {
+            if (_random.NextDouble() > 0.65) {
+              continue;
+            }
+          }
+
+          map[x, y] = new WeedsTile();
+        }
+      }
     }
 
     private static void ConvertLandlockedOceanToWater(GameMap map) {
@@ -89,10 +120,12 @@ namespace TinyGardenGame.MapGeneration {
       return result;
     }
 
-    private static void GenerateLandStructure(Config config, GameMap map) {
-      var border = config.OceanBorderWidth;
+    private void GenerateLandStructure(GameMap map) {
+      var border = _config.OceanBorderWidth;
       var noiseMap = SimplexNoiseGenerator.GenerateNoiseMap(
-          MapWidth - (border * 2), MapHeight - (border * 2), config.MapGenerationSeed);
+          _config.MapWidth - (border * 2),
+          _config.MapHeight - (border * 2),
+          _config.MapGenerationSeed);
       
       for (short i = 0; i < noiseMap.GetLength(0); i++) {
         for (short j = 0; j < noiseMap.GetLength(1); j++) {

@@ -13,8 +13,11 @@
     public readonly DebugConfig Debug = new DebugConfig();
 
     // Map Generation
+    public readonly int MapWidth = 1000;
+    public readonly int MapHeight = 1000;
     public readonly int MapGenerationSeed = 42;
     public readonly int OceanBorderWidth = 3;
+    public readonly int StartingAreaRadius = 6;
   }
 
   /**

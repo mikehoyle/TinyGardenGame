@@ -2,8 +2,7 @@
 using Microsoft.Xna.Framework;
 
 namespace TinyGardenGame.MapGeneration.Noise {
-  public class SimplexNoiseGenerator {
-    public const float NoiseMin = 0f;
+  public static class SimplexNoiseGenerator {
     public const float NoiseMax = 255f;
     
     public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, int seed) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -217,18 +218,20 @@ namespace TinyGardenGame.Core {
 
     private static readonly List<string> SpriteFontAssets = new List<string> { ConsoleFont };
 
-    public static void LoadAllAssets(ContentManager contentManager) {
-      foreach (var asset in Texture2dAssets) {
-        contentManager.Load<Texture2D>(asset);
-      }
+    public static Task LoadAllAssets(ContentManager contentManager) {
+      return Task.Run(() => {
+        foreach (var asset in Texture2dAssets) {
+          contentManager.Load<Texture2D>(asset);
+        }
 
-      foreach (var asset in AsepriteAssets) {
-        contentManager.Load<AsepriteDocument>(asset);
-      }
+        foreach (var asset in AsepriteAssets) {
+          contentManager.Load<AsepriteDocument>(asset);
+        }
       
-      foreach (var asset in SpriteFontAssets) {
-        contentManager.Load<SpriteFont>(asset);
-      }
+        foreach (var asset in SpriteFontAssets) {
+          contentManager.Load<SpriteFont>(asset);
+        }
+      });
     }
   }
 }

@@ -30,7 +30,7 @@ namespace TinyGardenGame.Screens {
       var cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _debugSystem = new DebugSystem(game);
-      var map = new MapGenerator().GenerateMap(game.Config);
+      var map = new MapGenerator(game.Config).GenerateMap();
       var collisionSystem = new CollisionSystem(map);
       _hud = new HeadsUpDisplay(
           game, GraphicsDevice, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);

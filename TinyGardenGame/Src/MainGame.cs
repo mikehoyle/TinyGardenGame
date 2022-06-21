@@ -36,8 +36,8 @@ namespace TinyGardenGame {
     protected override void Initialize() {
       Debug.WriteLine("Initializing game");
       InitializeGraphics();
-      _screenManager.LoadScreen(new GameStartLoadingScreen(this));
       base.Initialize();
+      _screenManager.LoadScreen(new GameStartLoadingScreen(this));
     }
 
     private void InitializeGraphics() {
