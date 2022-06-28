@@ -15,6 +15,7 @@ using TinyGardenGame.MapGeneration;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
+using TinyGardenGame.Screens;
 
 namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
@@ -33,7 +34,7 @@ namespace TinyGardenGame.Player.Systems {
 
     private readonly MainGame _game;
     private readonly HeadsUpDisplay _hud;
-    private readonly GameMap _map;
+    private readonly PrimaryGameplayScreen _screen;
     private readonly ObjectPlacementSystem _objectPlacementSystem;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
@@ -42,7 +43,7 @@ namespace TinyGardenGame.Player.Systems {
     private readonly KeyboardListener _keyboardListener;
 
     public PlayerInputSystem(
-        MainGame game,
+        PrimaryGameplayScreen screen,
         HeadsUpDisplay hud,
         GameMap map,
         ObjectPlacementSystem objectPlacementSystem)
@@ -52,15 +53,14 @@ namespace TinyGardenGame.Player.Systems {
             typeof(PositionComponent),
             typeof(SelectionComponent),
             typeof(CollisionFootprintComponent))) {
-      _game = game;
+      _screen = screen;
       _hud = hud;
-      _map = map;
       _objectPlacementSystem = objectPlacementSystem;
       _keyboardListener = new KeyboardListener(new KeyboardListenerSettings() {
           RepeatPress = false,
       });
       _keyboardListener.KeyPressed += OnKeyPressed;
-      _game.Console.MovePlayer += TeleportPlayer;
+      screen.Console.MovePlayer += TeleportPlayer;
       _actionControls = new Dictionary<Keys, Action>() {
           {Keys.OemMinus, MoveSelectionLeft},
           {Keys.OemPlus, MoveSelectionRight},
@@ -113,7 +113,7 @@ namespace TinyGardenGame.Player.Systems {
         _positionComponentMapper.Get(ActiveEntities[0])
             .Position = new Vector2(x, y);
       } else {
-        _game.Console.WriteLine(
+        _screen.Console.WriteLine(
             $"Need exactly one entity to move but found {ActiveEntities.Count}");
       }
     }
@@ -155,7 +155,7 @@ namespace TinyGardenGame.Player.Systems {
 
     void IDisposable.Dispose() {
       if (_game != null) {
-        _game.Console.MovePlayer -= TeleportPlayer;
+        _screen.Console.MovePlayer -= TeleportPlayer;
       }
       base.Dispose();
     }

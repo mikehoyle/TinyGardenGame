@@ -34,9 +34,8 @@ namespace TinyGardenGame.Plants.Systems {
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
       
-      var spriteTexture = _game.Content.Load<Texture2D>(Assets.TestPlantSprites);
-      _progressBarEmptySprite = new TextureRegion2D(spriteTexture, 64, 0, 24, 3);
-      _progressBarFullSprite = new TextureRegion2D(spriteTexture, 64, 3, 24, 3); 
+      _progressBarEmptySprite = _game.Content.LoadSprite(SpriteName.LoadingBarEmpty).TextureRegion;
+      _progressBarFullSprite = _game.Content.LoadSprite(SpriteName.LoadingBarFull).TextureRegion;
     }
 
     public override void Update(GameTime gameTime) {

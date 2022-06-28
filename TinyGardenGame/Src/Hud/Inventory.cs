@@ -16,10 +16,10 @@ namespace TinyGardenGame.Hud {
     
     private readonly IInventoryItem[] _inventoryContents;
     private int _currentlySelectedSlot;
-    private readonly AsepriteDocument _borderSprite;
+    private readonly Texture2D _borderSprite;
+    private readonly Texture2D _selectedSprite;
     private readonly int _inventoryContainerWidth;
     private readonly int _inventoryContainerHeight;
-    private readonly AsepriteDocument _selectedSprite;
 
     public int CurrentlySelectedSlot {
       get => _currentlySelectedSlot;
@@ -31,11 +31,11 @@ namespace TinyGardenGame.Hud {
       _hudScale = hudScale;
       _inventoryContents = new IInventoryItem[InventoryWidth];
       _currentlySelectedSlot = 0;
-      _borderSprite = content.Load<AsepriteDocument>(Assets.InventoryContainer);
-      _selectedSprite = content.Load<AsepriteDocument>(Assets.InventorySelected);
+      _borderSprite = content.LoadTexture(SpriteName.InventoryContainer);
+      _selectedSprite = content.LoadTexture(SpriteName.InventorySelected);
       
-      _inventoryContainerWidth = _borderSprite.Texture.Width;
-      _inventoryContainerHeight = _borderSprite.Texture.Height;
+      _inventoryContainerWidth = _borderSprite.Width;
+      _inventoryContainerHeight = _borderSprite.Height;
     }
     
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
@@ -43,7 +43,7 @@ namespace TinyGardenGame.Hud {
       var renderX = (_hudScale.VirtualWidth - _inventoryContainerWidth * InventoryWidth) / 2;
       for (var i = 0; i < InventoryWidth; i++) {
         spriteBatch.Draw(
-            _borderSprite.Texture,
+            _borderSprite,
             new Vector2(renderX + (i * _inventoryContainerWidth), renderY),
             Color.White);
       }
@@ -53,7 +53,7 @@ namespace TinyGardenGame.Hud {
       // Accommodate larger size of selected texture
       selectedX -= Vector2.One;
       spriteBatch.Draw(
-          _selectedSprite.Texture,
+          _selectedSprite,
           selectedX,
           Color.White);
     }

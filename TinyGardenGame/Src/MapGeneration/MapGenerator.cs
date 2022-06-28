@@ -12,10 +12,10 @@ namespace TinyGardenGame.MapGeneration {
    * This is dead simple for now, but stands as a place for any future changes.
    */
   public class MapGenerator {
-    private readonly Config _config;
+    private readonly Config.Config _config;
     private readonly Random _random;
 
-    public MapGenerator(Config config) {
+    public MapGenerator(Config.Config config) {
       _config = config;
       _random = new Random(config.MapGenerationSeed);
     }
@@ -50,13 +50,13 @@ namespace TinyGardenGame.MapGeneration {
         for (var y = -radius; y <= radius; y++) {
           // Add fuzziness on the edges
           if (Math.Abs(x) == radius - 1 || Math.Abs(y) == radius - 1) {
-            if (_random.NextDouble() > 0.85) {
+            if (_random.NextDouble() > 0.8) {
               continue;
             }
           }
 
           if (Math.Abs(x) == radius || Math.Abs(y) == radius) {
-            if (_random.NextDouble() > 0.65) {
+            if (_random.NextDouble() > 0.6) {
               continue;
             }
           }

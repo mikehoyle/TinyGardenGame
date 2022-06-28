@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite.Documents;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -22,15 +23,17 @@ namespace TinyGardenGame.Screens {
     private readonly DebugSystem _debugSystem;
     private readonly HeadsUpDisplay _hud;
     
+    public InGameConsole Console { get; }
+    
     public new MainGame Game { get; }
     public Entity PlayerEntity { get; }
 
-    public PrimaryGameplayScreen(MainGame game) : base(game) {
+    public PrimaryGameplayScreen(MainGame game, GameMap map) : base(game) {
       Game = game;
+      Console = new InGameConsole(game);
       var cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       _debugSystem = new DebugSystem(game);
-      var map = new MapGenerator(game.Config).GenerateMap();
       var collisionSystem = new CollisionSystem(map);
       _hud = new HeadsUpDisplay(
           game, GraphicsDevice, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
@@ -39,7 +42,7 @@ namespace TinyGardenGame.Screens {
       _world = new WorldBuilder()
           .AddSystem(new RenderSystem(
               game, GraphicsDevice, cameraSystem, map, objectPlacementSystem.Draw, _hud.Draw))
-          .AddSystem(new PlayerInputSystem(game, _hud, map, objectPlacementSystem))
+          .AddSystem(new PlayerInputSystem(this, _hud, map, objectPlacementSystem))
           .AddSystem(objectPlacementSystem)
           .AddSystem(collisionSystem)
           .AddSystem(new MotionSystem())
@@ -50,9 +53,14 @@ namespace TinyGardenGame.Screens {
       PlayerEntity = CreatePlayerCharacter();
       _debugSystem.PlayerEntity = PlayerEntity;
     }
+
+    private void InitializeConsole() {
+      // TODO this is referencing a compiled xna from the MonoGameConsoleCore lib that could get
+      // cleaned up.
+    }
     
     public override void LoadContent() {
-      var playerSprite = Game.Content.LoadAnimated(SpriteName.PlayerSprite);
+      var playerSprite = Game.Content.LoadAnimated(SpriteName.Player);
       PlayerEntity.Attach(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)));
       _debugSystem.LoadContent();
       base.LoadContent();

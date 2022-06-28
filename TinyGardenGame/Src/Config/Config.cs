@@ -1,4 +1,4 @@
-﻿namespace TinyGardenGame {
+﻿namespace TinyGardenGame.Config {
   /**
    * Encapsulates readonly configuration, meant to be initialized once
    * during game start.
@@ -11,6 +11,7 @@
     public readonly bool ShowBuildGhost = true;
     public readonly float BuildGhostOpacity = 0.45f;
     public readonly DebugConfig Debug = new DebugConfig();
+    public readonly string AssetsConfigPath = "Src/Config/Assets.toml";
 
     // Map Generation
     public readonly int MapWidth = 1000;

@@ -1,0 +1,150 @@
+﻿[[Assets]]
+Name = "Player"
+Path = "sprites/ffa_test_spritesheet"
+Origin = { X = 10, Y = 28 }
+
+[[Assets]]
+Name = "ValidTile"
+Path = "sprites/valid_square"
+Origin = { X = 16 }
+
+[[Assets]]
+Name = "SelectedTileOverlay"
+Path = "tilesets/selected_overlay"
+Origin = { X = 16 }
+
+[[Assets]]
+Name = "LoadingBarEmpty"
+Path = "sprites/loading_bar"
+AtlasRect = { Width = 24, Height = 3 }
+
+[[Assets]]
+Name = "LoadingBarFull"
+Path = "sprites/loading_bar"
+AtlasRect = { Y = 3, Width = 24, Height = 3 }
+
+[[Assets]]
+Name = "InventoryContainer"
+Path = "sprites/inventory_border"
+
+[[Assets]]
+Name = "InventorySelected"
+Path = "sprites/inventory_selected"
+
+[[Assets]]
+Name = "Marigold"
+Path = "sprites/plants/marigold"
+Origin = { X = 16, Y = 32 }
+AtlasRect = { Width = 32, Height = 48}
+
+[[Assets]]
+Name = "Dandelion"
+Path = "sprites/plants/dandelion"
+Origin = { X = 16, Y = 32 }
+AtlasRect = { Width = 32, Height = 48}
+
+[[Assets]]
+Name = "Shrub"
+Path = "sprites/plants/shrub"
+Origin = { X = 16, Y = 32 }
+AtlasRect = { Width = 32, Height = 48}
+
+[[Assets]]
+Name = "Water0"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 0, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Water1"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 32, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Water2Nw"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 64, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Water2Sw"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 96, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Water2Ew"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 128, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Water3"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 160, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Water4"
+Path = "tilesets/water"
+Origin = { X = 16, Y = 0 }
+AtlasRect = { X = 192, Width = 32, Height = 16}
+
+[[Assets]]
+Name = "Weeds1"
+Path = "tilesets/grass"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 0, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Weeds2"
+Path = "tilesets/grass"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 32, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Weeds3"
+Path = "tilesets/grass"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 64, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Sand1"
+Path = "tilesets/sand"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 0, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Sand2"
+Path = "tilesets/sand"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 32, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Sand3"
+Path = "tilesets/sand"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 64, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Rocks1"
+Path = "tilesets/rocks"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 0, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Rocks2"
+Path = "tilesets/rocks"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 32, Width = 32, Height = 24}
+
+[[Assets]]
+Name = "Rocks3"
+Path = "tilesets/rocks"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 64, Width = 32, Height = 24}
+
+[[Fonts]]
+Name = "ConsoleFont"
+Path = "ConsoleFont"

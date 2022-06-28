@@ -47,7 +47,7 @@ namespace TinyGardenGame.Plants {
       _plantFactory = new PlantEntityFactory(
           gameScreen.Game.Config, gameScreen.Game.Content, CreateEntity);
       _validSquareSprite = gameScreen.Game.Content.LoadSprite(
-          SpriteName.ValidTileSprite);
+          SpriteName.ValidTile);
     }
 
     public override void Initialize(IComponentMapperService mapperService) {

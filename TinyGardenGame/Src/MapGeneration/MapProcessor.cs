@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
 using static TinyGardenGame.MapPlacementHelper;
@@ -42,18 +43,14 @@ namespace TinyGardenGame.MapGeneration {
         int x,
         int y,
         SpriteEffects effects = SpriteEffects.None) {
-      var sprite = _game.Content.LoadAnimated(spriteName);
+      var sprite = _game.Content.LoadSprite(spriteName);
       // TODO create a helper for this ridiculously complicated call
-      spriteBatch.Draw(
-          sprite.Texture,
+      sprite.Effect = effects;
+      sprite.Draw(
+          spriteBatch,
           MapCoordToAbsoluteCoord(new Vector2(x, y)),
-          sprite.SourceRectangle,
-          Color.White,
           rotation: 0f,
-          sprite.Origin,
-          scale: Vector2.One,
-          effects,
-          0f);
+          scale: Vector2.One);
     }
 
     /**

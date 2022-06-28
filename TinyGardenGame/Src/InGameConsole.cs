@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameConsole;
+using TinyGardenGame.Core;
 
 namespace TinyGardenGame {
   public class InGameConsole {
@@ -11,7 +12,12 @@ namespace TinyGardenGame {
     public delegate void MovePlayerHandler(int x, int y);
     public event MovePlayerHandler MovePlayer;
 
-    public void Initialize(MainGame game, SpriteBatch spriteBatch, SpriteFont spriteFont) {
+    public InGameConsole(MainGame game) {
+      var spriteFont = game.Content.LoadFont(SpriteName.ConsoleFont);
+      Initialize(game, new SpriteBatch(game.GraphicsDevice), spriteFont);
+    }
+
+    private void Initialize(MainGame game, SpriteBatch spriteBatch, SpriteFont spriteFont) {
       if (!game.Config.Debug.EnableConsole) {
         return;
       }

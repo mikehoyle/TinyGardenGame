@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using MonoGame.Aseprite.Documents;
 using MonoGame.Aseprite.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -16,7 +15,6 @@ using static TinyGardenGame.Plants.PlantType;
 
 namespace TinyGardenGame.Plants {
   public enum PlantType {
-    WideTestPlant,
     Marigold,
   }
   
@@ -42,20 +40,20 @@ namespace TinyGardenGame.Plants {
     }
 
     private readonly Dictionary<PlantType, PlantMetadata> _plantAssets;
-    private readonly Config _config;
+    private readonly Config.Config _config;
     private readonly Func<Entity> _createEntity;
 
     public delegate bool CanGrowOn(MapTile tile);
 
     public PlantEntityFactory(
-        Config config,
+        Config.Config config,
         ContentManager content,
         Func<Entity> createEntity) {
       _config = config;
       _createEntity = createEntity;
       _plantAssets = new Dictionary<PlantType, PlantMetadata> {
           [Marigold] = new PlantMetadata {
-              Sprite = () => content.LoadAnimated(SpriteName.MarigoldSprite),
+              Sprite = () => content.LoadAnimated(SpriteName.Marigold),
               GrowthTimeSecs = 45,
               GrowthCondition = WaterProximityGrowthCondition(3),
               CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
