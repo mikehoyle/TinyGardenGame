@@ -51,6 +51,8 @@ namespace TinyGardenGame.Screens {
           .AddSystem(_debugSystem)
           .Build();
       PlayerEntity = CreatePlayerCharacter();
+      // Test starting item
+      _hud.Inventory.AddItem(InventoryItem.ReedSeeds, 5);
       _debugSystem.PlayerEntity = PlayerEntity;
     }
 

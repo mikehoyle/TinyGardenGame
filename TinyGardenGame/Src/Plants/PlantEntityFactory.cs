@@ -16,6 +16,7 @@ using static TinyGardenGame.Plants.PlantType;
 namespace TinyGardenGame.Plants {
   public enum PlantType {
     Marigold,
+    Reeds,
   }
   
   public class PlantEntityFactory {
@@ -24,7 +25,7 @@ namespace TinyGardenGame.Plants {
       private int _growthStages;
       public Func<AnimatedSprite> Sprite { get; set; }
       public Vector2 FootprintSize { get; set; } = Vector2.One;
-      public RectangleF CollisionFootprint { get; set; } = new RectangleF(0, 0, 1, 1);
+      public RectangleF CollisionFootprint { get; set; } = new RectangleF(0, 0, 0, 0);
       public double GrowthTimeSecs { get; set; }
       
       public CanGrowOn GrowthCondition { get; set; }
@@ -58,6 +59,11 @@ namespace TinyGardenGame.Plants {
               GrowthCondition = WaterProximityGrowthCondition(3),
               CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
           },
+          [Reeds] = new PlantMetadata {
+              Sprite = () => content.LoadAnimated(SpriteName.Reeds),
+              GrowthTimeSecs = 30,
+              GrowthCondition = WaterProximityGrowthCondition(1),
+          }
       };
     }
 

@@ -51,6 +51,18 @@
 /processorParam:InnerPadding=0
 /build:sprites/inventory_border.aseprite
 
+#begin sprites/inventory_items.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/inventory_items.aseprite
+
 #begin sprites/inventory_selected.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
@@ -98,6 +110,18 @@
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
 /build:sprites/plants/marigold.aseprite
+
+#begin sprites/plants/reeds.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/plants/reeds.aseprite
 
 #begin sprites/plants/shrub.aseprite
 /importer:AsepriteDocumentImporter

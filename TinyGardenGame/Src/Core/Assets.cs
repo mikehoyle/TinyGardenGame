@@ -24,9 +24,13 @@ namespace TinyGardenGame.Core {
     // HUD
     InventoryContainer,
     InventorySelected,
+    
+    // Inventory
+    InventoryReedSeeds,
 
     // Plants: Player Made
     Marigold,
+    Reeds,
     
     // Plants: Weeds
     Dandelion,

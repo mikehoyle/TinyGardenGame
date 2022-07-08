@@ -126,23 +126,31 @@ namespace TinyGardenGame.Player.Systems {
 
     private void MoveSelectionLeft() {
       _hud.Inventory.CurrentlySelectedSlot--;
+      _objectPlacementSystem.HoveredPlant = null;
     }
     
     private void MoveSelectionRight() {
       _hud.Inventory.CurrentlySelectedSlot++;
+      _objectPlacementSystem.HoveredPlant = null;
     }
 
     private void PlacePlant() {
+      var currentItem = _hud.Inventory.CurrentlySelectedItem; 
+      if (currentItem == null) {
+        return;
+      }
+      
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
-      if (_objectPlacementSystem.AttemptPlantPlacement(PlantType.Marigold, placement)) {
+      if (_objectPlacementSystem.AttemptPlantPlacement(currentItem.PlantType(), placement)) {
+        currentItem.Expend(1);
         _objectPlacementSystem.HoveredPlant = null;
       }
     }
 
     private void ToggleHoverPlant() {
-      if (_objectPlacementSystem.HoveredPlant == null) {
-        // TODO use inventory to actually select plant
-        _objectPlacementSystem.HoveredPlant = PlantType.Marigold;
+      var currentItem = _hud.Inventory.CurrentlySelectedItem;
+      if (_objectPlacementSystem.HoveredPlant == null && currentItem != null) {
+        _objectPlacementSystem.HoveredPlant = currentItem.PlantType();
       } else {
         _objectPlacementSystem.HoveredPlant = null;
       }
