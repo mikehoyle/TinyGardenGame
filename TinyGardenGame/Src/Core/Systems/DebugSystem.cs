@@ -7,6 +7,7 @@ using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Player.Components;
+using TinyGardenGame.Player.State;
 
 namespace TinyGardenGame.Core.Systems {
   /**
@@ -20,11 +21,11 @@ namespace TinyGardenGame.Core.Systems {
     private ComponentMapper<Sprite> _spriteComponent;
     private ComponentMapper<SelectionComponent> _selectionComponent;
     private Entity _selectionIndicatorEntity;
-    
-    public Entity PlayerEntity { private get; set; } 
+    private PlayerState _playerState;
 
-    public DebugSystem(MainGame game) : base(Aspect.One()) {
+    public DebugSystem(MainGame game, PlayerState playerState) : base(Aspect.One()) {
       _game = game;
+      _playerState = playerState;
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -46,8 +47,8 @@ namespace TinyGardenGame.Core.Systems {
     }
 
     private void LoadSelectionIndicator() {
-      if (_game.Config.Debug.ShowSelectionIndicator && PlayerEntity != null) {
-        var playerSelection = _selectionComponent.Get(PlayerEntity);
+      if (_game.Config.Debug.ShowSelectionIndicator && _playerState.PlayerEntity != null) {
+        var playerSelection = _selectionComponent.Get(_playerState.PlayerEntity);
         var sprite = _game.Content.LoadSprite(SpriteName.SelectedTileOverlay);
         _selectionIndicatorEntity
             .AttachAnd(new DrawableComponent(sprite, RenderLayer.Overlay))
@@ -56,8 +57,8 @@ namespace TinyGardenGame.Core.Systems {
     }
 
     private void UpdateSelectionIndicator() {
-      if (PlayerEntity != null && _selectionIndicatorEntity != null) {
-        var playerSelection = _selectionComponent.Get(PlayerEntity);
+      if (_playerState.PlayerEntity != null && _selectionIndicatorEntity != null) {
+        var playerSelection = _selectionComponent.Get(_playerState.PlayerEntity);
         var indicatorPlacement = _positionComponent.Get(_selectionIndicatorEntity);
         indicatorPlacement.Position = playerSelection.SelectedSquare;
       }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
+using TinyGardenGame.Player.State;
 
 namespace TinyGardenGame.Hud {
   public class HeadsUpDisplay : IUpdate {
@@ -13,11 +14,12 @@ namespace TinyGardenGame.Hud {
 
     public HeadsUpDisplay(
         MainGame game,
+        PlayerState playerState,
         GraphicsDevice graphicsDevice,
         int renderWidth,
         int renderHeight) {
       _hudScale = new ScalingViewportAdapter(graphicsDevice, renderWidth, renderHeight);
-      Inventory = new Inventory(game.Content, _hudScale);
+      Inventory = new Inventory(game.Content, _hudScale, playerState.Inventory);
       _debugOverlay = new DebugOverlay(game, _hudScale);
     }
 

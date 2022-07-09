@@ -15,6 +15,7 @@ using TinyGardenGame.MapGeneration;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
+using TinyGardenGame.Player.State;
 using TinyGardenGame.Screens;
 
 namespace TinyGardenGame.Player.Systems {
@@ -35,6 +36,7 @@ namespace TinyGardenGame.Player.Systems {
     private readonly MainGame _game;
     private readonly HeadsUpDisplay _hud;
     private readonly PrimaryGameplayScreen _screen;
+    private readonly PlayerState _playerState;
     private readonly ObjectPlacementSystem _objectPlacementSystem;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
@@ -44,7 +46,7 @@ namespace TinyGardenGame.Player.Systems {
 
     public PlayerInputSystem(
         PrimaryGameplayScreen screen,
-        HeadsUpDisplay hud,
+        PlayerState playerState,
         GameMap map,
         ObjectPlacementSystem objectPlacementSystem)
         : base(Aspect.All(
@@ -54,7 +56,7 @@ namespace TinyGardenGame.Player.Systems {
             typeof(SelectionComponent),
             typeof(CollisionFootprintComponent))) {
       _screen = screen;
-      _hud = hud;
+      _playerState = playerState;
       _objectPlacementSystem = objectPlacementSystem;
       _keyboardListener = new KeyboardListener(new KeyboardListenerSettings() {
           RepeatPress = false,
@@ -125,17 +127,17 @@ namespace TinyGardenGame.Player.Systems {
     }
 
     private void MoveSelectionLeft() {
-      _hud.Inventory.CurrentlySelectedSlot--;
+      _playerState.Inventory.CurrentlySelectedSlot--;
       _objectPlacementSystem.HoveredPlant = null;
     }
     
     private void MoveSelectionRight() {
-      _hud.Inventory.CurrentlySelectedSlot++;
+      _playerState.Inventory.CurrentlySelectedSlot++;
       _objectPlacementSystem.HoveredPlant = null;
     }
 
     private void PlacePlant() {
-      var currentItem = _hud.Inventory.CurrentlySelectedItem; 
+      var currentItem = _playerState.Inventory.CurrentlySelectedItem; 
       if (currentItem == null) {
         return;
       }
@@ -148,7 +150,7 @@ namespace TinyGardenGame.Player.Systems {
     }
 
     private void ToggleHoverPlant() {
-      var currentItem = _hud.Inventory.CurrentlySelectedItem;
+      var currentItem = _playerState.Inventory.CurrentlySelectedItem;
       if (_objectPlacementSystem.HoveredPlant == null && currentItem != null) {
         _objectPlacementSystem.HoveredPlant = currentItem.PlantType();
       } else {

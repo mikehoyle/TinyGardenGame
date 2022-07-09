@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using TinyGardenGame.Core;
 using TinyGardenGame.Plants;
-using static TinyGardenGame.Hud.InventoryItem;
+using static TinyGardenGame.Player.State.Inventory.InventoryItem;
 
-namespace TinyGardenGame.Hud {
+namespace TinyGardenGame.Player.State.Inventory {
   public enum InventoryItem {
     ReedSeeds,
   }

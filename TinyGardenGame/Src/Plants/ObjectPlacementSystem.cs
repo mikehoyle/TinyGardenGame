@@ -10,6 +10,7 @@ using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Components;
+using TinyGardenGame.Player.State;
 using TinyGardenGame.Player.Systems;
 using TinyGardenGame.Screens;
 using Color = Microsoft.Xna.Framework.Color;
@@ -22,6 +23,7 @@ namespace TinyGardenGame.Plants {
    */
   public class ObjectPlacementSystem : EntityUpdateSystem, IAttemptPlantPlacement {
     private readonly PrimaryGameplayScreen _gameScreen;
+    private readonly PlayerState _playerState;
     private readonly GameMap _map;
     private readonly IIsSpaceOccupied _isSpaceOccupied;
     private readonly CameraSystem _cameraSystem;
@@ -37,17 +39,18 @@ namespace TinyGardenGame.Plants {
 
     public ObjectPlacementSystem(
         PrimaryGameplayScreen gameScreen,
+        PlayerState playerState,
         GameMap map,
         IIsSpaceOccupied isSpaceOccupied, 
         CameraSystem cameraSystem) : base(Aspect.All()){
       _gameScreen = gameScreen;
+      _playerState = playerState;
       _map = map;
       _isSpaceOccupied = isSpaceOccupied;
       _cameraSystem = cameraSystem;
       _plantFactory = new PlantEntityFactory(
           gameScreen.Game.Config, gameScreen.Game.Content, CreateEntity);
-      _validSquareSprite = gameScreen.Game.Content.LoadSprite(
-          SpriteName.ValidTile);
+      _validSquareSprite = gameScreen.Game.Content.LoadSprite(SpriteName.ValidTile);
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -73,7 +76,7 @@ namespace TinyGardenGame.Plants {
         if (_ghostPlant.HasValue && _ghostPlant.Value.PlantType != HoveredPlant) {
           DestroyEntity(_ghostPlant.Value.EntityId);
         }
-        var placement = _selectionComponentMapper.Get(_gameScreen.PlayerEntity.Id)
+        var placement = _selectionComponentMapper.Get(_playerState.PlayerEntity.Id)
             .SelectedSquare;
         _ghostPlant ??= new GhostPlant {
             EntityId = _plantFactory.CreateGhostPlant(HoveredPlant.Value, placement),
