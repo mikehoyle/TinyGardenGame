@@ -6,11 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.ViewportAdapters;
 using TinyGardenGame.Core;
-using TinyGardenGame.Plants;
 using TinyGardenGame.Player.State.Inventory;
 
 namespace TinyGardenGame.Hud {
-  public class Inventory {
+  public class InventoryDisplay {
     private const int InventoryBottomMarginPx = 2; 
 
     private readonly ContentManager _content;
@@ -23,7 +22,7 @@ namespace TinyGardenGame.Hud {
     private readonly int _inventoryContainerHeight;
     private readonly SpriteFont _font;
 
-    public Inventory(
+    public InventoryDisplay(
         ContentManager content, ScalingViewportAdapter hudScale, PlayerInventory playerInventory) {
       _content = content;
       _hudScale = hudScale;

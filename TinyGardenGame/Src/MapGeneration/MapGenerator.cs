@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using TinyGardenGame.MapGeneration.MapTiles;
-using TinyGardenGame.MapGeneration.Noise;
+using TinyGardenGame.MapGeneration.RandomAlgorithms;
 using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.MapGeneration {
@@ -21,26 +20,44 @@ namespace TinyGardenGame.MapGeneration {
     }
 
     public GameMap GenerateMap() {
-      // First, fill the entire map with Ocean
+      Stopwatch benchmarkTimer = new Stopwatch();
+      benchmarkTimer.Start();
+      Debug.WriteLine("Generating map...");
+      
+      // First, fill the entire map with Biomes
       var map = new GameMap(_config.MapWidth, _config.MapHeight);
-      for (short i = 0; i < _config.MapWidth; i++) {
-        for (short j = 0; j < _config.MapHeight; j++) {
-          map.Map[i, j] = new OceanTile();
+      var biomeSegments = VoroniSegmentation.GenerateBiomes(
+          _random, _config, _config.MapWidth, _config.MapHeight);
+      for (short x = 0; x < _config.MapWidth; x++) {
+        for (short y = 0; y < _config.MapHeight; y++) {
+          (Type Type, float prox) closestSegment = (typeof(object), float.MaxValue);
+          foreach (var segment in biomeSegments) {
+            var proximity = segment.ProximityTo(x, y);
+            if (proximity < closestSegment.prox) {
+              closestSegment = (segment.TileType, proximity);
+            }
+          }
+
+          map.Map[x, y] = (MapTile)Activator.CreateInstance(closestSegment.Type);
         }
       }
       
+      Debug.WriteLine($"Allocating base tiles took: {benchmarkTimer.Elapsed}");
+
       // Fill in land with noise
-      GenerateLandStructure(map);
+      // GenerateLandStructure(map);
+      //Debug.WriteLine($"Generate land with simplex noise took: {benchmarkTimer.Elapsed}");
       
       // Ensure reasonable starting area.
-      AddStartingArea(map);
+      // AddStartingArea(map);
+      // Debug.WriteLine($"Add starting area took: {benchmarkTimer.Elapsed}");
 
-      // TODO: generate biomes
-
-      ConvertLandlockedOceanToWater(map);
-
-      //AddTestWater(map);
+      //ConvertLandlockedOceanToWater(map);
+      //Debug.WriteLine($"Converting ocean to lakes took: {benchmarkTimer.Elapsed}");
+      
       PostProcess(map);
+      
+      Debug.WriteLine($"Post-process took: {benchmarkTimer.Elapsed}");
       return map;
     }
 
@@ -134,18 +151,6 @@ namespace TinyGardenGame.MapGeneration {
           }
         }
       }
-    }
-
-    private void AddTestWater(GameMap map) {
-      for (var x = 5; x < 8; x++) {
-        for (var y = -4; y < 1; y++) {
-          map[x, y].ContainsWater = true;
-        }
-      }
-
-      map[4, -2].ContainsWater = true;
-      map[7, -5].ContainsWater = true;
-      map[7, -6].ContainsWater = true;
     }
 
     /**

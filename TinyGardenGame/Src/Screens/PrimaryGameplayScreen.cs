@@ -25,8 +25,8 @@ namespace TinyGardenGame.Screens {
       var cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       var collisionSystem = new CollisionSystem(map);
-      var playerState = new PlayerState();
-      _debugSystem = new DebugSystem(game, playerState);
+      var playerState = new PlayerState(game.Config);
+      _debugSystem = new DebugSystem(this, playerState);
       var hud = new HeadsUpDisplay(
           game,
           playerState,

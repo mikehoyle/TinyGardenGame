@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-
-namespace TinyGardenGame.MapGeneration.Noise {
+﻿namespace TinyGardenGame.MapGeneration.RandomAlgorithms {
   public static class SimplexNoiseGenerator {
     public const float NoiseMax = 255f;
     

@@ -135,6 +135,30 @@
 /processorParam:InnerPadding=0
 /build:sprites/plants/shrub.aseprite
 
+#begin sprites/progress_bar_fill.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/progress_bar_fill.aseprite
+
+#begin sprites/tools.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/tools.aseprite
+
 #begin sprites/valid_square.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor
@@ -146,6 +170,30 @@
 /processorParam:Spacing=0
 /processorParam:InnerPadding=0
 /build:sprites/valid_square.aseprite
+
+#begin tilesets/dry_dirt.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:tilesets/dry_dirt.aseprite
+
+#begin tilesets/flower_patch.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:tilesets/flower_patch.aseprite
 
 #begin tilesets/grass.aseprite
 /importer:AsepriteDocumentImporter

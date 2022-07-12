@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -9,17 +8,15 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Input.InputListeners;
 using TinyGardenGame.Core.Components;
-using TinyGardenGame.Core.Systems;
 using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
-using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.State;
 using TinyGardenGame.Screens;
 
 namespace TinyGardenGame.Player.Systems {
-  public class PlayerInputSystem : EntityUpdateSystem, IDisposable {
+  public class PlayerInputSystem : EntityUpdateSystem {
     // TODO: Base player input on configuration
     // TODO: Controller support
     private static readonly Dictionary<Keys, Vector2> MovementControls =
@@ -62,7 +59,6 @@ namespace TinyGardenGame.Player.Systems {
           RepeatPress = false,
       });
       _keyboardListener.KeyPressed += OnKeyPressed;
-      screen.Console.MovePlayer += TeleportPlayer;
       _actionControls = new Dictionary<Keys, Action>() {
           {Keys.OemMinus, MoveSelectionLeft},
           {Keys.OemPlus, MoveSelectionRight},
@@ -109,16 +105,6 @@ namespace TinyGardenGame.Player.Systems {
     
       return movementDirection;
     }
-
-    private void TeleportPlayer(int x, int y) {
-      if (ActiveEntities.Count == 1) {
-        _positionComponentMapper.Get(ActiveEntities[0])
-            .Position = new Vector2(x, y);
-      } else {
-        _screen.Console.WriteLine(
-            $"Need exactly one entity to move but found {ActiveEntities.Count}");
-      }
-    }
     
     private void OnKeyPressed(object sender, KeyboardEventArgs args) {
       if (_actionControls.TryGetValue(args.Key, out var action)) {
@@ -161,13 +147,6 @@ namespace TinyGardenGame.Player.Systems {
     private void DigTrench() {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
       _objectPlacementSystem.AttemptDigTrench((int)placement.X, (int)placement.Y);
-    }
-
-    void IDisposable.Dispose() {
-      if (_game != null) {
-        _screen.Console.MovePlayer -= TeleportPlayer;
-      }
-      base.Dispose();
     }
   }
 }

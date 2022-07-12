@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite.Documents;
@@ -7,10 +8,10 @@ using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Config;
 using AnimatedSprite = MonoGame.Aseprite.Graphics.AnimatedSprite;
+using AsepriteSprite = MonoGame.Aseprite.Graphics.Sprite;
 
 namespace TinyGardenGame.Core {
-  // TODO: separate out this massive struct into a few themed structs?
-  // Next id: 24
+  // TODO: separate out this massive enum into a few themed enums?
   public enum SpriteName {
     // Player
     Player,
@@ -24,7 +25,10 @@ namespace TinyGardenGame.Core {
     // HUD
     InventoryContainer,
     InventorySelected,
-    
+    ProgressBarFillEmpty,
+    ProgressBarFillHp,
+    ProgressBarFillEnergy,
+
     // Inventory
     InventoryReedSeeds,
 
@@ -58,6 +62,19 @@ namespace TinyGardenGame.Core {
     Rocks2,
     Rocks3,
     
+    DryDirt1,
+    DryDirt2,
+    DryDirt3,
+    
+    FlowerPatch1,
+    FlowerPatch2,
+    FlowerPatch3,
+    
+    // Tools
+    HandTool,
+    TillerTool,
+    ShovelTool,
+
     // Fonts
     ConsoleFont,
   }
@@ -96,7 +113,7 @@ namespace TinyGardenGame.Core {
       if (item.HasAtlasRect) {
         sprite.SourceRectangle = item.AtlasRect.ToRect().Value;
       }
-
+      
       return sprite;
     }
     
@@ -113,6 +130,30 @@ namespace TinyGardenGame.Core {
     public static Texture2D LoadTexture(this ContentManager content, SpriteName spriteName) {
       var item = AssetLoading.Assets[spriteName];
       return content.Load<AsepriteDocument>(item.Path).Texture;
+    }
+    
+    public static NinePatchRegion2D LoadNinepatch(
+        this ContentManager content, SpriteName spriteName) {
+      var item = AssetLoading.Assets[spriteName];
+      var document = content.Load<AsepriteDocument>(item.Path);
+      if (document.Slices.TryGetValue("nine_patch", out var slice)) {
+        foreach (var key in slice.SliceKeys.Values) {
+          if (key.HasNinePatch) {
+            var leftPadding = key.CenterX - key.X;
+            var topPadding = key.CenterY - key.Y;
+            var texture = content.LoadSprite(spriteName).TextureRegion; 
+            return new NinePatchRegion2D(
+                texture,
+                leftPadding,
+                topPadding,
+                rightPadding: texture.Width - key.Width - leftPadding,
+                bottomPadding: texture.Height - key.Height - topPadding);
+          }
+        }
+      }
+      
+      // TODO: handle this more cleanly
+      throw new Exception($"{spriteName} doesn't have a nine_patch slice");
     }
     
     public static SpriteFont LoadFont(this ContentManager content, SpriteName spriteName) {

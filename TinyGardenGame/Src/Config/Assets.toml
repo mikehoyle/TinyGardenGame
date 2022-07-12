@@ -148,9 +148,75 @@ Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 64, Width = 32, Height = 24 }
 
 [[Assets]]
+Name = "DryDirt1"
+Path = "tilesets/dry_dirt"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 0, Width = 32, Height = 24 }
+
+[[Assets]]
+Name = "DryDirt2"
+Path = "tilesets/dry_dirt"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 32, Width = 32, Height = 24 }
+
+[[Assets]]
+Name = "DryDirt3"
+Path = "tilesets/dry_dirt"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 64, Width = 32, Height = 24 }
+
+[[Assets]]
+Name = "FlowerPatch1"
+Path = "tilesets/flower_patch"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 0, Width = 32, Height = 24 }
+
+[[Assets]]
+Name = "FlowerPatch2"
+Path = "tilesets/flower_patch"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 32, Width = 32, Height = 24 }
+
+[[Assets]]
+Name = "FlowerPatch3"
+Path = "tilesets/flower_patch"
+Origin = { X = 16, Y = 8 }
+AtlasRect = { X = 64, Width = 32, Height = 24 }
+
+[[Assets]]
 Name = "InventoryReedSeeds"
 Path = "sprites/inventory_items"
 AtlasRect = { X = 0, Y = 0, Width = 16, Height = 16 }
+
+[[Assets]]
+Name = "HandTool"
+Path = "sprites/tools"
+AtlasRect = { Width = 16, Height = 16 }
+
+[[Assets]]
+Name = "TillerTool"
+Path = "sprites/tools"
+AtlasRect = { X = 16, Width = 16, Height = 16 }
+
+[[Assets]]
+Name = "ShovelTool"
+Path = "sprites/tools"
+AtlasRect = { X = 32, Width = 16, Height = 16 }
+
+[[Assets]]
+Name = "ProgressBarFillEmpty"
+Path = "sprites/progress_bar_fill"
+AtlasRect = { X = 0, Width = 2, Height = 1 }
+
+[[Assets]]
+Name = "ProgressBarFillHp"
+Path = "sprites/progress_bar_fill"
+AtlasRect = { X = 2, Width = 2, Height = 1 }
+
+[[Assets]]
+Name = "ProgressBarFillEnergy"
+Path = "sprites/progress_bar_fill"
+AtlasRect = { X = 4, Width = 2, Height = 1 }
 
 [[Fonts]]
 Name = "ConsoleFont"

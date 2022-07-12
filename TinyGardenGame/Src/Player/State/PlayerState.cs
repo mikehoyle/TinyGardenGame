@@ -6,6 +6,7 @@ using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.State.Inventory;
+using TinyGardenGame.Player.State.Tools;
 
 namespace TinyGardenGame.Player.State {
   /**
@@ -18,9 +19,15 @@ namespace TinyGardenGame.Player.State {
   public class PlayerState {
     public Entity PlayerEntity { get; private set; }
     public PlayerInventory Inventory { get; }
+    public PlayerTools Tools { get; }
+    public ResourceMeter Hp { get; }
+    public ResourceMeter Energy { get; }
 
-    public PlayerState() {
+    public PlayerState(Config.Config config) {
       Inventory = new PlayerInventory();
+      Tools = new PlayerTools();
+      Hp = new ResourceMeter(config.DefaultMaxHp, config.DefaultMinHp);
+      Energy = new ResourceMeter(config.DefaultMaxEnergy, config.DefaultMinEnergy);
     }
     
     public void InitializePlayerCharacter(World world, MainGame game) {

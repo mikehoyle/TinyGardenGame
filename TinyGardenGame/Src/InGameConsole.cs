@@ -11,6 +11,8 @@ namespace TinyGardenGame {
 
     public delegate void MovePlayerHandler(int x, int y);
     public event MovePlayerHandler MovePlayer;
+    public event EventHandler<int> SetHp;
+    public event EventHandler<int> SetEnergy;
 
     public InGameConsole(MainGame game) {
       var spriteFont = game.Content.LoadFont(SpriteName.ConsoleFont);
@@ -37,6 +39,14 @@ namespace TinyGardenGame {
               BufferColor = Color.DarkBlue});
       _gameConsole.AddCommand("move", args => {
         MovePlayer?.Invoke(int.Parse(args[0]), int.Parse(args[1]));
+        return "";
+      });
+      _gameConsole.AddCommand("sethp", args => {
+        SetHp?.Invoke(this, int.Parse(args[0]));
+        return "";
+      });
+      _gameConsole.AddCommand("setenergy", args => {
+        SetEnergy?.Invoke(this, int.Parse(args[0]));
         return "";
       });
     }

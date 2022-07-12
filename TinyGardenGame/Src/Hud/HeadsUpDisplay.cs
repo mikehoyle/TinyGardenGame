@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
@@ -10,7 +9,9 @@ namespace TinyGardenGame.Hud {
     private readonly ScalingViewportAdapter _hudScale;
     private readonly DebugOverlay _debugOverlay;
 
-    public Inventory Inventory { get; }
+    private readonly InventoryDisplay _inventoryDisplay;
+    private readonly ToolDisplay _toolDisplay;
+    private readonly ResourcesDisplay _resourcesDisplay;
 
     public HeadsUpDisplay(
         MainGame game,
@@ -19,7 +20,9 @@ namespace TinyGardenGame.Hud {
         int renderWidth,
         int renderHeight) {
       _hudScale = new ScalingViewportAdapter(graphicsDevice, renderWidth, renderHeight);
-      Inventory = new Inventory(game.Content, _hudScale, playerState.Inventory);
+      _inventoryDisplay = new InventoryDisplay(game.Content, _hudScale, playerState.Inventory);
+      _toolDisplay = new ToolDisplay(game.Content, _hudScale, playerState.Tools);
+      _resourcesDisplay = new ResourcesDisplay(game.Content, _hudScale, playerState);
       _debugOverlay = new DebugOverlay(game, _hudScale);
     }
 
@@ -29,7 +32,9 @@ namespace TinyGardenGame.Hud {
           sortMode: SpriteSortMode.Deferred,
           samplerState: SamplerState.PointClamp);
       
-      Inventory.Draw(spriteBatch, gameTime);
+      _inventoryDisplay.Draw(spriteBatch, gameTime);
+      _toolDisplay.Draw(spriteBatch, gameTime);
+      _resourcesDisplay.Draw(spriteBatch, gameTime);
       _debugOverlay.Draw(spriteBatch, gameTime);
       
       spriteBatch.End();
