@@ -27,6 +27,29 @@
 /processorParam:TextureFormat=Color
 /build:8x8text_whiteShadow.png
 
+#begin fonts/courier_downsized.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:fonts/courier_downsized.fnt
+
+#begin fonts/courier_downsized_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:fonts/courier_downsized_0.png
+
+#begin shaders/night_shader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/night_shader.fx
+
 #begin sprites/ffa_test_spritesheet.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor

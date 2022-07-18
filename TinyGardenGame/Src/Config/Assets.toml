@@ -221,3 +221,7 @@ AtlasRect = { X = 4, Width = 2, Height = 1 }
 [[Fonts]]
 Name = "ConsoleFont"
 Path = "ConsoleFont"
+
+[[BmpFonts]]
+Name = "CourierFont"
+Path = "fonts/courier_downsized"

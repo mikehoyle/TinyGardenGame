@@ -14,7 +14,8 @@ namespace TinyGardenGame.Screens {
   public class PrimaryGameplayScreen : GameScreen {
     private readonly World _world;
     private readonly DebugSystem _debugSystem;
-    
+    private readonly GameState.GameState _gameState;
+
     public InGameConsole Console { get; }
     
     public new MainGame Game { get; }
@@ -26,10 +27,12 @@ namespace TinyGardenGame.Screens {
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       var collisionSystem = new CollisionSystem(map);
       var playerState = new PlayerState(game.Config);
+      _gameState = new GameState.GameState(game.Config);
       _debugSystem = new DebugSystem(this, playerState);
       var hud = new HeadsUpDisplay(
           game,
           playerState,
+          _gameState,
           GraphicsDevice,
           MainGame.RenderResolutionWidth,
           MainGame.RenderResolutionHeight);
@@ -37,7 +40,13 @@ namespace TinyGardenGame.Screens {
           new ObjectPlacementSystem(this, playerState, map, collisionSystem, cameraSystem);
       _world = new WorldBuilder()
           .AddSystem(new RenderSystem(
-              game, GraphicsDevice, cameraSystem, map, objectPlacementSystem.Draw, hud.Draw))
+              game,
+              GraphicsDevice,
+              cameraSystem,
+              _gameState,
+              map,
+              objectPlacementSystem.Draw,
+              hud.Draw))
           .AddSystem(new PlayerInputSystem(this, playerState, map, objectPlacementSystem))
           .AddSystem(objectPlacementSystem)
           .AddSystem(collisionSystem)
@@ -57,6 +66,7 @@ namespace TinyGardenGame.Screens {
     }
     
     public override void Update(GameTime gameTime) {
+      _gameState.Update(gameTime);
       _world.Update(gameTime);
     }
 

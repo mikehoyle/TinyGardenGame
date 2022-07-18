@@ -9,6 +9,8 @@ namespace TinyGardenGame.Config {
   public class AssetsModel {
     public List<Asset> Assets { get; set; }
     public List<FontAsset> Fonts { get; set; }
+    
+    public List<FontAsset> BmpFonts { get; set; }
 
     public static AssetsModel Load(string configPath) {
       var tomlText = File.ReadAllText(configPath);

@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core.Components;
-using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Systems;
 
@@ -29,12 +26,14 @@ namespace TinyGardenGame.Core.Systems {
   public class RenderSystem : EntityDrawSystem, IUpdateSystem {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;
+    private readonly GameState.GameState _gameState;
     private readonly RenderSystemDraw _drawMapOverlay;
     private readonly RenderSystemDraw _drawHud;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private readonly MapProcessor _mapProcessor;
+    private readonly Effect _nightEffect;
 
     public delegate void RenderSystemDraw(SpriteBatch spriteBatch, GameTime gameTime);
 
@@ -42,13 +41,16 @@ namespace TinyGardenGame.Core.Systems {
         MainGame game,
         GraphicsDevice graphicsDevice,
         CameraSystem cameraSystem,
+        GameState.GameState gameState,
         GameMap map, 
         RenderSystemDraw drawMapOverlay,
         RenderSystemDraw drawHud)
         : base(Aspect.All(typeof(DrawableComponent), typeof(PositionComponent))) {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
+      _gameState = gameState;
       _drawMapOverlay = drawMapOverlay;
+      _nightEffect = game.Content.Load<Effect>("shaders/night_shader");
       _drawHud = drawHud;
       _spriteBatch = new SpriteBatch(graphicsDevice);
       _mapProcessor = new MapProcessor(game, map);
@@ -63,7 +65,8 @@ namespace TinyGardenGame.Core.Systems {
       _spriteBatch.Begin(
           sortMode: SpriteSortMode.Deferred,
           samplerState: SamplerState.PointClamp,
-          transformMatrix: _cameraSystem.ViewMatrix);
+          transformMatrix: _cameraSystem.ViewMatrix,
+          effect: _gameState.Clock.IsNight ? _nightEffect : null);
       DrawMap();
       _drawMapOverlay(_spriteBatch, gameTime);
       DrawSprites(gameTime);

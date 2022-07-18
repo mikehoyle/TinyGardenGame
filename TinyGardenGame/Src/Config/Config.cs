@@ -12,13 +12,20 @@
     public readonly int DefaultMaxEnergy = 100;
     public readonly int DefaultMinEnergy = 0;
     
-    // Game
+    // Global
     public readonly int FpsCap = 144;
+    public readonly string AssetsConfigPath = "Src/Config/Assets.toml";
+    
+    // Game
+    public readonly DebugConfig Debug = new DebugConfig();
     public readonly bool ShowBuildHints = true;
     public readonly bool ShowBuildGhost = true;
     public readonly float BuildGhostOpacity = 0.45f;
-    public readonly DebugConfig Debug = new DebugConfig();
-    public readonly string AssetsConfigPath = "Src/Config/Assets.toml";
+    
+    // Game: Time
+    public readonly int TotalHoursInADay = 12;
+    public readonly int HoursOfNight = 4;
+    public readonly int HourLengthInSeconds = 20;
 
     // Map Generation
     public readonly int MapWidth = 500;
@@ -27,6 +34,12 @@
     public readonly int OceanBorderWidth = 3;
     public readonly int StartingAreaRadius = 6;
     public readonly int BiomeSize = 30;
+    public readonly int LakeMinRadius = 4;
+    public readonly int LakeMaxRadius = 8;
+    public readonly float LakeProbabilityPerBiomeInstance = 0.75f;
+    public readonly float LakeMinAngleStepRadians = 0.4f;
+    public readonly float LakeMaxAngleStepRadians = 1.2f;
+    public readonly float LakeVertexVariabilityPercent = 0.65f;
   }
 
   /**

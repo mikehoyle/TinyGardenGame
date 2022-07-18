@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using MonoGame.Extended.Shapes;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.MapGeneration.RandomAlgorithms;
 using static TinyGardenGame.MapPlacementHelper;
@@ -28,6 +31,11 @@ namespace TinyGardenGame.MapGeneration {
       var map = new GameMap(_config.MapWidth, _config.MapHeight);
       var biomeSegments = VoroniSegmentation.GenerateBiomes(
           _random, _config, _config.MapWidth, _config.MapHeight);
+      // OPTIMIZE: This for loop is dreadfully slow and could probably be massively sped up
+      // by Voroni algorithms like Fortune's Algorithm or Jump Flood.
+      // TODO: Use Lloyd Relaxation with truer randomness for better variety?
+      // TODO: Rivers along Delaunay Triangle edges?
+      // http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
       for (short x = 0; x < _config.MapWidth; x++) {
         for (short y = 0; y < _config.MapHeight; y++) {
           (Type Type, float prox) closestSegment = (typeof(object), float.MaxValue);
@@ -41,8 +49,10 @@ namespace TinyGardenGame.MapGeneration {
           map.Map[x, y] = (MapTile)Activator.CreateInstance(closestSegment.Type);
         }
       }
-      
       Debug.WriteLine($"Allocating base tiles took: {benchmarkTimer.Elapsed}");
+      
+      GenerateLakes(map, biomeSegments);
+      Debug.WriteLine($"Generating lakes took: {benchmarkTimer.Elapsed}");
 
       // Fill in land with noise
       // GenerateLandStructure(map);
@@ -59,6 +69,72 @@ namespace TinyGardenGame.MapGeneration {
       
       Debug.WriteLine($"Post-process took: {benchmarkTimer.Elapsed}");
       return map;
+    }
+
+    /**
+     * Add lakes. Currently, just add one random lake per grass biome segment.
+     */
+    private void GenerateLakes(GameMap map, List<BiomeSegment> biomes) {
+      foreach (var biome in biomes.Where(biome => biome.TileType == typeof(WeedsTile))) {
+        GenerateLake(map, biome.X, biome.Y);
+      }
+    }
+
+    /**
+     * Generate a lake with the following strategy:
+     *  - Centered in biome (on originX/originY)
+     *  - Step around a circle of base radius R at random angles
+     *  - Apply a point at that angle with a variability V around radius R
+     *      the variability is scaled by the radius skip.
+     */
+    private void GenerateLake(GameMap map, int originX, int originY) {
+      if (_random.NextSingle() > _config.LakeProbabilityPerBiomeInstance) {
+        return;
+      }
+      
+      var currentAngle = new Angle(0, AngleType.Radian);
+      var baseRadius = _random.NextSingle(_config.LakeMinRadius, _config.LakeMaxRadius);
+      var radiusLowerLimit = baseRadius - (baseRadius * _config.LakeVertexVariabilityPercent);
+      var radiusUpperLimit = baseRadius + (baseRadius * _config.LakeVertexVariabilityPercent);
+      var currentRadius = baseRadius;
+
+      var polygonVertices = new List<Vector2>();
+
+      do {
+        polygonVertices.Add(
+            new Vector2(originX, originY) + currentAngle.ToVector(currentRadius));
+
+
+        // Increment angle around the circle
+        var angleAddition = _random.NextSingle(
+            _config.LakeMinAngleStepRadians, _config.LakeMaxAngleStepRadians);
+        currentAngle.Radians += angleAddition;
+
+        // Allow more variation the farther we're stepping
+        var variationPercent = 
+            (angleAddition / _config.LakeMaxAngleStepRadians) *
+            _config.LakeVertexVariabilityPercent;
+        var currentLowerLimit =
+            Math.Max(radiusLowerLimit, currentRadius - (baseRadius * variationPercent));
+        var currentUpperLimit =
+            Math.Min(radiusUpperLimit, currentRadius + (baseRadius * variationPercent));
+        currentRadius = _random.NextSingle(currentLowerLimit, currentUpperLimit);
+      } while (currentAngle.Revolutions < 1);
+      var lakePolygon = new Polygon(polygonVertices);
+      
+      // Actually apply the polygon to the map
+      var bounds = lakePolygon.BoundingRectangle;
+      for (int x = Math.Max(0, (int)bounds.Left);
+           x <= Math.Min(map.Map.GetLength(0) - 1, (int)bounds.Right); x++) {
+        for (int y = Math.Max(0, (int)bounds.Top);
+             y <= Math.Min(map.Map.GetLength(1) - 1, (int)bounds.Bottom); y++) {
+          if (map.Map[x, y] != null
+              && map.Map[x, y].CanContainWater
+              && lakePolygon.Contains(x, y)) {
+            map.Map[x, y].ContainsWater = true;
+          }
+        }
+      }
     }
 
     private void AddStartingArea(GameMap map) {

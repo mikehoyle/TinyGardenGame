@@ -38,6 +38,9 @@
    - [X] Create example sprite with collisions
    - [X] Add basic "growth" component.
    - [X] Add growth progress/UI
-*
-* TODO Lower priority [/]
+
+* TODO Stretch [0/1]
+ - [ ] Dynamic shadows to indicate time of day
+
+* TODO Lower priority [1/1]
  - [X] FPS counter

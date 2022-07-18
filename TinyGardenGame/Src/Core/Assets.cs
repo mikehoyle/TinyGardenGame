@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Aseprite.Documents;
+using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
@@ -77,6 +78,9 @@ namespace TinyGardenGame.Core {
 
     // Fonts
     ConsoleFont,
+    
+    // Bmp Fonts
+    CourierFont,
   }
 
   // TODO: This special static class is error prone
@@ -84,6 +88,8 @@ namespace TinyGardenGame.Core {
     public static KeyedCollection<SpriteName, Asset> Assets =
         new KeyedCollection<SpriteName, Asset>(x => x.Name);
     public static KeyedCollection<SpriteName, FontAsset> Fonts =
+        new KeyedCollection<SpriteName, FontAsset>(x => x.Name);
+    public static KeyedCollection<SpriteName, FontAsset> BmpFonts =
         new KeyedCollection<SpriteName, FontAsset>(x => x.Name);
     public static Task LoadAllAssets(ContentManager contentManager, string assetConfigPath) {
       // OPTIMIZE: This in theory duplicates a lot. Even though contentManager caches, it could
@@ -98,6 +104,11 @@ namespace TinyGardenGame.Core {
         foreach (var asset in assetsModel.Fonts) {
           contentManager.Load<SpriteFont>(asset.Path);
           Fonts.Add(asset);
+        }
+        
+        foreach (var asset in assetsModel.BmpFonts) {
+          contentManager.Load<BitmapFont>(asset.Path);
+          BmpFonts.Add(asset);
         }
       });
     }
@@ -158,6 +169,10 @@ namespace TinyGardenGame.Core {
     
     public static SpriteFont LoadFont(this ContentManager content, SpriteName spriteName) {
       return content.Load<SpriteFont>(AssetLoading.Fonts[spriteName].Path);
+    }
+    
+    public static BitmapFont LoadBmpFont(this ContentManager content, SpriteName spriteName) {
+      return content.Load<BitmapFont>(AssetLoading.BmpFonts[spriteName].Path);
     }
   }
 }

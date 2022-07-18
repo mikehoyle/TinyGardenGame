@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.ViewportAdapters;
@@ -10,7 +9,7 @@ using TinyGardenGame.Player.State;
 
 namespace TinyGardenGame.Hud {
   public class ResourcesDisplay {
-    private const int PaddingPx = 2;
+    private const int TopMargin = 10;
     private const int MeterHeight = 45;
 
     private readonly Point _energyMeterOrigin;
@@ -32,13 +31,17 @@ namespace TinyGardenGame.Hud {
       _meterFillEmpty = gameContent.LoadSprite(SpriteName.ProgressBarFillEmpty);
       _meterFillHp = gameContent.LoadSprite(SpriteName.ProgressBarFillHp);
       _meterFillEnergy = gameContent.LoadSprite(SpriteName.ProgressBarFillEnergy);
+      var paddingTopPx = HeadsUpDisplay.PaddingPx + TopMargin;
+      var paddingRightPx = HeadsUpDisplay.PaddingPx;
 
       _meterWidth =
           _meterBorder.LeftPadding
           + _meterBorder.RightPadding
           + _meterFillEmpty.TextureRegion.Width;
-      _energyMeterOrigin = new Point(hudScale.VirtualWidth - _meterWidth - PaddingPx, PaddingPx);
-      _hpMeterOrigin = new Point(_energyMeterOrigin.X - _meterWidth - PaddingPx, PaddingPx);
+      _energyMeterOrigin = new Point(
+          hudScale.VirtualWidth - _meterWidth - paddingRightPx, paddingTopPx);
+      _hpMeterOrigin = new Point(
+          _energyMeterOrigin.X - _meterWidth - paddingRightPx, paddingTopPx);
       _meterInnerHeight = MeterHeight - _meterBorder.TopPadding - _meterBorder.TopPadding;
     }
 
