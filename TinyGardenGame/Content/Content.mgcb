@@ -62,6 +62,18 @@
 /processorParam:InnerPadding=0
 /build:sprites/ffa_test_spritesheet.aseprite
 
+#begin sprites/gnome.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/gnome.aseprite
+
 #begin sprites/inventory_border.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor

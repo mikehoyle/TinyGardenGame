@@ -1,7 +1,7 @@
 ﻿[[Assets]]
 Name = "Player"
-Path = "sprites/ffa_test_spritesheet"
-Origin = { X = 10, Y = 28 }
+Path = "sprites/gnome"
+Origin = { X = 16, Y = 32 }
 
 [[Assets]]
 Name = "ValidTile"

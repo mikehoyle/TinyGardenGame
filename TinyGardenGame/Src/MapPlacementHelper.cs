@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -96,6 +97,11 @@ namespace TinyGardenGame {
     // Commonly needed so provided for convenience;
     public static float HalfTileWidthPixels => TileWidthPixels / 2.0f;
     public static float HalfTileHeightPixels => TileHeightPixels / 2.0f;
+
+    public static Direction AngleToDirection(Angle angle) {
+      return DirectionBounds.FirstOrDefault(
+          entry => Angle.IsBetween(angle, entry.Value.Item1, entry.Value.Item2)).Key;
+    }
 
     /**
      * Converts an isometric map coordinate (where 1 unit = 1 tile)
