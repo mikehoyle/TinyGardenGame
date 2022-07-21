@@ -9,7 +9,7 @@ namespace TinyGardenGame.Core.Components.Drawables {
         SpriteBatch spriteBatch, Vector2 position, SpriteEffects spriteEffects);
     
     public virtual void Update(GameTime gameTime) { }
-    public virtual void OnAnimationChange(string name) { }
+    public virtual void OnAnimationChange(string name, bool loop) { }
     
     protected void SpriteBatchDraw(
         SpriteBatch spriteBatch,

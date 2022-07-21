@@ -34,8 +34,8 @@ namespace TinyGardenGame.Core.Components {
       Drawable.Update(gameTime);
     }
 
-    public void SetAnimation(string animationName) {
-      Drawable.OnAnimationChange(animationName);
+    public void SetAnimation(string animationName, bool loop = true) {
+      Drawable.OnAnimationChange(animationName, loop);
     }
   }
 }

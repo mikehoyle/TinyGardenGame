@@ -20,7 +20,10 @@ namespace TinyGardenGame.Core.Components.Drawables {
       _sprite.Update(gameTime);
     }
 
-    public override void OnAnimationChange(string name) {
+    public override void OnAnimationChange(string name, bool loop) {
+      var animation = _sprite.Animations[name];
+      animation.IsOneShot = !loop;
+      _sprite.Animations[name] = animation;
       _sprite.Play(name);
     }
   }

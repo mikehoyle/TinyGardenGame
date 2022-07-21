@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Input.InputListeners;
+using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
@@ -14,19 +14,10 @@ using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.State;
 using TinyGardenGame.Screens;
+using static TinyGardenGame.MapPlacementHelper.Direction;
 
 namespace TinyGardenGame.Player.Systems {
   public class PlayerInputSystem : EntityUpdateSystem {
-    // TODO: Base player input on configuration
-    // TODO: Controller support
-    private static readonly Dictionary<Keys, Vector2> MovementControls =
-        new Dictionary<Keys, Vector2>() {
-          {Keys.Down, Vector2.UnitY},
-          {Keys.Up, Vector2.UnitY * -1},
-          {Keys.Right, Vector2.UnitX},
-          {Keys.Left, Vector2.UnitX * -1},
-        };
-
     private readonly Dictionary<Keys, Action> _actionControls;
 
 
@@ -39,7 +30,8 @@ namespace TinyGardenGame.Player.Systems {
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private ComponentMapper<SelectionComponent> _selectionComponentMapper;
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
-    private readonly KeyboardListener _keyboardListener;
+    private ComponentMapper<DrawableComponent> _drawableComponentMapper;
+    private readonly ControlsMapper<PlayerAction> _controlsMapper;
 
     public PlayerInputSystem(
         PrimaryGameplayScreen screen,
@@ -55,17 +47,19 @@ namespace TinyGardenGame.Player.Systems {
       _screen = screen;
       _playerState = playerState;
       _objectPlacementSystem = objectPlacementSystem;
-      _keyboardListener = new KeyboardListener(new KeyboardListenerSettings() {
-          RepeatPress = false,
-      });
-      _keyboardListener.KeyPressed += OnKeyPressed;
-      _actionControls = new Dictionary<Keys, Action>() {
-          {Keys.OemMinus, MoveSelectionLeft},
-          {Keys.OemPlus, MoveSelectionRight},
-          {Keys.Q, PlacePlant},
-          {Keys.W, DigTrench},
-          {Keys.A, ToggleHoverPlant},
-      };
+      // TODO: import these from a separate config, don't hardcode
+      _controlsMapper = new ControlsMapper<PlayerAction>()
+          .Register(new KeyHeldCondition(Keys.Up), PlayerAction.MoveUp)
+          .Register(new KeyHeldCondition(Keys.Down), PlayerAction.MoveDown)
+          .Register(new KeyHeldCondition(Keys.Left), PlayerAction.MoveLeft)
+          .Register(new KeyHeldCondition(Keys.Right), PlayerAction.MoveRight)
+          .Register(new KeyPressedCondition(Keys.Space), PlayerAction.Attack)
+          .Register(new KeyPressedCondition(Keys.Q), PlayerAction.PlacePlant)
+          .Register(new KeyPressedCondition(Keys.A), PlayerAction.ToggleHoverPlant)
+          .Register(
+              new KeyPressedCondition(Keys.OemOpenBrackets), PlayerAction.InventorySelectionLeft)
+          .Register(
+              new KeyPressedCondition(Keys.OemCloseBrackets), PlayerAction.InventorySelectionRight);
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -73,39 +67,14 @@ namespace TinyGardenGame.Player.Systems {
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _selectionComponentMapper = mapperService.GetMapper<SelectionComponent>();
       _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
+      _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
     }
 
     public override void Update(GameTime gameTime) {
-      // Motion controls use input directly, while more concise button-press actions use
-      // input listeners.
-      var movementDirection = GetMovementDirection();
-      foreach (var entity in ActiveEntities) {
-        var motionComponent = _motionComponentMapper.Get(entity);
-        motionComponent.SetMotionFromCardinalVector(
-            GetMovementVector(gameTime, movementDirection, motionComponent.SpeedTilesPerSec));
-      }
-
-      _keyboardListener.Update(gameTime);
+      var triggeredActions = _controlsMapper.GetTriggeredActions();
+      _playerState.Update(gameTime, triggeredActions);
     }
 
-    private static Vector2 GetMovementVector(
-        GameTime gameTime, Vector2 movementDirection, float speed) {
-      var normalizedSpeed = speed * gameTime.GetElapsedSeconds();
-      return movementDirection * normalizedSpeed;
-    }
-    
-    private static Vector2 GetMovementDirection() {
-      var state = Keyboard.GetState();
-      var movementDirection = MovementControls.Keys.Where(key => state.IsKeyDown(key))
-          .Aggregate(Vector2.Zero, (current, key) => current + MovementControls[key]);
-      
-      if (movementDirection != Vector2.Zero) {
-        movementDirection.Normalize(); 
-      }
-    
-      return movementDirection;
-    }
-    
     private void OnKeyPressed(object sender, KeyboardEventArgs args) {
       if (_actionControls.TryGetValue(args.Key, out var action)) {
         action.Invoke();
@@ -147,6 +116,33 @@ namespace TinyGardenGame.Player.Systems {
     private void DigTrench() {
       var placement = _selectionComponentMapper.Get(ActiveEntities[0]).SelectedSquare;
       _objectPlacementSystem.AttemptDigTrench((int)placement.X, (int)placement.Y);
+    }
+
+    private void Attack() {
+      // TODO: Add cooldaown / animation state to prevent spam, cancellation, and looping
+      // TODO: Also fix animation to work at all and not get pre-empted by idle animation
+      // TODO: Add damage component
+      var position = _positionComponentMapper.Get(_playerState.PlayerEntity);
+      var drawable = _drawableComponentMapper.Get(_playerState.PlayerEntity);
+      switch (MapPlacementHelper.AngleToDirection(position.Rotation)) {
+        case SouthEast:
+          drawable.SetAnimation($"attack_down");
+          break;
+        case NorthWest:
+          drawable.SetAnimation($"attack_up");
+          break;
+        case South:
+        case SouthWest:
+        case West:
+          drawable.SetAnimation($"attack_left");
+          break;
+        case North:
+        case NorthEast:
+        case East:
+          drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
+          drawable.SetAnimation($"attack_left");
+          break;
+      }
     }
   }
 }

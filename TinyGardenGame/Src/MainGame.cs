@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
+using TinyGardenGame.Core;
 using TinyGardenGame.Screens;
 
 namespace TinyGardenGame {
@@ -18,7 +19,6 @@ namespace TinyGardenGame {
       Config = new Config.Config();
       _graphics = new GraphicsDeviceManager(this);
       _screenManager = new ScreenManager();
-      Components.Add(_screenManager);
       Content.RootDirectory = "Content";
       IsMouseVisible = true;
     }
@@ -40,6 +40,15 @@ namespace TinyGardenGame {
       IsFixedTimeStep = true;
       TargetElapsedTime = TimeSpan.FromSeconds(1d / Config.FpsCap);
       _graphics.ApplyChanges();
+    }
+
+    protected override void Update(GameTime gameTime) {
+      KeyboardInputState.Update();
+      _screenManager.Update(gameTime);
+    }
+
+    protected override void Draw(GameTime gameTime) {
+      _screenManager.Draw(gameTime);
     }
   }
 }

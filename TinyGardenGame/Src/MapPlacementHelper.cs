@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
@@ -8,6 +9,7 @@ using TinyGardenGame.MapGeneration;
 using TinyGardenGame.MapGeneration.MapTiles;
 using static MonoGame.Extended.AngleType;
 using static TinyGardenGame.MapPlacementHelper.Direction;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace TinyGardenGame {
   /**
@@ -88,6 +90,28 @@ namespace TinyGardenGame {
             },
         };
     
+    // Favor left/right on the diagonals
+    public static readonly Dictionary<Direction, (Angle, Angle)> FourDirectionBounds =
+        new Dictionary<Direction, (Angle, Angle)> {
+            {
+                East,
+                (new Angle(-0.125f, Revolution), new Angle(0.125f, Revolution))
+            },
+            
+            {
+                West,
+                (new Angle(0.375f, Revolution), new Angle(-0.375f, Revolution))
+            },
+            {
+                South,
+                (new Angle(-0.375f, Revolution), new Angle(-0.125f, Revolution))
+            },
+            {
+                North,
+                (new Angle(0.125f, Revolution), new Angle(0.375f, Revolution))
+            },
+        };
+    
     // Tile location at NW / top of tile, same for map coords & absolute rendering coords
     public static Vector2 MapOrigin { get; set; } = Vector2.Zero;
 
@@ -100,6 +124,11 @@ namespace TinyGardenGame {
 
     public static Direction AngleToDirection(Angle angle) {
       return DirectionBounds.FirstOrDefault(
+          entry => Angle.IsBetween(angle, entry.Value.Item1, entry.Value.Item2)).Key;
+    }
+    
+    public static Direction AngleToFourDirection(Angle angle) {
+      return FourDirectionBounds.FirstOrDefault(
           entry => Angle.IsBetween(angle, entry.Value.Item1, entry.Value.Item2)).Key;
     }
 
@@ -132,6 +161,34 @@ namespace TinyGardenGame {
     
     public static Vector2 CenterOfMapTile(Vector2 coords) {
       return CenterOfMapTile(coords.X, coords.Y);
+    }
+
+    /**
+     * Builds a rectangle in the given direction from origin zero. Only works in
+     * the simple four directions, as Rectangles won't go diagonal.
+     * TODO: this doesn't work for attacks, because attacks are exclusively diagonal
+     *    from the user's perspective
+     */
+    public static System.Drawing.RectangleF BuildDirectedRect(
+        float farBound, float nearBound, float leftBound, float rightBound, Direction direction) {
+      var depth = farBound - nearBound;
+      var width = rightBound - leftBound;
+
+      switch (direction) {
+        default:
+        case SouthEast:
+        case NorthEast:
+        case East:
+          return new System.Drawing.RectangleF(nearBound, leftBound, depth, width);
+        case SouthWest:
+        case NorthWest:
+        case West:
+          return new System.Drawing.RectangleF(-farBound, -rightBound, depth, width);
+        case North:
+          return new System.Drawing.RectangleF(leftBound, -farBound, width, depth);
+        case South:
+          return new System.Drawing.RectangleF(-rightBound, nearBound, width, depth);
+      }
     }
   }
 
