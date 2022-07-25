@@ -18,8 +18,6 @@ namespace TinyGardenGame.Core.Systems {
     private ComponentMapper<CollisionFootprintComponent> _collisionComponentMapper;
     private ComponentMapper<MotionComponent> _motionComponentMapper;
     private readonly QuadTreeRectF<CollidableObject> _collisionQuadTree;
-    
-    public delegate bool IsSpaceBuildableDel(RectangleF target);
 
     public CollisionSystem(GameMap map) : base(Aspect.All(
         typeof(PositionComponent), typeof(CollisionFootprintComponent), typeof(MotionComponent))) {

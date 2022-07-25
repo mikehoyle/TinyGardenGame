@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
@@ -27,13 +28,13 @@ namespace TinyGardenGame.Core.Systems {
     private readonly GraphicsDevice _graphicsDevice;
     private readonly CameraSystem _cameraSystem;
     private readonly GameState.GameState _gameState;
-    private readonly RenderSystemDraw _drawMapOverlay;
     private readonly RenderSystemDraw _drawHud;
     private readonly SpriteBatch _spriteBatch;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
     private ComponentMapper<PositionComponent> _positionComponentMapper;
     private readonly MapProcessor _mapProcessor;
     private readonly Effect _nightEffect;
+    private DepthSortComparer _depthComparer;
 
     public delegate void RenderSystemDraw(SpriteBatch spriteBatch, GameTime gameTime);
 
@@ -42,23 +43,22 @@ namespace TinyGardenGame.Core.Systems {
         GraphicsDevice graphicsDevice,
         CameraSystem cameraSystem,
         GameState.GameState gameState,
-        GameMap map, 
-        RenderSystemDraw drawMapOverlay,
+        MapProcessor mapProcessor,
         RenderSystemDraw drawHud)
         : base(Aspect.All(typeof(DrawableComponent), typeof(PositionComponent))) {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
       _gameState = gameState;
-      _drawMapOverlay = drawMapOverlay;
       _nightEffect = game.Content.Load<Effect>("shaders/night_shader");
       _drawHud = drawHud;
       _spriteBatch = new SpriteBatch(graphicsDevice);
-      _mapProcessor = new MapProcessor(game, map);
+      _mapProcessor = mapProcessor;
     }
     
     public override void Initialize(IComponentMapperService mapperService) {
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
+      _depthComparer = new DepthSortComparer(_drawableComponentMapper, _positionComponentMapper);
     }
 
     public override void Draw(GameTime gameTime) {
@@ -68,7 +68,6 @@ namespace TinyGardenGame.Core.Systems {
           transformMatrix: _cameraSystem.ViewMatrix,
           effect: _gameState.Clock.IsNight ? _nightEffect : null);
       DrawMap();
-      _drawMapOverlay(_spriteBatch, gameTime);
       DrawSprites(gameTime);
       _spriteBatch.End();
       // Hud uses its own batch
@@ -82,36 +81,11 @@ namespace TinyGardenGame.Core.Systems {
 
     private void DrawSprites(GameTime gameTime) {
       // Sort the entities by depth
-      var entities = ActiveEntities.ToList();
-      // TODO: Fix this inconsistent sort
-      entities.Sort((entity1, entity2) => {
-        // OPTIMIZE: These lookups should be fast (O(1)), but may still be an efficiency issue
-        // This is also far more continued sorting than is really necessary, as many of
-        // the game components will never move.
-        // In short, look here if optimization is needed
-        var layer1 = _drawableComponentMapper.Get(entity1).RenderLayer;
-        var layer2 = _drawableComponentMapper.Get(entity2).RenderLayer;
-        if (layer1 != layer2) {
-          return layer1 - layer2;
-        }
-        
-        // Sprite1 is in front of Sprite2 if its SE-most point is greater (X&Y) than
-        // the NW origin of Sprite2.
-        // This is only sound given some assumptions about the entities
-        // (that they don't overlap, and take up about a tile). Those may break in the future
-        // we shall see.
-        var pos1 = _positionComponentMapper.Get(entity1).Position;
-        var depth1 = _positionComponentMapper.Get(entity1).EffectiveRenderDepth;
-        var pos2 = _positionComponentMapper.Get(entity2).Position;
-        if (pos1 == pos2) {
-          return 0;
-        }
-        if (depth1.X == pos2.X || depth1.Y == pos2.Y) {
-          return _positionComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
-              ? -1 : 0;
-        }
-        return ((depth1.X > pos2.X) && (depth1.Y > pos2.Y)) ? 1 : -1;
-      });
+      var entities = ActiveEntities.ToList().Where(
+              // Because we may draw in between updates, ensure our entity set is valid
+              entity => _drawableComponentMapper.Has(entity)
+                        && _positionComponentMapper.Has(entity))
+          .OrderBy(entity => entity, _depthComparer);
       
       // And now draw in order
       foreach (var entity in entities) {

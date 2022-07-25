@@ -18,10 +18,16 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       PlayerState = playerState;
     }
 
-    // TODO consider separating this into HandleInputs first, so update gets run after any changes.
-    public abstract BasePlayerState? Update(GameTime gameTime, HashSet<PlayerAction> actions);
+    public virtual bool MeetsEntryCondition() {
+      return true;
+    }
 
-    public virtual void CleanUp() {}
+    public virtual void Enter() {}
+
+    // TODO consider separating this into HandleInputs first, so update gets run after any changes.
+    public abstract Type? Update(GameTime gameTime, HashSet<PlayerAction> actions);
+
+    public virtual void Exit() {}
 
     protected void SetAnimationFromDirection(
         DrawableComponent drawable,

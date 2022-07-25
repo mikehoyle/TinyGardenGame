@@ -36,26 +36,23 @@ namespace TinyGardenGame.Screens {
           GraphicsDevice,
           MainGame.RenderResolutionWidth,
           MainGame.RenderResolutionHeight);
-      var objectPlacementSystem =
-          new ObjectPlacementSystem(this, playerState, map, collisionSystem, cameraSystem);
+      var mapProcessor = new MapProcessor(game, map);
       _world = new WorldBuilder()
+          .AddSystem(new PlayerInputSystem(this, playerState, map))
           .AddSystem(new RenderSystem(
               game,
               GraphicsDevice,
               cameraSystem,
               _gameState,
-              map,
-              objectPlacementSystem.Draw,
+              mapProcessor,
               hud.Draw))
-          .AddSystem(new PlayerInputSystem(this, playerState, map, objectPlacementSystem))
-          .AddSystem(objectPlacementSystem)
           .AddSystem(collisionSystem)
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem(game))
           .AddSystem(cameraSystem)
           .AddSystem(_debugSystem)
           .Build();
-      playerState.InitializePlayerCharacter(_world, game);
+      playerState.Initialize(_world, game, collisionSystem, map, mapProcessor);
       // Test starting item
       playerState.Inventory.AddItem(InventoryItem.ReedSeeds, 5);
     }

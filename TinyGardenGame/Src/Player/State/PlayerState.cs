@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using MonoGame.Extended.Collections;
 using MonoGame.Extended.Entities;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
+using TinyGardenGame.Core.Systems;
+using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.State.FiniteStateMachine;
 using TinyGardenGame.Player.State.Inventory;
@@ -19,6 +23,8 @@ namespace TinyGardenGame.Player.State {
    * - More?
    */
   public class PlayerState {
+    private KeyedCollection<Type, BasePlayerState> _states;
+    
     public Entity PlayerEntity { get; private set; }
     public PlayerInventory Inventory { get; }
     public PlayerTools Tools { get; }
@@ -32,10 +38,21 @@ namespace TinyGardenGame.Player.State {
       Tools = new PlayerTools();
       Hp = new ResourceMeter(config.DefaultMaxHp, config.DefaultMinHp);
       Energy = new ResourceMeter(config.DefaultMaxEnergy, config.DefaultMinEnergy);
-      State = new MovablePlayerState(this);
+      _states = new KeyedCollection<Type, BasePlayerState>(state => state.GetType());
     }
     
-    public void InitializePlayerCharacter(World world, MainGame game) {
+    public void Initialize(
+        World world,
+        MainGame game,
+        IIsSpaceOccupied isSpaceOccupied,
+        GameMap map,
+        MapProcessor mapProcessor) {
+      _states.Add(new MovablePlayerState(this, isSpaceOccupied, map));
+      _states.Add(new BasicAttackingPlayerState(this, isSpaceOccupied, map));
+      _states.Add(new PlaceableObjectHoveringState(
+          this, world, game, isSpaceOccupied, map, mapProcessor));
+      
+      State = _states[typeof(MovablePlayerState)];
       var playerSprite = game.Content.LoadAnimated(SpriteName.Player);
       PlayerEntity = world.CreateEntity()
           .AttachAnd(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)))
@@ -50,10 +67,11 @@ namespace TinyGardenGame.Player.State {
     }
 
     public void Update(GameTime gameTime, HashSet<PlayerAction> triggeredActions) {
-      var newState = State.Update(gameTime, triggeredActions);
-      if (newState != null) {
-        State.CleanUp();
-        State = newState;
+      var newState = State?.Update(gameTime, triggeredActions);
+      if (newState != null && _states[newState].MeetsEntryCondition()) {
+        State.Exit();
+        State = _states[newState];
+        State.Enter();
       }
     }
   }

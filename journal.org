@@ -1,5 +1,59 @@
 #+TITLE Tiny Garden Game Journal
 
+* 07/24/2022
+  It's been a long time since I've updated but I've done plenty of work during
+  this time. It's kind of depressing looking back at the month+ old journal
+  entries and seeing that I didn't have an idea then, knowing I'm no closer now.
+
+  I'm at a breaking point. I've implemented a lot, inventory, placing plants,
+  trench digging, a framework for attacking, but I really am floundering on how
+  these elements go together. I've asked a bunch of friends to join the
+  brainstorm through a number of Google Dovs and chats. This has been helpful
+  but has had a core fault. None of them really have a vested interest in
+  keeping the scope small. So the idea we've "landed" on is this open world
+  survival/exploration/crafting game, but the amount of content required to make
+  such a game fun and playable is enormous.
+
+  I really can't in a good conscience move forward without having some concete
+  good ideas about what I want the game to be. Even to just make a prototype.
+  I'm cruising headfirst into making a game without a vision for a good game,
+  which is essentially guaranteed to be a monumental waste of time.
+
+  The way I'm approaching it isn't working. I'm listening to game design
+  podcasts, reading books, and creating analysis docs of mechanics in games that
+  I love. All in hopes that this sparks a good set of ideas for myself. But
+  unfortunately, good inspiration is refusing to be forced.
+
+  Now that I've half-built something, I'm attached to the elements of the broad
+  format (and know for a fact a good game can be built in that format), but the
+  restriction isn't helping the brainstorming process.
+
+  "My game is like X except you can Y"
+
+  Maybe that's a question I can answer to send me down a path.
+
+  It might be playing games. Boy does that feel like "slacking off", but I kind
+  of need to be playing games I might want to be similar to get inspiration on
+  how to iterate on them. Ultimately I play a lot of games, yet I find myself
+  constantly fixated on improvement in competitive games I've sunk hundreds of
+  hours into.
+
+  Which begs the question, "why not just make a competitive game?" Well very
+  simply, it violates my core tenant of wanting to endeavor on an achievable
+  project. Anything online is an absurd complexity, and local multiplayer has a
+  whole host of challenges its own too. Especially competitive, wherein the
+  slightest poor interactions, that would be meaningless in a single-player
+  game, become glaring and frustrating.
+
+  So I'm in a difficult spot. I'm done simply looking for ideas, and I'm now a
+  level deeper: looking for ideas for how to effectively come up with ideas. So
+  far, divine inspiration hasn't hit. My mind is stuck in a loop of the ideas
+  I've had and don't like, but can't break free from.
+
+  Even though I like the core theme I've established (you're a tiny dude in a
+  garden dealing with garden problems at a micro scale), I may soon consider
+  completely pivoting just to spur a new thought.
+
 * 06/14/2022
   Another quick idea dump:
   - Birds that kill pests but require a perch to be built (reeds + ?) and a

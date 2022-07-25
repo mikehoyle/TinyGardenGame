@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -92,14 +93,16 @@ namespace TinyGardenGame.Plants {
      * Creates a no-collision ghost plant for use as a visual indicator.
      * @returns entity id of the new entity.
      */
-    public int CreateGhostPlant(PlantType type, Vector2 position) {
+    public int CreateGhostPlant(PlantType type, Vector2 position, Entity? existingEntity = null) {
       var originalSprite = _plantAssets[type].Sprite();
       var sprite = new MonoGame.Extended.Sprites.Sprite(
           new TextureRegion2D(originalSprite.Texture, originalSprite.Frames[0].Bounds)) {
           Origin = originalSprite.Origin,
           Alpha = _config.BuildGhostOpacity,
       };
-      return _createEntity()
+
+      existingEntity ??= _createEntity();
+      return existingEntity
           .AttachAnd(new DrawableComponent(sprite))
           .AttachAnd(new PositionComponent(
               position, footprintSize: _plantAssets[type].FootprintSize))

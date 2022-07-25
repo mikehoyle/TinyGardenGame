@@ -5,6 +5,8 @@ using System.Drawing;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using TinyGardenGame.Core.Components;
+using TinyGardenGame.Core.Systems;
+using TinyGardenGame.MapGeneration;
 using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.State.FiniteStateMachine {
@@ -19,26 +21,32 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     private static readonly TimeSpan CancellableAfterDuration = TimeSpan.FromMilliseconds(300);
     private static double DamageDealt = 5;
     
-    private TimeSpan _currentDuration = TimeSpan.Zero;
+    private TimeSpan _currentDuration;
 
-    public BasicAttackingPlayerState(PlayerState playerState) : base(playerState) {
+    public BasicAttackingPlayerState(
+        PlayerState playerState,
+        IIsSpaceOccupied isSpaceOccupied,
+        GameMap map) : base(playerState, isSpaceOccupied, map) {}
+
+    public override void Enter() {
+      _currentDuration = TimeSpan.Zero;
       var motionComponent = PlayerState.PlayerEntity.Get<MotionComponent>();
-      motionComponent.SetMotionFromCardinalVector(Vector2.Zero);
-      
-      var position = PlayerState.PlayerEntity.Get<PositionComponent>();
-      var facingDirection = AngleToDirection(position.Rotation);
-      playerState.PlayerEntity.Attach(BuildDamageSource(facingDirection));
       var drawable = PlayerState.PlayerEntity.Get<DrawableComponent>();
+      var position = PlayerState.PlayerEntity.Get<PositionComponent>();
+      
+      motionComponent.SetMotionFromCardinalVector(Vector2.Zero);
+      var facingDirection = AngleToDirection(position.Rotation);
+      PlayerState.PlayerEntity.Attach(BuildDamageSource(facingDirection));
       SetAnimationFromDirection(drawable, "attack", facingDirection, false);
     }
-    
-    public override BasePlayerState? Update(GameTime gameTime, HashSet<PlayerAction> actions) {
+
+    public override Type? Update(GameTime gameTime, HashSet<PlayerAction> actions) {
       _currentDuration += gameTime.ElapsedGameTime;
-      if (_currentDuration >= CancellableAfterDuration && HandleMoveInput(gameTime, actions)) {
-        return new MovablePlayerState(PlayerState);
+      if (_currentDuration >= CancellableAfterDuration && MaybeMove(gameTime, actions)) {
+        return typeof(MovablePlayerState);
       }
       
-      return _currentDuration >= FullDuration ? new MovablePlayerState(PlayerState) : null;
+      return _currentDuration >= FullDuration ? typeof(MovablePlayerState) : null;
     }
 
     private DamageSourceComponent BuildDamageSource(Direction facingDirection) {

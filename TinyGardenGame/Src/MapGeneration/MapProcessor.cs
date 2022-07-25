@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,6 +7,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
+using TinyGardenGame.Plants;
 using static TinyGardenGame.MapPlacementHelper;
 using static TinyGardenGame.MapPlacementHelper.Direction;
 using static TinyGardenGame.Core.SpriteName;
@@ -18,13 +20,18 @@ namespace TinyGardenGame.MapGeneration {
   public class MapProcessor {
     private readonly MainGame _game;
     private readonly GameMap _map;
+    private readonly Sprite _tileHighlightSprite;
+    
+    public PlantEntityFactory.CanGrowOn? TileHighlightCondition { get; set; }
 
     public MapProcessor(MainGame game, GameMap map) {
       _game = game;
       _map = map;
+      _tileHighlightSprite = game.Content.LoadSprite(SpriteName.ValidTile);
     }
 
     public void Draw(SpriteBatch spriteBatch, RectangleF viewBounds) {
+      // OPTIMIZE: Excess allocation issues?
       _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
         RenderTile(spriteBatch, tile.Sprite, x, y);
       });
@@ -33,6 +40,21 @@ namespace TinyGardenGame.MapGeneration {
       _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
         if (tile.ContainsWater) {
           RenderWater(spriteBatch, x, y);
+        }
+
+        // Draw highlights, if relevant
+        // TODO Cache these values on update to prevent draw lag
+        if (TileHighlightCondition != null && TileHighlightCondition(tile)) {
+          spriteBatch.Draw(
+              _tileHighlightSprite.TextureRegion.Texture,
+              MapPlacementHelper.MapCoordToAbsoluteCoord(new Vector2(x, y)),
+              _tileHighlightSprite.TextureRegion.Bounds,
+              Color.White,
+              rotation: 0f,
+              _tileHighlightSprite.Origin,
+              scale: Vector2.One,
+              SpriteEffects.None,
+              0f);
         }
       });
     }
