@@ -16,7 +16,7 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
     private static readonly BitVector32.Section IsNonTraversableMask;
     private static readonly BitVector32.Section WaterProximityMask;
     private static readonly BitVector32.Section TextureVariantMask;
-    
+
     private BitVector32 _metadata;
 
     public abstract SpriteName Sprite { get; }
@@ -25,7 +25,7 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
       get => GetFlag(ContainsWaterMask);
       set => SetFlag(ContainsWaterMask, value);
     }
-    
+
     public bool CanContainWater {
       get => GetFlag(CanContainWaterMask);
       set => SetFlag(CanContainWaterMask, value);

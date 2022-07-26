@@ -1,9 +1,5 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
-using TinyGardenGame.Core.Systems;
 
 namespace TinyGardenGame.Core.Components.Drawables {
   public class ProgressBarDrawable : BaseDrawable {
@@ -13,6 +9,7 @@ namespace TinyGardenGame.Core.Components.Drawables {
     private double _progressPercentage;
 
     public int BorderSizePx { get; set; } = 1;
+
     public double ProgressPercentage {
       get => _progressPercentage;
       set => _progressPercentage = Math.Clamp(value, 0, 1);
@@ -29,11 +26,11 @@ namespace TinyGardenGame.Core.Components.Drawables {
       _fullTexture = fullTexture;
       _textureOrigin = new Vector2(_emptyTexture.Width / 2f, 0);
     }
-    
+
     public override void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects) {
       var fullBounds = _fullTexture.Bounds;
       fullBounds.Width = (int)(_progressPercentage * (_emptyTexture.Width - (BorderSizePx * 2)))
-                   + BorderSizePx;
+                         + BorderSizePx;
       SpriteBatchDraw(
           spriteBatch,
           _emptyTexture.Texture,

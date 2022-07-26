@@ -2,11 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.Input.InputListeners;
-using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
@@ -21,10 +17,10 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     // TODO: Controller support
     private static readonly Dictionary<PlayerAction, Vector2> MovementDirections =
         new Dictionary<PlayerAction, Vector2>() {
-            {PlayerAction.MoveDown, Vector2.UnitY},
-            {PlayerAction.MoveUp, Vector2.UnitY * -1},
-            {PlayerAction.MoveRight, Vector2.UnitX},
-            {PlayerAction.MoveLeft, Vector2.UnitX * -1},
+            { PlayerAction.MoveDown, Vector2.UnitY },
+            { PlayerAction.MoveUp, Vector2.UnitY * -1 },
+            { PlayerAction.MoveRight, Vector2.UnitX },
+            { PlayerAction.MoveLeft, Vector2.UnitX * -1 },
         };
 
     public MovablePlayerState(
@@ -34,9 +30,9 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       _isSpaceOccupied = isSpaceOccupied;
       _map = map;
     }
-    
+
     public override Type? Update(
-        GameTime gameTime, 
+        GameTime gameTime,
         HashSet<PlayerAction> triggeredActions) {
       if (triggeredActions.Contains(PlayerAction.InventorySelectionLeft)) {
         PlayerState.Inventory.CurrentlySelectedSlot--;
@@ -45,7 +41,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       if (triggeredActions.Contains(PlayerAction.InventorySelectionRight)) {
         PlayerState.Inventory.CurrentlySelectedSlot++;
       }
-      
+
       if (triggeredActions.Contains(PlayerAction.Attack)) {
         return typeof(BasicAttackingPlayerState);
       }
@@ -62,7 +58,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       MaybeMove(gameTime, triggeredActions);
       return null;
     }
-    
+
     /** Returns true if movement input is detected */
     protected bool MaybeMove(GameTime gameTime, HashSet<PlayerAction> actions) {
       // Motion controls use input directly, while more concise button-press actions use
@@ -74,10 +70,10 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
 
       var moved = movementDirection != Vector2.Zero;
       var animation = moved ? "run" : "idle";
-      
+
       var drawable = PlayerState.PlayerEntity.Get<DrawableComponent>();
       var position = PlayerState.PlayerEntity.Get<PositionComponent>();
-      var facingDirection = MapPlacementHelper.AngleToDirection(position.Rotation);
+      var facingDirection = AngleToDirection(position.Rotation);
       SetAnimationFromDirection(drawable, animation, facingDirection);
       return moved;
     }
@@ -87,25 +83,25 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       var normalizedSpeed = speed * gameTime.GetElapsedSeconds();
       return movementDirection * normalizedSpeed;
     }
-    
+
     private static Vector2 GetMovementDirection(HashSet<PlayerAction> actions) {
       var movementDirection = MovementDirections.Keys.Where(actions.Contains)
           .Aggregate(Vector2.Zero, (current, key) => current + MovementDirections[key]);
-      
+
       if (movementDirection != Vector2.Zero) {
-        movementDirection.Normalize(); 
+        movementDirection.Normalize();
       }
-    
+
       return movementDirection;
     }
-    
+
     private void AttemptDigTrench() {
       var selection = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
       var (x, y) = ((int)selection.X, (int)selection.Y);
       if (!CanDigTrench(x, y)) {
         return;
       }
-      
+
       if (_map.TryGet(x, y, out var t)) {
         if (!t.ContainsWater && t.CanContainWater) {
           var hasAdjacentWater = false;
@@ -124,7 +120,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     }
 
     private bool CanDigTrench(int x, int y) {
-      return !_isSpaceOccupied.IsSpaceOccupied(new System.Drawing.RectangleF(x, y, 1, 1));
+      return !_isSpaceOccupied.IsSpaceOccupied(new SysRectangleF(x, y, 1, 1));
     }
   }
 }

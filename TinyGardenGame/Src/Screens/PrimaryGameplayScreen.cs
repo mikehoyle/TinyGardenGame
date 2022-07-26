@@ -1,10 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
-using TinyGardenGame.Plants;
 using TinyGardenGame.Plants.Systems;
 using TinyGardenGame.Player.State;
 using TinyGardenGame.Player.State.Inventory;
@@ -17,7 +15,7 @@ namespace TinyGardenGame.Screens {
     private readonly GameState.GameState _gameState;
 
     public InGameConsole Console { get; }
-    
+
     public new MainGame Game { get; }
 
     public PrimaryGameplayScreen(MainGame game, GameMap map) : base(game) {
@@ -61,7 +59,7 @@ namespace TinyGardenGame.Screens {
       _debugSystem.LoadContent();
       base.LoadContent();
     }
-    
+
     public override void Update(GameTime gameTime) {
       _gameState.Update(gameTime);
       _world.Update(gameTime);

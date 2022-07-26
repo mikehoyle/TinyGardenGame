@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace TinyGardenGame.Core {
   public class ControlsMapper<T> where T : Enum {
-    private List<(ControlTriggerCondition condition, T action)> _actionMap;
+    private List<(IControlTriggerCondition condition, T action)> _actionMap;
 
     public ControlsMapper() {
-      _actionMap = new List<(ControlTriggerCondition condition, T action)>();
+      _actionMap = new List<(IControlTriggerCondition condition, T action)>();
     }
 
     /**
      * Registered Actions take precedence in order of registering.
      */
-    public ControlsMapper<T> Register(ControlTriggerCondition condition, T action) {
+    public ControlsMapper<T> Register(IControlTriggerCondition condition, T action) {
       _actionMap.Add((condition, action));
       return this;
     }
@@ -28,5 +28,4 @@ namespace TinyGardenGame.Core {
       return result;
     }
   }
-
 }

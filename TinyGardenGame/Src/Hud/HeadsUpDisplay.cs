@@ -1,13 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.ViewportAdapters;
+﻿using MonoGame.Extended.ViewportAdapters;
 using TinyGardenGame.Player.State;
 
 namespace TinyGardenGame.Hud {
   public class HeadsUpDisplay {
     public const int PaddingPx = 2;
-    
+
     private readonly ScalingViewportAdapter _hudScale;
     private readonly DebugOverlay _debugOverlay;
 
@@ -36,13 +33,13 @@ namespace TinyGardenGame.Hud {
           transformMatrix: _hudScale.GetScaleMatrix(),
           sortMode: SpriteSortMode.Deferred,
           samplerState: SamplerState.PointClamp);
-      
+
       _inventoryDisplay.Draw(spriteBatch, gameTime);
       _toolDisplay.Draw(spriteBatch, gameTime);
       _resourcesDisplay.Draw(spriteBatch, gameTime);
       _timeDisplay.Draw(spriteBatch, gameTime);
       _debugOverlay.Draw(spriteBatch, gameTime);
-      
+
       spriteBatch.End();
     }
   }

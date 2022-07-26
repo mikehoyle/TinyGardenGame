@@ -15,7 +15,7 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
         }
       }
     }
-    
+
     public DryDirtTile() : base() {
       SetRandomTextureVariant(3);
       CanContainWater = false;

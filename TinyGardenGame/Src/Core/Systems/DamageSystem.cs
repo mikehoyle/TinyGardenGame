@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using QuadTrees;
@@ -15,9 +13,9 @@ namespace TinyGardenGame.Core.Systems {
    *     internal-only components of Extended's ECS system.
    */
   public class DamageSystem : EntityUpdateSystem {
-    private readonly HashSet<int> _damageSourceEntities; 
+    private readonly HashSet<int> _damageSourceEntities;
     private readonly QuadTreeRectF<DamageReceivingEntity> _damageRecipientQuadTree;
-        
+
     private ComponentMapper<DamageRecipientComponent> _damageRecipientMapper;
     private ComponentMapper<DamageSourceComponent> _damageSourceMapper;
     private ComponentMapper<PositionComponent> _positionMapper;
@@ -26,7 +24,7 @@ namespace TinyGardenGame.Core.Systems {
         Aspect.One(typeof(DamageRecipientComponent), typeof(DamageSourceComponent))) {
       _damageSourceEntities = new HashSet<int>();
       _damageRecipientQuadTree = new QuadTreeRectF<DamageReceivingEntity>(
-          new RectangleF(map.Bounds.X, map.Bounds.Y, map.Bounds.Width, map.Bounds.Height));
+          new SysRectangleF(map.Bounds.X, map.Bounds.Y, map.Bounds.Width, map.Bounds.Height));
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -34,7 +32,7 @@ namespace TinyGardenGame.Core.Systems {
       _damageSourceMapper = mapperService.GetMapper<DamageSourceComponent>();
       _positionMapper = mapperService.GetMapper<PositionComponent>();
     }
-    
+
     public override void Update(GameTime gameTime) {
       // OPTIMIZE: This is a naive re-shaking of the tree which is not ideal to do every single
       // update pass. Consider only processing for entities on camera?
@@ -51,7 +49,8 @@ namespace TinyGardenGame.Core.Systems {
         var damageSource = _damageSourceMapper.Get(entity);
         if (damageSource.IsPersistent) {
           ApplyDamageFromSource(damageSource);
-        } else {
+        }
+        else {
           damageSource.CurrentLifetime += gameTime.ElapsedGameTime;
           if (damageSource.CurrentLifetime > damageSource.WindupTime) {
             ApplyDamageFromSource(damageSource);
@@ -60,7 +59,7 @@ namespace TinyGardenGame.Core.Systems {
         }
       }
     }
-    
+
     protected override void OnEntityAdded(int entityId) {
       if (_damageRecipientMapper.Has(entityId) && _positionMapper.Has(entityId)) {
         _damageRecipientQuadTree.Add(
@@ -72,7 +71,7 @@ namespace TinyGardenGame.Core.Systems {
         _damageSourceEntities.Add(entityId);
       }
     }
-    
+
     protected override void OnEntityChanged(int entityId) {
       var dummy = new DamageReceivingEntity(entityId);
       if (_damageRecipientQuadTree.Contains(dummy)) {
@@ -82,7 +81,7 @@ namespace TinyGardenGame.Core.Systems {
       _damageSourceEntities.Remove(entityId);
       OnEntityAdded(entityId);
     }
-    
+
     protected override void OnEntityRemoved(int entityId) {
       _damageRecipientQuadTree.Remove(new DamageReceivingEntity(entityId));
       _damageSourceEntities.Remove(entityId);
@@ -100,9 +99,9 @@ namespace TinyGardenGame.Core.Systems {
     public DamageRecipientComponent DamageRecipient { get; }
     private readonly PositionComponent _position;
     private readonly int _entityId;
-    private RectangleF _rect;
+    private SysRectangleF _rect;
 
-    public RectangleF Rect {
+    public SysRectangleF Rect {
       get {
         UpdateRect();
         return _rect;
@@ -127,7 +126,7 @@ namespace TinyGardenGame.Core.Systems {
       _rect.Width = DamageRecipient.Hitbox.Width;
       _rect.Height = DamageRecipient.Hitbox.Height;
     }
-    
+
     /**
      * Hashed based simply on EntityId for easy equality.
      */

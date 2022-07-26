@@ -13,11 +13,11 @@ namespace TinyGardenGame.Player.State.Inventory {
       PlantType = plantType;
       Sprite = sprite;
     }
-    
+
     public readonly PlantType PlantType;
     public readonly SpriteName Sprite;
   }
-  
+
   public static class Items {
     public static readonly Dictionary<InventoryItem, ItemMetadata> ItemMap =
         new Dictionary<InventoryItem, ItemMetadata> {

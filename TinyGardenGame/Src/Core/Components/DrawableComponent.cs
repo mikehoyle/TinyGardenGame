@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
+﻿using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
@@ -9,12 +7,12 @@ namespace TinyGardenGame.Core.Components {
   public class DrawableComponent : IUpdate {
     public BaseDrawable Drawable { get; }
     public RenderLayer RenderLayer { get; }
-    
+
     public SpriteEffects SpriteEffects { get; set; }
 
     public DrawableComponent(Sprite sprite, RenderLayer renderLayer = RenderLayer.GameObject)
-        : this(new SpriteDrawable(sprite), renderLayer) {}
-    
+        : this(new SpriteDrawable(sprite), renderLayer) { }
+
     public DrawableComponent(
         BaseDrawable drawable, RenderLayer renderLayer = RenderLayer.GameObject) {
       Drawable = drawable;

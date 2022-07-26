@@ -11,17 +11,17 @@
     public readonly int DefaultMinHp = 0;
     public readonly int DefaultMaxEnergy = 100;
     public readonly int DefaultMinEnergy = 0;
-    
+
     // Global
     public readonly int FpsCap = 144;
     public readonly string AssetsConfigPath = "Src/Config/Assets.toml";
-    
+
     // Game
     public readonly DebugConfig Debug = new DebugConfig();
     public readonly bool ShowBuildHints = true;
     public readonly bool ShowBuildGhost = true;
     public readonly float BuildGhostOpacity = 0.45f;
-    
+
     // Game: Time
     public readonly int TotalHoursInADay = 12;
     public readonly int HoursOfNight = 4;

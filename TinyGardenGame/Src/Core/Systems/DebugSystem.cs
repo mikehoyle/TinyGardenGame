@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core.Components;
@@ -24,8 +23,8 @@ namespace TinyGardenGame.Core.Systems {
     public DebugSystem(PrimaryGameplayScreen screen, PlayerState playerState) : base(Aspect.One()) {
       _screen = screen;
       _playerState = playerState;
-      
-      
+
+
       screen.Console.SetHp += (caller, val) => _playerState.Hp.CurrentValue = val;
       screen.Console.SetEnergy += (caller, val) => _playerState.Energy.CurrentValue = val;
       screen.Console.MovePlayer += TeleportPlayer;
@@ -37,7 +36,7 @@ namespace TinyGardenGame.Core.Systems {
       _positionComponent = mapperService.GetMapper<PositionComponent>();
       _spriteComponent = mapperService.GetMapper<Sprite>();
       _selectionComponent = mapperService.GetMapper<SelectionComponent>();
-      
+
       _selectionIndicatorEntity =
           _screen.Game.Config.Debug.ShowSelectionIndicator ? CreateEntity() : null;
     }
@@ -67,13 +66,14 @@ namespace TinyGardenGame.Core.Systems {
         indicatorPlacement.Position = playerSelection.SelectedSquare;
       }
     }
-    
+
     private void TeleportPlayer(int x, int y) {
       var position = _positionComponent.Get(_playerState.PlayerEntity);
 
       if (position != null) {
         position.Position = new Vector2(x, y);
-      } else {
+      }
+      else {
         _screen.Console.WriteLine("No player position component found");
       }
     }

@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
@@ -18,7 +14,9 @@ namespace TinyGardenGame.Plants.Systems {
     private ComponentMapper<GrowthComponent> _growthComponentMapper;
     private TextureRegion2D _progressBarFullSprite;
     private TextureRegion2D _progressBarEmptySprite;
+
     private ComponentMapper<PositionComponent> _positionComponentMapper;
+
     // Maps growing entity to its progress bar
     private readonly Dictionary<int, int> _progressBars;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
@@ -28,12 +26,12 @@ namespace TinyGardenGame.Plants.Systems {
       _game = game;
       _progressBars = new Dictionary<int, int>();
     }
-    
+
     public override void Initialize(IComponentMapperService mapperService) {
       _growthComponentMapper = mapperService.GetMapper<GrowthComponent>();
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
-      
+
       _progressBarEmptySprite = _game.Content.LoadSprite(SpriteName.LoadingBarEmpty).TextureRegion;
       _progressBarFullSprite = _game.Content.LoadSprite(SpriteName.LoadingBarFull).TextureRegion;
     }
@@ -41,7 +39,7 @@ namespace TinyGardenGame.Plants.Systems {
     public override void Update(GameTime gameTime) {
       // This is likely to evolve a lot over time as intricacies are added
       foreach (var entity in ActiveEntities) {
-        var growthComponent = _growthComponentMapper.Get(entity); 
+        var growthComponent = _growthComponentMapper.Get(entity);
         if (growthComponent.IncrementGrowth(gameTime.ElapsedGameTime)) {
           SetAnimation(entity, growthComponent);
           _growthComponentMapper.Delete(entity);
@@ -49,6 +47,7 @@ namespace TinyGardenGame.Plants.Systems {
             DestroyEntity(_progressBars[entity]);
             _progressBars.Remove(entity);
           }
+
           continue;
         }
 
@@ -71,7 +70,7 @@ namespace TinyGardenGame.Plants.Systems {
 
     private Entity CreateProgressBar(int growingEntity, GrowthComponent growthComponent) {
       var targetPlacement = _positionComponentMapper.Get(growingEntity);
-      var progressBarDrawable =new ProgressBarDrawable(
+      var progressBarDrawable = new ProgressBarDrawable(
           _progressBarEmptySprite,
           _progressBarFullSprite,
           growthComponent.CurrentGrowthPercentage);

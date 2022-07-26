@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Aseprite.Graphics;
-
-namespace TinyGardenGame.Core.Components.Drawables {
+﻿namespace TinyGardenGame.Core.Components.Drawables {
   public class AnimatedSpriteDrawable : BaseDrawable {
-    private readonly AnimatedSprite _sprite;
+    private readonly AsepriteAnimatedSprite _sprite;
 
-    public AnimatedSpriteDrawable(AnimatedSprite sprite) {
+    public AnimatedSpriteDrawable(AsepriteAnimatedSprite sprite) {
       _sprite = sprite;
     }
-    
+
     public override void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects) {
       _sprite.Position = position;
       _sprite.SpriteEffect = effects;

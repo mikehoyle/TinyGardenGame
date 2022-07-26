@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;//In InventoryInventoryReedSeeds,Reeds,
-using Microsoft.Xna.Framework;
+using System.IO;
 using TinyGardenGame.Core;
 using Tomlyn;
+//In InventoryInventoryReedSeeds,Reeds,
 
 namespace TinyGardenGame.Config {
   public class AssetsModel {
     public List<Asset> Assets { get; set; }
     public List<FontAsset> Fonts { get; set; }
-    
+
     public List<FontAsset> BmpFonts { get; set; }
 
     public static AssetsModel Load(string configPath) {
@@ -30,7 +30,7 @@ namespace TinyGardenGame.Config {
           options);
     }
   }
-  
+
   public class Asset {
     public SpriteName Name { get; set; }
     public string Path { get; set; }
@@ -60,7 +60,7 @@ namespace TinyGardenGame.Config {
         if (Width == -1 || Height == -1) {
           return null;
         }
-        
+
         return new Rectangle(X, Y, Width, Height);
       }
     }
@@ -69,5 +69,5 @@ namespace TinyGardenGame.Config {
   public class FontAsset {
     public SpriteName Name { get; set; }
     public string Path { get; set; }
-  } 
+  }
 }

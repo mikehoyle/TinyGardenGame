@@ -1,13 +1,9 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
-using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.State.FiniteStateMachine {
   public class BasicAttackingPlayerState : MovablePlayerState {
@@ -20,20 +16,20 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     private static readonly TimeSpan FullDuration = TimeSpan.FromMilliseconds(500);
     private static readonly TimeSpan CancellableAfterDuration = TimeSpan.FromMilliseconds(300);
     private static double DamageDealt = 5;
-    
+
     private TimeSpan _currentDuration;
 
     public BasicAttackingPlayerState(
         PlayerState playerState,
         IIsSpaceOccupied isSpaceOccupied,
-        GameMap map) : base(playerState, isSpaceOccupied, map) {}
+        GameMap map) : base(playerState, isSpaceOccupied, map) { }
 
     public override void Enter() {
       _currentDuration = TimeSpan.Zero;
       var motionComponent = PlayerState.PlayerEntity.Get<MotionComponent>();
       var drawable = PlayerState.PlayerEntity.Get<DrawableComponent>();
       var position = PlayerState.PlayerEntity.Get<PositionComponent>();
-      
+
       motionComponent.SetMotionFromCardinalVector(Vector2.Zero);
       var facingDirection = AngleToDirection(position.Rotation);
       PlayerState.PlayerEntity.Attach(BuildDamageSource(facingDirection));
@@ -45,15 +41,15 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       if (_currentDuration >= CancellableAfterDuration && MaybeMove(gameTime, actions)) {
         return typeof(MovablePlayerState);
       }
-      
+
       return _currentDuration >= FullDuration ? typeof(MovablePlayerState) : null;
     }
 
     private DamageSourceComponent BuildDamageSource(Direction facingDirection) {
       return new DamageSourceComponent(
           BuildDirectedRect(
-              AttackOuterRange, 
-              AttackInnerRange, 
+              AttackOuterRange,
+              AttackInnerRange,
               -AttackWidth / 2,
               AttackWidth / 2, facingDirection),
           DamageDealt,

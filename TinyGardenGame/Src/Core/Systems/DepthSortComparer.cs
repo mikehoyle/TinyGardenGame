@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using TinyGardenGame.Core.Components;
 
@@ -18,7 +17,7 @@ namespace TinyGardenGame.Core.Systems {
       _drawableComponentMapper = drawableComponentMapper;
       _positionComponentMapper = positionComponentMapper;
     }
-    
+
     public int Compare(int entity1, int entity2) {
       // OPTIMIZE: These lookups should be fast (O(1)), but may still be an efficiency issue
       // This is also far more continued sorting than is really necessary, as many of
@@ -29,7 +28,7 @@ namespace TinyGardenGame.Core.Systems {
       if (layer1 != layer2) {
         return layer1 - layer2;
       }
-        
+
       // Sprite1 is in front of Sprite2 if its SE-most point is greater (X&Y) than
       // the NW origin of Sprite2.
       // This is only sound given some assumptions about the entities
@@ -41,10 +40,13 @@ namespace TinyGardenGame.Core.Systems {
       if (pos1 == pos2) {
         return 0;
       }
+
       if (depth1.X == pos2.X || depth1.Y == pos2.Y) {
         return _positionComponentMapper.Get(entity2).FootprintSizeInTiles != Vector2.Zero
-            ? -1 : 0;
+            ? -1
+            : 0;
       }
+
       return ((depth1.X > pos2.X) && (depth1.Y > pos2.Y)) ? 1 : -1;
     }
   }

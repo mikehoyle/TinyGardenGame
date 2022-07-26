@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
+﻿using MonoGame.Extended.Sprites;
 
 namespace TinyGardenGame.Core.Components.Drawables {
   public class SpriteDrawable : BaseDrawable {

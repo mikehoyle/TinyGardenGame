@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Entities;
@@ -24,13 +23,13 @@ namespace TinyGardenGame.Player.State {
    */
   public class PlayerState {
     private KeyedCollection<Type, BasePlayerState> _states;
-    
+
     public Entity PlayerEntity { get; private set; }
     public PlayerInventory Inventory { get; }
     public PlayerTools Tools { get; }
     public ResourceMeter Hp { get; }
     public ResourceMeter Energy { get; }
-    
+
     public BasePlayerState State { get; private set; }
 
     public PlayerState(Config.Config config) {
@@ -40,7 +39,7 @@ namespace TinyGardenGame.Player.State {
       Energy = new ResourceMeter(config.DefaultMaxEnergy, config.DefaultMinEnergy);
       _states = new KeyedCollection<Type, BasePlayerState>(state => state.GetType());
     }
-    
+
     public void Initialize(
         World world,
         MainGame game,
@@ -51,7 +50,7 @@ namespace TinyGardenGame.Player.State {
       _states.Add(new BasicAttackingPlayerState(this, isSpaceOccupied, map));
       _states.Add(new PlaceableObjectHoveringState(
           this, world, game, isSpaceOccupied, map, mapProcessor));
-      
+
       State = _states[typeof(MovablePlayerState)];
       var playerSprite = game.Content.LoadAnimated(SpriteName.Player);
       PlayerEntity = world.CreateEntity()
@@ -59,10 +58,10 @@ namespace TinyGardenGame.Player.State {
           .AttachAnd(new CameraFollowComponent())
           .AttachAnd(new MotionComponent(game.Config.PlayerSpeed))
           .AttachAnd(new PlayerInputComponent())
-          .AttachAnd(new PositionComponent(MapPlacementHelper.CenterOfMapTile(0, 0)))
+          .AttachAnd(new PositionComponent(CenterOfMapTile(0, 0)))
           .AttachAnd(new CollisionFootprintComponent(new RectangleF(-0.3f, -0.3f, 0.6f, 0.6f)))
           .AttachAnd(new DamageRecipientComponent(
-              Hp.CurrentValue, new System.Drawing.RectangleF(-0.3f, -0.3f, 0.6f, 0.6f)))
+              Hp.CurrentValue, new SysRectangleF(-0.3f, -0.3f, 0.6f, 0.6f)))
           .AttachAnd(new SelectionComponent());
     }
 

@@ -1,4 +1,9 @@
-﻿using System;
+﻿global using static TinyGardenGame.MapPlacementHelper;
+global using static TinyGardenGame.MapPlacementHelper.Direction;
+global using SysRectangleF = System.Drawing.RectangleF;
+global using AsepriteSprite = MonoGame.Aseprite.Graphics.Sprite;
+global using AsepriteAnimatedSprite = MonoGame.Aseprite.Graphics.AnimatedSprite;
+using System;
 
 namespace TinyGardenGame {
   public static class Program {

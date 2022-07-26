@@ -1,7 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGameConsole;
 using TinyGardenGame.Core;
 
@@ -10,6 +7,7 @@ namespace TinyGardenGame {
     private GameConsole _gameConsole;
 
     public delegate void MovePlayerHandler(int x, int y);
+
     public event MovePlayerHandler MovePlayer;
     public event EventHandler<int> SetHp;
     public event EventHandler<int> SetEnergy;
@@ -23,7 +21,7 @@ namespace TinyGardenGame {
       if (!game.Config.Debug.EnableConsole) {
         return;
       }
-      
+
       _gameConsole = new GameConsole(
           game,
           spriteBatch,
@@ -36,7 +34,8 @@ namespace TinyGardenGame {
               CursorColor = Color.Black,
               BackgroundColor = new Color(Color.DarkGray, 150),
               PastCommandOutputColor = Color.Olive,
-              BufferColor = Color.DarkBlue});
+              BufferColor = Color.DarkBlue
+          });
       _gameConsole.AddCommand("move", args => {
         MovePlayer?.Invoke(int.Parse(args[0]), int.Parse(args[1]));
         return "";

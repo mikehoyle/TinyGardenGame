@@ -39,6 +39,12 @@
    - [X] Add basic "growth" component.
    - [X] Add growth progress/UI
 
+* TODO Outstanding Bugs [/]
+ - [ ] IsSpaceOccupied only works for object's colliadable area, but currently
+   some plants have no collision, so you can trench under plants (like reeds
+   atm).
+ - [ ] Damage source rects are not reflective of the damage direction.
+
 * TODO Stretch [0/1]
  - [ ] Dynamic shadows to indicate time of day
 

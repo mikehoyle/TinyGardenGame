@@ -2,16 +2,13 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Content;
 using MonoGame.Extended.Screens;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration;
 
 namespace TinyGardenGame.Screens {
   /** Currently, just load all textures with no UI */
-  public class GameStartLoadingScreen: GameScreen {
+  public class GameStartLoadingScreen : GameScreen {
     private readonly MainGame _game;
     private Task? _loadingTask;
     private Task<GameMap>? _mapGenerationTask;
@@ -33,7 +30,7 @@ namespace TinyGardenGame.Screens {
       // Cant use AssetLoading as we haven't initialized it yet
       _font = _game.Content.Load<SpriteFont>("ConsoleFont");
     }
-    
+
     public override void Update(GameTime gameTime) {
       _loadingTask ??= AssetLoading.LoadAllAssets(Content, _game.Config.AssetsConfigPath);
       _mapGenerationTask ??= GenerateMap();

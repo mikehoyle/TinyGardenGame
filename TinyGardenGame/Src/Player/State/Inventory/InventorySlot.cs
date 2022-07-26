@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using Microsoft.Xna.Framework.Content;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
 using TinyGardenGame.Plants;
@@ -7,7 +6,7 @@ using TinyGardenGame.Plants;
 namespace TinyGardenGame.Player.State.Inventory {
   public class InventorySlot {
     private Sprite? _cachedSprite;
-    
+
     public InventoryItem Item;
     public uint Count;
 

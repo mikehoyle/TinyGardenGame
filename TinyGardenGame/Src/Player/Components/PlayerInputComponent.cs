@@ -1,3 +1,3 @@
 ﻿namespace TinyGardenGame.Player.Components {
-  public class PlayerInputComponent {}
+  public class PlayerInputComponent { }
 }

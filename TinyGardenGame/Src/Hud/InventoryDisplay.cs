@@ -1,8 +1,4 @@
 ﻿#nullable enable
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.ViewportAdapters;
 using TinyGardenGame.Core;
@@ -10,7 +6,7 @@ using TinyGardenGame.Player.State.Inventory;
 
 namespace TinyGardenGame.Hud {
   public class InventoryDisplay {
-    private const int InventoryBottomMarginPx = 2; 
+    private const int InventoryBottomMarginPx = 2;
 
     private readonly ContentManager _content;
     private readonly ScalingViewportAdapter _hudScale;
@@ -34,12 +30,12 @@ namespace TinyGardenGame.Hud {
       _inventoryContainerWidth = _borderSprite.Width;
       _inventoryContainerHeight = _borderSprite.Height;
     }
-    
+
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
       var width = PlayerInventory.InventoryWidth;
       var renderY = _hudScale.VirtualHeight - _inventoryContainerHeight - InventoryBottomMarginPx;
       var renderX = (_hudScale.VirtualWidth - _inventoryContainerWidth * width) / 2;
-      
+
       for (var i = 0; i < width; i++) {
         var position = new Vector2(renderX + (i * _inventoryContainerWidth), renderY);
         // Draw background
@@ -56,7 +52,7 @@ namespace TinyGardenGame.Hud {
               position,
               rotation: 0f,
               scale: Vector2.One);
-          
+
           // Draw amount
           spriteBatch.DrawString(
               _font,

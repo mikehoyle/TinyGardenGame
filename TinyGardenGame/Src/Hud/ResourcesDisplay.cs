@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
+﻿using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using MonoGame.Extended.ViewportAdapters;
 using TinyGardenGame.Core;
@@ -54,7 +51,7 @@ namespace TinyGardenGame.Hud {
           _meterBorder,
           new Rectangle(_hpMeterOrigin, new Point(_meterWidth, MeterHeight)),
           Color.White);
-      
+
       populateResourceBar(spriteBatch, _energyMeterOrigin, _playerState.Energy, _meterFillEnergy);
       populateResourceBar(spriteBatch, _hpMeterOrigin, _playerState.Hp, _meterFillHp);
     }
@@ -71,9 +68,10 @@ namespace TinyGardenGame.Hud {
         if (meter.PercentFull != 0) {
           texture =
               meter.PercentFull >= ((_meterInnerHeight - y - 1) / ((double)_meterInnerHeight - 1))
-              ? fillTexture : _meterFillEmpty;
+                  ? fillTexture
+                  : _meterFillEmpty;
         }
-        
+
         spriteBatch.Draw(texture, new Vector2(innerOrigin.X, y + innerOrigin.Y));
       }
     }

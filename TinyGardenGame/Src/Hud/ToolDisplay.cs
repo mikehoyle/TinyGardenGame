@@ -1,14 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Sprites;
+﻿using MonoGame.Extended.Sprites;
 using MonoGame.Extended.ViewportAdapters;
 using TinyGardenGame.Player.State.Tools;
 
 namespace TinyGardenGame.Hud {
   public class ToolDisplay {
     private const int MarginPx = 2;
-    
+
     private readonly ContentManager _content;
     private readonly ScalingViewportAdapter _hudScale;
     private readonly PlayerTools _tools;

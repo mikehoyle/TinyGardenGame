@@ -1,8 +1,6 @@
 ﻿using System.Linq;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using TinyGardenGame.Core.Components;
-using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.Player.Components {
   /**

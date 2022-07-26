@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace TinyGardenGame.GameState {
+﻿namespace TinyGardenGame.GameState {
   /**
    * Holds global game state associated with a single play-through
    */

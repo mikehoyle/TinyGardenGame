@@ -1,11 +1,9 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using MonoGame.Aseprite.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
+using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
@@ -19,16 +17,15 @@ namespace TinyGardenGame.Plants {
     Marigold,
     Reeds,
   }
-  
+
   public class PlantEntityFactory {
-    
     private class PlantMetadata {
       private int _growthStages;
-      public Func<AnimatedSprite> Sprite { get; set; }
+      public Func<AsepriteAnimatedSprite> Sprite { get; set; }
       public Vector2 FootprintSize { get; set; } = Vector2.One;
       public RectangleF CollisionFootprint { get; set; } = new RectangleF(0, 0, 0, 0);
       public double GrowthTimeSecs { get; set; }
-      
+
       public CanGrowOn GrowthCondition { get; set; }
 
       public int GrowthStages {
@@ -36,6 +33,7 @@ namespace TinyGardenGame.Plants {
           if (_growthStages == 0) {
             _growthStages = GetGrowthStages(Sprite());
           }
+
           return _growthStages;
         }
       }
@@ -75,7 +73,7 @@ namespace TinyGardenGame.Plants {
     public CanGrowOn GetPlantGrowthCondition(PlantType type) {
       return _plantAssets[type].GrowthCondition;
     }
-    
+
     public void CreatePlant(PlantType type, Vector2 position) {
       var metadata = _plantAssets[type];
       var drawable = new DrawableComponent(new AnimatedSpriteDrawable(metadata.Sprite()));
@@ -95,7 +93,7 @@ namespace TinyGardenGame.Plants {
      */
     public int CreateGhostPlant(PlantType type, Vector2 position, Entity? existingEntity = null) {
       var originalSprite = _plantAssets[type].Sprite();
-      var sprite = new MonoGame.Extended.Sprites.Sprite(
+      var sprite = new Sprite(
           new TextureRegion2D(originalSprite.Texture, originalSprite.Frames[0].Bounds)) {
           Origin = originalSprite.Origin,
           Alpha = _config.BuildGhostOpacity,
@@ -116,7 +114,7 @@ namespace TinyGardenGame.Plants {
                      && tile.WaterProximity <= proximity;
     }
 
-    private static int GetGrowthStages(AnimatedSprite sprite) {
+    private static int GetGrowthStages(AsepriteAnimatedSprite sprite) {
       int stages = 1;
       while (sprite.Animations.ContainsKey(
                  $"{GrowthComponent.GrowthAnimationPrefix}{stages + 1}")) {

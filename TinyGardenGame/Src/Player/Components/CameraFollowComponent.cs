@@ -1,3 +1,3 @@
 ﻿namespace TinyGardenGame.Player.Components {
-  public class CameraFollowComponent {}
+  public class CameraFollowComponent { }
 }

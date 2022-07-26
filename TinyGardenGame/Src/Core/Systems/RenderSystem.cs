@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System.Linq;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core.Components;
@@ -14,7 +11,7 @@ namespace TinyGardenGame.Core.Systems {
     Overlay = 2,
     Menu = 3,
   }
-  
+
   /**
    * Render in ordered stages:
    * - Map
@@ -54,7 +51,7 @@ namespace TinyGardenGame.Core.Systems {
       _spriteBatch = new SpriteBatch(graphicsDevice);
       _mapProcessor = mapProcessor;
     }
-    
+
     public override void Initialize(IComponentMapperService mapperService) {
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
@@ -86,7 +83,7 @@ namespace TinyGardenGame.Core.Systems {
               entity => _drawableComponentMapper.Has(entity)
                         && _positionComponentMapper.Has(entity))
           .OrderBy(entity => entity, _depthComparer);
-      
+
       // And now draw in order
       foreach (var entity in entities) {
         var drawable = _drawableComponentMapper.Get(entity);

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace TinyGardenGame {
   public static class SpriteFontHelper {
@@ -33,12 +31,13 @@ namespace TinyGardenGame {
             SpriteFontCharWidth,
             SpriteFontCharHeight));
       }
+
       var kerning = new List<Vector3>(Enumerable.Repeat(new Vector3(0, 0, 0), chars.Count));
-      
+
       // Characters must be sorted by their int value for some ungodly reason
       glyphBounds = glyphBounds
           .Select((glyph, i) => new { i, glyph })
-          .OrderBy(element => (int) chars[element.i])
+          .OrderBy(element => (int)chars[element.i])
           .Select(element => element.glyph)
           .ToList();
       chars.Sort();

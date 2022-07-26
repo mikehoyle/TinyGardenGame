@@ -1,15 +1,11 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants;
-using static TinyGardenGame.MapPlacementHelper;
-using static TinyGardenGame.MapPlacementHelper.Direction;
 using static TinyGardenGame.Core.SpriteName;
 
 namespace TinyGardenGame.MapGeneration {
@@ -21,21 +17,20 @@ namespace TinyGardenGame.MapGeneration {
     private readonly MainGame _game;
     private readonly GameMap _map;
     private readonly Sprite _tileHighlightSprite;
-    
+
     public PlantEntityFactory.CanGrowOn? TileHighlightCondition { get; set; }
 
     public MapProcessor(MainGame game, GameMap map) {
       _game = game;
       _map = map;
-      _tileHighlightSprite = game.Content.LoadSprite(SpriteName.ValidTile);
+      _tileHighlightSprite = game.Content.LoadSprite(ValidTile);
     }
 
     public void Draw(SpriteBatch spriteBatch, RectangleF viewBounds) {
       // OPTIMIZE: Excess allocation issues?
-      _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
-        RenderTile(spriteBatch, tile.Sprite, x, y);
-      });
-      
+      _map.ForEachTileInBounds(viewBounds,
+          (x, y, tile) => { RenderTile(spriteBatch, tile.Sprite, x, y); });
+
       // For now, draw water in a second pass so it never is occluded
       _map.ForEachTileInBounds(viewBounds, (x, y, tile) => {
         if (tile.ContainsWater) {
@@ -47,7 +42,7 @@ namespace TinyGardenGame.MapGeneration {
         if (TileHighlightCondition != null && TileHighlightCondition(tile)) {
           spriteBatch.Draw(
               _tileHighlightSprite.TextureRegion.Texture,
-              MapPlacementHelper.MapCoordToAbsoluteCoord(new Vector2(x, y)),
+              MapCoordToAbsoluteCoord(new Vector2(x, y)),
               _tileHighlightSprite.TextureRegion.Bounds,
               Color.White,
               rotation: 0f,
@@ -83,10 +78,10 @@ namespace TinyGardenGame.MapGeneration {
       var totalConnections = 0;
       // Check all adjacent coords
       Dictionary<Direction, bool> connections = new Dictionary<Direction, bool> {
-          {North, false},
-          {East, false},
-          {South, false},
-          {West, false},
+          { North, false },
+          { East, false },
+          { South, false },
+          { West, false },
       };
       _map.ForEachAdjacentTile(x, y, (direction, adjX, adjY, tile) => {
         if (tile.ContainsWater) {
@@ -97,7 +92,8 @@ namespace TinyGardenGame.MapGeneration {
 
       if (totalConnections == 0) {
         RenderTile(spriteBatch, Water0, x, y);
-      } else if (totalConnections == 1) {
+      }
+      else if (totalConnections == 1) {
         var effects = SpriteEffects.None;
         if (connections[North] || connections[East]) {
           effects |= SpriteEffects.FlipHorizontally;
@@ -106,35 +102,45 @@ namespace TinyGardenGame.MapGeneration {
         if (connections[East] || connections[South]) {
           effects |= SpriteEffects.FlipVertically;
         }
+
         RenderTile(spriteBatch, Water1, x, y, effects);
-      } else if (totalConnections == 2) {
+      }
+      else if (totalConnections == 2) {
         // Corner cases
         if (connections[North] && connections[East]) {
           RenderTile(spriteBatch, Water2Sw, x, y, SpriteEffects.FlipHorizontally);
-        } else if (connections[East] && connections[South]) {
+        }
+        else if (connections[East] && connections[South]) {
           RenderTile(spriteBatch, Water2Nw, x, y, SpriteEffects.FlipVertically);
-        } else if (connections[South] && connections[West]) {
+        }
+        else if (connections[South] && connections[West]) {
           RenderTile(spriteBatch, Water2Sw, x, y);
-        } else if (connections[West] && connections[North]) {
+        }
+        else if (connections[West] && connections[North]) {
           RenderTile(spriteBatch, Water2Nw, x, y);
         }
 
         // Straight across cases
         else if (connections[North] && connections[South]) {
           RenderTile(spriteBatch, Water2Ew, x, y, SpriteEffects.FlipHorizontally);
-        } else if (connections[East] && connections[West]) {
+        }
+        else if (connections[East] && connections[West]) {
           RenderTile(spriteBatch, Water2Ew, x, y);
         }
-      } else if (totalConnections == 3) {
+      }
+      else if (totalConnections == 3) {
         var effects = SpriteEffects.None;
         if (!connections[North] || !connections[East]) {
           effects |= SpriteEffects.FlipHorizontally;
         }
+
         if (!connections[North] || !connections[West]) {
           effects |= SpriteEffects.FlipVertically;
         }
+
         RenderTile(spriteBatch, Water3, x, y, effects);
-      } else {
+      }
+      else {
         RenderTile(spriteBatch, Water4, x, y);
       }
     }
@@ -148,6 +154,7 @@ namespace TinyGardenGame.MapGeneration {
           }
         }
       }
+
       _map.DirtyTiles.Clear();
     }
 
@@ -175,13 +182,13 @@ namespace TinyGardenGame.MapGeneration {
         tile.IsNonTraversable = true;
       }
     }
-    
+
     // OPTIMIZE: This is a TON of repeated work. If necessary, may need optimizations
     public static void ProcessWaterProximity(GameMap map, int x, int y, MapTile tile) {
       if (!tile.ContainsWater) {
         return;
       }
-      
+
       tile.WaterProximity = 0;
       for (var xDiff = -MapTile.MaxWaterProximity; xDiff <= MapTile.MaxWaterProximity; xDiff++) {
         var yRange = MapTile.MaxWaterProximity - Math.Abs(xDiff);

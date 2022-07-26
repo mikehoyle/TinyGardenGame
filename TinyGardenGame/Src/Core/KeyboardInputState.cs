@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
 
 namespace TinyGardenGame.Core {
   public static class KeyboardInputState {
@@ -20,7 +19,7 @@ namespace TinyGardenGame.Core {
           NewlyPressedKeys.Add(key);
         }
       }
-      
+
       // OPTIMIZE: this is duplicate work, but it's easy right now
       foreach (var key in _previousState.GetPressedKeys()) {
         if (currentState.IsKeyUp(key)) {

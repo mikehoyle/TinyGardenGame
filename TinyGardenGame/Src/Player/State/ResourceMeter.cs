@@ -5,7 +5,7 @@ namespace TinyGardenGame.Player.State {
     private double _currentValue;
     public double MaxValue { get; }
     public double MinValue { get; }
-    
+
 
     public double CurrentValue {
       get => _currentValue;
@@ -32,7 +32,6 @@ namespace TinyGardenGame.Player.State {
     /**
      * <returns>Whether the resource was depleted as a result of this call</returns>
      */
-
     public bool IncreaseBy(double amount) {
       if (CurrentValue > MinValue && (CurrentValue + amount) <= MinValue) {
         CurrentValue = MinValue;

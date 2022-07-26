@@ -1,12 +1,7 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Player.Components;
-using static TinyGardenGame.MapPlacementHelper.Direction;
 
 namespace TinyGardenGame.Core.Systems {
   /**

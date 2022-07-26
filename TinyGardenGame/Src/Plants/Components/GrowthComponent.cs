@@ -4,7 +4,7 @@ namespace TinyGardenGame.Plants.Components {
   public class GrowthComponent {
     public const string GrowthAnimationPrefix = "growth";
     private const string GrownPostfix = "_full";
-    
+
     // Total time to grow, in seconds
     public TimeSpan GrowthTime { get; set; }
     public int GrowthStages { get; }
@@ -26,7 +26,7 @@ namespace TinyGardenGame.Plants.Components {
         CurrentGrowthPercentage = 1.0;
         IsFullyGrown = true;
       }
-      
+
       return IsFullyGrown;
     }
 

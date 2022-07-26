@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using TinyGardenGame.MapGeneration.MapTiles;
 
@@ -19,6 +18,7 @@ namespace TinyGardenGame.MapGeneration.RandomAlgorithms {
             (typeof(SandTile), 4),
             (typeof(FlowerPatchTile), 1),
         };
+
     private static float _totalWeight;
 
     /**
@@ -56,7 +56,7 @@ namespace TinyGardenGame.MapGeneration.RandomAlgorithms {
           return biome.Type;
         }
       }
-      
+
       Debug.WriteLine("WARNING fallthrough case in weighted random selection, shouldn't occur");
       return BiomeWeightedProbs.Last().Type;
     }

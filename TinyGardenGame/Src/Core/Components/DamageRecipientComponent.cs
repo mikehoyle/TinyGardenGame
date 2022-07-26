@@ -1,12 +1,9 @@
-﻿using System.Drawing;
-using QuadTrees.QTreeRectF;
-
-namespace TinyGardenGame.Core.Components {
+﻿namespace TinyGardenGame.Core.Components {
   public class DamageRecipientComponent {
     public double Hp { get; set; }
-    public RectangleF Hitbox { get; }
+    public SysRectangleF Hitbox { get; }
 
-    public DamageRecipientComponent(double hp, RectangleF hitbox) {
+    public DamageRecipientComponent(double hp, SysRectangleF hitbox) {
       Hp = hp;
       Hitbox = hitbox;
     }

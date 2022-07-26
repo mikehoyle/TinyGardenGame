@@ -5,11 +5,11 @@
     MoveLeft,
     MoveUp,
     MoveDown,
-    
+
     // HUD
     InventorySelectionLeft,
     InventorySelectionRight,
-    
+
     // Other
     PlacePlant,
     DigTrench,

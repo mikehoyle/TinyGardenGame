@@ -15,7 +15,7 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
         }
       }
     }
-    
+
     public FlowerPatchTile() : base() {
       SetRandomTextureVariant(3);
       CanContainWater = false;

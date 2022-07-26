@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using MonoGame.Extended.Input.InputListeners;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
-using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.State;
 using TinyGardenGame.Screens;

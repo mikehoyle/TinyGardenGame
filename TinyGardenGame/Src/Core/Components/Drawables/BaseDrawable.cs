@@ -1,16 +1,13 @@
-﻿using System.Collections.Specialized;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
+﻿using MonoGame.Extended;
 
 namespace TinyGardenGame.Core.Components.Drawables {
   public abstract class BaseDrawable : IUpdate {
     public abstract void Draw(
         SpriteBatch spriteBatch, Vector2 position, SpriteEffects spriteEffects);
-    
+
     public virtual void Update(GameTime gameTime) { }
     public virtual void OnAnimationChange(string name, bool loop) { }
-    
+
     protected void SpriteBatchDraw(
         SpriteBatch spriteBatch,
         Texture2D texture,

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MonoGame.Extended.Input.InputListeners;
 
 namespace TinyGardenGame.Player.State.Tools {
   /**
@@ -8,7 +7,7 @@ namespace TinyGardenGame.Player.State.Tools {
    */
   public class PlayerTools {
     private int _currentlySelectedTool;
-    
+
     public LinkedList<Tool> Tools { get; }
 
     public Tool CurrentlySelectedTool => Tools.First.Value;

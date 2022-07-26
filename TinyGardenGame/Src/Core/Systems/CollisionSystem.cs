@@ -1,11 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using QuadTrees;
 using QuadTrees.QTreeRectF;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.MapGeneration;
-using RectangleF = System.Drawing.RectangleF;
 
 namespace TinyGardenGame.Core.Systems {
   /**
@@ -23,9 +21,9 @@ namespace TinyGardenGame.Core.Systems {
         typeof(PositionComponent), typeof(CollisionFootprintComponent), typeof(MotionComponent))) {
       _map = map;
       _collisionQuadTree = new QuadTreeRectF<CollidableObject>(
-          new RectangleF(_map.Bounds.X, _map.Bounds.Y, _map.Bounds.Width, _map.Bounds.Height));
+          new SysRectangleF(_map.Bounds.X, _map.Bounds.Y, _map.Bounds.Width, _map.Bounds.Height));
     }
-    
+
     public override void Initialize(IComponentMapperService mapperService) {
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _collisionComponentMapper = mapperService.GetMapper<CollisionFootprintComponent>();
@@ -55,7 +53,7 @@ namespace TinyGardenGame.Core.Systems {
           // TODO fix, tile collisions are broken
           if (collidingTile.Tile.IsNonTraversable) {
             correctionVec += CalculatePenetrationVector(
-                collisionRect, new RectangleF(collidingTile.X, collidingTile.Y, 1, 1));
+                collisionRect, new SysRectangleF(collidingTile.X, collidingTile.Y, 1, 1));
           }
         }
 
@@ -67,13 +65,15 @@ namespace TinyGardenGame.Core.Systems {
       }
     }
 
-    private static Vector2 CalculatePenetrationVector(RectangleF source, RectangleF target) {
-      var intersectingRectangle = new RectangleF(source.X, source.Y, source.Width, source.Height);
+    private static Vector2 CalculatePenetrationVector(SysRectangleF source, SysRectangleF target) {
+      var intersectingRectangle =
+          new SysRectangleF(source.X, source.Y, source.Width, source.Height);
       intersectingRectangle.Intersect(target);
-      
+
       if (intersectingRectangle.Width < intersectingRectangle.Height) {
         var d = RectCenter(source).X < RectCenter(target).X
-            ? intersectingRectangle.Width : -intersectingRectangle.Width;
+            ? intersectingRectangle.Width
+            : -intersectingRectangle.Width;
         return new Vector2(d, 0);
       }
       else {
@@ -84,10 +84,10 @@ namespace TinyGardenGame.Core.Systems {
       }
     }
 
-    private static Vector2 RectCenter(RectangleF rect) {
+    private static Vector2 RectCenter(SysRectangleF rect) {
       return new Vector2(rect.X + rect.Width * 0.5f, rect.Y + rect.Height * 0.5f);
     }
-    
+
     protected override void OnEntityAdded(int entityId) {
       if (_positionComponentMapper.Has(entityId)
           && _collisionComponentMapper.Has(entityId)
@@ -98,28 +98,28 @@ namespace TinyGardenGame.Core.Systems {
             _collisionComponentMapper.Get(entityId)));
       }
     }
-    
+
     protected override void OnEntityChanged(int entityId) {
       var dummy = new CollidableObject(entityId);
       if (_collisionQuadTree.Contains(dummy)) {
         _collisionQuadTree.Remove(dummy);
       }
-      
+
       OnEntityAdded(entityId);
     }
-    
+
     protected override void OnEntityRemoved(int entityId) {
       _collisionQuadTree.Remove(new CollidableObject(entityId));
     }
 
-    public bool IsSpaceOccupied(RectangleF target) {
+    public bool IsSpaceOccupied(SysRectangleF target) {
       return _collisionQuadTree.GetObjects(target).Count > 0;
     }
   }
 
   public class CollidableObject : IRectFQuadStorable {
     private readonly int _entityId;
-    public RectangleF Rect { get; }
+    public SysRectangleF Rect { get; }
 
     /**
      * Dummy that should only be used for #Contains calls 
@@ -127,7 +127,7 @@ namespace TinyGardenGame.Core.Systems {
     public CollidableObject(int entityId) {
       _entityId = entityId;
     }
-    
+
     public CollidableObject(
         int entityId,
         PositionComponent position,
@@ -136,9 +136,9 @@ namespace TinyGardenGame.Core.Systems {
       Rect = GetCollisionRect(position.Position, collisionFootprint);
     }
 
-    public static RectangleF GetCollisionRect(
+    public static SysRectangleF GetCollisionRect(
         Vector2 position, CollisionFootprintComponent collisionFootprint) {
-      return new RectangleF(
+      return new SysRectangleF(
           position.X + collisionFootprint.Footprint.Left,
           position.Y + collisionFootprint.Footprint.Top,
           collisionFootprint.Footprint.Width,

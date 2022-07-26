@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -34,8 +33,8 @@ namespace TinyGardenGame.Player.Systems {
     }
 
     public override void Update(GameTime gameTime) {
-        AdjustCameraPosition();
-        Camera.LookAt(_cameraPosition);
+      AdjustCameraPosition();
+      Camera.LookAt(_cameraPosition);
     }
 
     private void AdjustCameraPosition() {

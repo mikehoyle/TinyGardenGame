@@ -1,18 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
-using MonoGame.Extended.Sprites;
-using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace TinyGardenGame.Player.State.FiniteStateMachine {
   public class PlaceableObjectHoveringState : MovablePlayerState {
@@ -47,7 +42,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     public override void Enter() {
       var currentItem = PlayerState.Inventory.CurrentlySelectedItem;
       var selectionPosition = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
-      
+
       _hoveredPlaceableType = currentItem.PlantType();
       _plantFactory.CreateGhostPlant(
           _hoveredPlaceableType, selectionPosition, _placementGhostEntity);
@@ -62,7 +57,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
         var placement = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
         if (AttemptPlantPlacement(_hoveredPlaceableType, placement)) {
           PlayerState.Inventory.CurrentlySelectedItem.Expend(1);
-        
+
           MaybeMove(gameTime, actions);
           return typeof(MovablePlayerState);
         }
@@ -82,19 +77,20 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       _placementGhostEntity.Detach<PositionComponent>();
       _mapProcessor.TileHighlightCondition = null;
     }
-    
+
     private bool AttemptPlantPlacement(PlantType type, Vector2 location) {
       if (CanPlacePlant(type, location)) {
         _plantFactory.CreatePlant(type, location);
         return true;
       }
+
       return false;
     }
-    
+
     private void UpdateBuildGhost() {
       if (_config.ShowBuildGhost) {
         var placement = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
-        
+
         _placementGhostEntity.Get<PositionComponent>().Position = placement;
         var sprite = (SpriteDrawable)_placementGhostEntity.Get<DrawableComponent>().Drawable;
         if (CanPlacePlant(_hoveredPlaceableType, placement)) {
@@ -105,10 +101,10 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
         }
       }
     }
-    
+
     private bool CanPlacePlant(PlantType type, Vector2 location) {
       var footprintSize = _plantFactory.GetPlantFootprintSize(type);
-      var candidateFootprint = new RectangleF(
+      var candidateFootprint = new SysRectangleF(
           location.X, location.Y, footprintSize.X, footprintSize.Y);
       if (_isSpaceOccupied.IsSpaceOccupied(candidateFootprint)) {
         return false;
@@ -120,6 +116,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
           return false;
         }
       }
+
       return true;
     }
   }

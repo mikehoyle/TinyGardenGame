@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
 using TinyGardenGame.Core;
 using TinyGardenGame.Screens;
@@ -10,7 +8,7 @@ namespace TinyGardenGame {
   public class MainGame : Game {
     public static readonly int RenderResolutionWidth = 320;
     public static readonly int RenderResolutionHeight = 180;
-    
+
     private GraphicsDeviceManager _graphics;
     private readonly ScreenManager _screenManager;
     public Config.Config Config { get; }

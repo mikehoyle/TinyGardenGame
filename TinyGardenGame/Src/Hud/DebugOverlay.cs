@@ -1,14 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.ViewportAdapters;
+﻿using MonoGame.Extended.ViewportAdapters;
 using TinyGardenGame.Core;
 
 namespace TinyGardenGame.Hud {
   public class DebugOverlay {
     private const int PaddingTopPx = 2;
     private const int PaddingLeftPx = 2;
-    
+
     private readonly MainGame _game;
     private readonly ScalingViewportAdapter _hudScale;
     private readonly SpriteFont _font;

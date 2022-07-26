@@ -4,13 +4,13 @@ using System;
 namespace TinyGardenGame.Player.State.Inventory {
   public class PlayerInventory {
     public const int InventoryWidth = 10;
-    
+
     private readonly InventorySlot?[] _inventoryContents;
     private int _currentlySelectedSlot;
-    
+
     public int CurrentlySelectedSlot {
       get => _currentlySelectedSlot;
-      set => _currentlySelectedSlot = value < 0 ? InventoryWidth -1 : value % InventoryWidth;
+      set => _currentlySelectedSlot = value < 0 ? InventoryWidth - 1 : value % InventoryWidth;
     }
 
     public InventorySlot? CurrentlySelectedItem => ContentsOfSlot(CurrentlySelectedSlot);
@@ -19,7 +19,7 @@ namespace TinyGardenGame.Player.State.Inventory {
       _inventoryContents = new InventorySlot?[InventoryWidth];
       _currentlySelectedSlot = 0;
     }
-    
+
     public void AddItem(InventoryItem item, uint amount = 1) {
       var firstAvailableSlot = -1;
       for (var i = 0; i < _inventoryContents.Length; i++) {
@@ -28,7 +28,8 @@ namespace TinyGardenGame.Player.State.Inventory {
           if (firstAvailableSlot == -1) {
             firstAvailableSlot = i;
           }
-        } else {
+        }
+        else {
           if (contents.Item == item) {
             contents.Count += amount;
             return;
@@ -46,14 +47,16 @@ namespace TinyGardenGame.Player.State.Inventory {
           Count = amount,
       };
     }
-    
+
     public InventorySlot? ContentsOfSlot(int slot) {
       if (slot >= _inventoryContents.Length || slot < 0) {
         return null;
       }
+
       if (_inventoryContents[slot] == null) {
         return null;
       }
+
       return _inventoryContents[slot].Count < 1 ? null : _inventoryContents[slot];
     }
   }

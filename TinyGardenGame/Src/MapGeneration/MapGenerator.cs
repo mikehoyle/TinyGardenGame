@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.MapGeneration.RandomAlgorithms;
-using static TinyGardenGame.MapPlacementHelper;
 
 namespace TinyGardenGame.MapGeneration {
   /**
@@ -26,7 +24,7 @@ namespace TinyGardenGame.MapGeneration {
       Stopwatch benchmarkTimer = new Stopwatch();
       benchmarkTimer.Start();
       Debug.WriteLine("Generating map...");
-      
+
       // First, fill the entire map with Biomes
       var map = new GameMap(_config.MapWidth, _config.MapHeight);
       var biomeSegments = VoroniSegmentation.GenerateBiomes(
@@ -49,24 +47,25 @@ namespace TinyGardenGame.MapGeneration {
           map.Map[x, y] = (MapTile)Activator.CreateInstance(closestSegment.Type);
         }
       }
+
       Debug.WriteLine($"Allocating base tiles took: {benchmarkTimer.Elapsed}");
-      
+
       GenerateLakes(map, biomeSegments);
       Debug.WriteLine($"Generating lakes took: {benchmarkTimer.Elapsed}");
 
       // Fill in land with noise
       // GenerateLandStructure(map);
       //Debug.WriteLine($"Generate land with simplex noise took: {benchmarkTimer.Elapsed}");
-      
+
       // Ensure reasonable starting area.
       // AddStartingArea(map);
       // Debug.WriteLine($"Add starting area took: {benchmarkTimer.Elapsed}");
 
       //ConvertLandlockedOceanToWater(map);
       //Debug.WriteLine($"Converting ocean to lakes took: {benchmarkTimer.Elapsed}");
-      
+
       PostProcess(map);
-      
+
       Debug.WriteLine($"Post-process took: {benchmarkTimer.Elapsed}");
       return map;
     }
@@ -91,7 +90,7 @@ namespace TinyGardenGame.MapGeneration {
       if (_random.NextSingle() > _config.LakeProbabilityPerBiomeInstance) {
         return;
       }
-      
+
       var currentAngle = new Angle(0, AngleType.Radian);
       var baseRadius = _random.NextSingle(_config.LakeMinRadius, _config.LakeMaxRadius);
       var radiusLowerLimit = baseRadius - (baseRadius * _config.LakeVertexVariabilityPercent);
@@ -111,7 +110,7 @@ namespace TinyGardenGame.MapGeneration {
         currentAngle.Radians += angleAddition;
 
         // Allow more variation the farther we're stepping
-        var variationPercent = 
+        var variationPercent =
             (angleAddition / _config.LakeMaxAngleStepRadians) *
             _config.LakeVertexVariabilityPercent;
         var currentLowerLimit =
@@ -120,14 +119,17 @@ namespace TinyGardenGame.MapGeneration {
             Math.Min(radiusUpperLimit, currentRadius + (baseRadius * variationPercent));
         currentRadius = _random.NextSingle(currentLowerLimit, currentUpperLimit);
       } while (currentAngle.Revolutions < 1);
+
       var lakePolygon = new Polygon(polygonVertices);
-      
+
       // Actually apply the polygon to the map
       var bounds = lakePolygon.BoundingRectangle;
       for (int x = Math.Max(0, (int)bounds.Left);
-           x <= Math.Min(map.Map.GetLength(0) - 1, (int)bounds.Right); x++) {
+           x <= Math.Min(map.Map.GetLength(0) - 1, (int)bounds.Right);
+           x++) {
         for (int y = Math.Max(0, (int)bounds.Top);
-             y <= Math.Min(map.Map.GetLength(1) - 1, (int)bounds.Bottom); y++) {
+             y <= Math.Min(map.Map.GetLength(1) - 1, (int)bounds.Bottom);
+             y++) {
           if (map.Map[x, y] != null
               && map.Map[x, y].CanContainWater
               && lakePolygon.Contains(x, y)) {
@@ -171,9 +173,11 @@ namespace TinyGardenGame.MapGeneration {
                 ContainsWater = true,
             };
           }
-        } else {
+        }
+        else {
           knownOcean.UnionWith(marked);
         }
+
         marked.Clear();
       });
     }
@@ -191,20 +195,23 @@ namespace TinyGardenGame.MapGeneration {
         // Touching edge of map is always ocean
         return false;
       }
+
       if (!(tile is OceanTile)) {
         return true;
       }
+
       if (knownOcean.Contains((x, y))) {
         return false;
       }
-      
+
       if (!marked.Add((x, y))) {
         return true;
       }
 
       var result = true;
       foreach (var direction in new[] {
-                   Direction.North, Direction.East, Direction.South, Direction.West}) {
+                   North, East, South, West
+               }) {
         var adjX = x + (int)DirectionUnitVectors[direction].X;
         var adjY = y + (int)DirectionUnitVectors[direction].Y;
         result = result && IsTileInland(map, knownOcean, marked, adjX, adjY);
@@ -219,7 +226,7 @@ namespace TinyGardenGame.MapGeneration {
           _config.MapWidth - (border * 2),
           _config.MapHeight - (border * 2),
           _config.MapGenerationSeed);
-      
+
       for (short i = 0; i < noiseMap.GetLength(0); i++) {
         for (short j = 0; j < noiseMap.GetLength(1); j++) {
           if (noiseMap[i, j] > SimplexNoiseGenerator.NoiseMax * 0.2) {
