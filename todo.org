@@ -45,8 +45,9 @@
    atm).
  - [ ] Damage source rects are not reflective of the damage direction.
 
-* TODO Stretch [0/1]
+* TODO Stretch (i.e. Cool ideas) [0/1]
  - [ ] Dynamic shadows to indicate time of day
+ - [ ] Tameable, ridable mounts (Like mice, squirrels, etc.)
 
 * TODO Lower priority [1/1]
  - [X] FPS counter

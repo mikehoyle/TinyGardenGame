@@ -32,6 +32,10 @@ Name = "InventorySelected"
 Path = "sprites/inventory_selected"
 
 [[Assets]]
+Name = "GreatTree"
+Path = "sprites/plants/great_tree"
+
+[[Assets]]
 Name = "Marigold"
 Path = "sprites/plants/marigold"
 Origin = { X = 16, Y = 32 }
@@ -187,6 +191,11 @@ AtlasRect = { X = 64, Width = 32, Height = 24 }
 Name = "InventoryReedSeeds"
 Path = "sprites/inventory_items"
 AtlasRect = { X = 0, Y = 0, Width = 16, Height = 16 }
+
+[[Assets]]
+Name = "InventoryGreatAcorn"
+Path = "sprites/inventory_items"
+AtlasRect = { X = 16, Y = 0, Width = 16, Height = 16 }
 
 [[Assets]]
 Name = "HandTool"

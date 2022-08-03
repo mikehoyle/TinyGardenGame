@@ -51,8 +51,7 @@ namespace TinyGardenGame.Screens {
           .AddSystem(_debugSystem)
           .Build();
       playerState.Initialize(_world, game, collisionSystem, map, mapProcessor);
-      // Test starting item
-      playerState.Inventory.AddItem(InventoryItem.ReedSeeds, 5);
+      playerState.Inventory.AddItem(InventoryItem.GreatAcorn, 1);
     }
 
     public override void LoadContent() {

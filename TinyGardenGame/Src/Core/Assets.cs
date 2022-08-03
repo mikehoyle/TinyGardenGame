@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MonoGame.Aseprite.Documents;
 using MonoGame.Extended.BitmapFonts;
@@ -28,8 +29,10 @@ namespace TinyGardenGame.Core {
 
     // Inventory
     InventoryReedSeeds,
+    InventoryGreatAcorn,
 
     // Plants: Player Made
+    GreatTree,
     Marigold,
     Reeds,
 
@@ -81,14 +84,11 @@ namespace TinyGardenGame.Core {
 
   // TODO: This special static class is error prone
   public static class AssetLoading {
-    public static KeyedCollection<SpriteName, Asset> Assets =
-        new KeyedCollection<SpriteName, Asset>(x => x.Name);
+    public static KeyedCollection<SpriteName, Asset> Assets = new(x => x.Name);
 
-    public static KeyedCollection<SpriteName, FontAsset> Fonts =
-        new KeyedCollection<SpriteName, FontAsset>(x => x.Name);
+    public static KeyedCollection<SpriteName, FontAsset> Fonts = new(x => x.Name);
 
-    public static KeyedCollection<SpriteName, FontAsset> BmpFonts =
-        new KeyedCollection<SpriteName, FontAsset>(x => x.Name);
+    public static KeyedCollection<SpriteName, FontAsset> BmpFonts = new(x => x.Name);
 
     public static Task LoadAllAssets(ContentManager contentManager, string assetConfigPath) {
       // OPTIMIZE: This in theory duplicates a lot. Even though contentManager caches, it could
@@ -117,9 +117,9 @@ namespace TinyGardenGame.Core {
     public static AsepriteAnimatedSprite LoadAnimated(
         this ContentManager content, SpriteName spriteName) {
       var item = AssetLoading.Assets[spriteName];
-      var sprite = new AsepriteAnimatedSprite(
-          content.Load<AsepriteDocument>(item.Path)) {
-          Origin = item.Origin.ToVec(),
+      var asepriteDocument = content.Load<AsepriteDocument>(item.Path);
+      var sprite = new AsepriteAnimatedSprite(asepriteDocument) {
+          Origin = GetOrigin(item, asepriteDocument),
       };
       if (item.HasAtlasRect) {
         sprite.SourceRectangle = item.AtlasRect.ToRect().Value;
@@ -130,11 +130,11 @@ namespace TinyGardenGame.Core {
 
     public static Sprite LoadSprite(this ContentManager content, SpriteName spriteName) {
       var item = AssetLoading.Assets[spriteName];
+      var asepriteDocument = content.Load<AsepriteDocument>(item.Path);
       var sprite = item.HasAtlasRect
-          ? new Sprite(new TextureRegion2D(
-              content.Load<AsepriteDocument>(item.Path).Texture, item.AtlasRect.ToRect().Value))
-          : new Sprite(content.Load<AsepriteDocument>(item.Path).Texture);
-      sprite.Origin = item.Origin.ToVec();
+          ? new Sprite(new TextureRegion2D(asepriteDocument.Texture, item.AtlasRect.ToRect().Value))
+          : new Sprite(asepriteDocument.Texture);
+      sprite.Origin = GetOrigin(item, asepriteDocument);
       return sprite;
     }
 
@@ -173,6 +173,19 @@ namespace TinyGardenGame.Core {
 
     public static BitmapFont LoadBmpFont(this ContentManager content, SpriteName spriteName) {
       return content.Load<BitmapFont>(AssetLoading.BmpFonts[spriteName].Path);
+    }
+
+    // TODO: Support slices for atlas rect as well
+    private static Vector2 GetOrigin(Asset item, AsepriteDocument document) {
+      if (document.Slices.Count == 1) {
+        foreach (var sliceKey in document.Slices.Values.First().SliceKeys.Values) {
+          if (sliceKey.HasPivot) {
+            return new Vector2(sliceKey.PivotX, sliceKey.PivotY);
+          }
+        }
+      }
+      
+      return item.Origin.ToVec();
     }
   }
 }

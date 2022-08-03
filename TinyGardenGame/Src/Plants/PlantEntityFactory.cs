@@ -14,6 +14,7 @@ using static TinyGardenGame.Plants.PlantType;
 
 namespace TinyGardenGame.Plants {
   public enum PlantType {
+    GreatOak,
     Marigold,
     Reeds,
   }
@@ -52,17 +53,24 @@ namespace TinyGardenGame.Plants {
       _config = config;
       _createEntity = createEntity;
       _plantAssets = new Dictionary<PlantType, PlantMetadata> {
-          [Marigold] = new PlantMetadata {
+          [Marigold] = new() {
               Sprite = () => content.LoadAnimated(SpriteName.Marigold),
               GrowthTimeSecs = 45,
               GrowthCondition = WaterProximityGrowthCondition(3),
               CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
           },
-          [Reeds] = new PlantMetadata {
+          [Reeds] = new() {
               Sprite = () => content.LoadAnimated(SpriteName.Reeds),
               GrowthTimeSecs = 30,
               GrowthCondition = WaterProximityGrowthCondition(1),
-          }
+          },
+          [GreatOak] = new() {
+              Sprite = () => content.LoadAnimated(SpriteName.GreatTree),
+              GrowthTimeSecs = 0,
+              GrowthCondition = WaterProximityGrowthCondition(8),
+              CollisionFootprint = new RectangleF(0f, 0f, 3f, 3f),
+              FootprintSize = new Vector2(3f, 3f),
+          },
       };
     }
 
@@ -77,14 +85,16 @@ namespace TinyGardenGame.Plants {
     public void CreatePlant(PlantType type, Vector2 position) {
       var metadata = _plantAssets[type];
       var drawable = new DrawableComponent(new AnimatedSpriteDrawable(metadata.Sprite()));
-      var growth = new GrowthComponent(
-          TimeSpan.FromSeconds(metadata.GrowthTimeSecs), metadata.GrowthStages);
-      drawable.SetAnimation(growth.CurrentGrowthAnimationName());
-      _createEntity()
+      var entity = _createEntity()
           .AttachAnd(drawable)
-          .AttachAnd(growth)
           .AttachAnd(new PositionComponent(position, footprintSize: metadata.FootprintSize))
           .AttachAnd(new CollisionFootprintComponent(metadata.CollisionFootprint));
+      if (metadata.GrowthTimeSecs > 0) {
+        var growth = new GrowthComponent(
+            TimeSpan.FromSeconds(metadata.GrowthTimeSecs), metadata.GrowthStages);
+        drawable.SetAnimation(growth.CurrentGrowthAnimationName());
+        entity.Attach(growth);
+      }
     }
 
     /**

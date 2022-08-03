@@ -6,6 +6,7 @@ using static TinyGardenGame.Player.State.Inventory.InventoryItem;
 namespace TinyGardenGame.Player.State.Inventory {
   public enum InventoryItem {
     ReedSeeds,
+    GreatAcorn,
   }
 
   public struct ItemMetadata {
@@ -19,9 +20,9 @@ namespace TinyGardenGame.Player.State.Inventory {
   }
 
   public static class Items {
-    public static readonly Dictionary<InventoryItem, ItemMetadata> ItemMap =
-        new Dictionary<InventoryItem, ItemMetadata> {
-            { ReedSeeds, new ItemMetadata(PlantType.Reeds, SpriteName.InventoryReedSeeds) },
-        };
+    public static readonly Dictionary<InventoryItem, ItemMetadata> ItemMap = new() {
+        { ReedSeeds, new ItemMetadata(PlantType.Reeds, SpriteName.InventoryReedSeeds) },
+        { GreatAcorn, new ItemMetadata(PlantType.GreatOak, SpriteName.InventoryGreatAcorn) },
+    };
   }
 }
