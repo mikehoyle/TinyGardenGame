@@ -4,6 +4,10 @@ Path = "sprites/gnome"
 Origin = { X = 16, Y = 32 }
 
 [[Assets]]
+Name = "Inchworm"
+Path = "sprites/units/inchworm"
+
+[[Assets]]
 Name = "ValidTile"
 Path = "sprites/valid_square"
 Origin = { X = 16 }

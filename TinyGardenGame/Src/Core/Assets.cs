@@ -13,6 +13,9 @@ namespace TinyGardenGame.Core {
   public enum SpriteName {
     // Player
     Player,
+    
+    // Units
+    Inchworm,
 
     // Overlay
     ValidTile,
