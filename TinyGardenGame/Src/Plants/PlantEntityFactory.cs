@@ -57,7 +57,7 @@ namespace TinyGardenGame.Plants {
               Sprite = () => content.LoadAnimated(SpriteName.Marigold),
               GrowthTimeSecs = 45,
               GrowthCondition = WaterProximityGrowthCondition(3),
-              CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
+              //CollisionFootprint = new RectangleF(0.25f, 0.25f, 0.5f, 0.5f),
           },
           [Reeds] = new() {
               Sprite = () => content.LoadAnimated(SpriteName.Reeds),
@@ -68,7 +68,7 @@ namespace TinyGardenGame.Plants {
               Sprite = () => content.LoadAnimated(SpriteName.GreatTree),
               GrowthTimeSecs = 0,
               GrowthCondition = WaterProximityGrowthCondition(8),
-              CollisionFootprint = new RectangleF(0f, 0f, 3f, 3f),
+              //CollisionFootprint = new RectangleF(0f, 0f, 3f, 3f),
               FootprintSize = new Vector2(3f, 3f),
           },
       };

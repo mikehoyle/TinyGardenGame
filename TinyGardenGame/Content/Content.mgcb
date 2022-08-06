@@ -254,6 +254,18 @@
 /processorParam:InnerPadding=0
 /build:sprites/tools.aseprite
 
+#begin sprites/units/inchworm.aseprite
+/importer:AsepriteDocumentImporter
+/processor:AsepriteDocumentProcessor
+/processorParam:SheetType=Packed
+/processorParam:MergeDuplicateFrames=True
+/processorParam:IgnoreEmptyFrames=True
+/processorParam:OnlyVisibleLayers=True
+/processorParam:BorderPadding=0
+/processorParam:Spacing=0
+/processorParam:InnerPadding=0
+/build:sprites/units/inchworm.aseprite
+
 #begin sprites/valid_square.aseprite
 /importer:AsepriteDocumentImporter
 /processor:AsepriteDocumentProcessor

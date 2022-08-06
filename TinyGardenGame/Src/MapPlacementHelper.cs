@@ -31,68 +31,65 @@ namespace TinyGardenGame {
       NorthEast = 7,
     }
 
-    public static readonly Dictionary<Direction, Vector2> DirectionUnitVectors =
-        new Dictionary<Direction, Vector2> {
-            { East, Vector2.UnitX },
-            { SouthEast, Vector2.UnitX + Vector2.UnitY },
-            { South, Vector2.UnitY },
-            { SouthWest, -Vector2.UnitX + Vector2.UnitY },
-            { West, -Vector2.UnitX },
-            { NorthWest, -Vector2.UnitX - Vector2.UnitY },
-            { North, -Vector2.UnitY },
-            { NorthEast, Vector2.UnitX - Vector2.UnitY },
-        };
+    public static readonly Dictionary<Direction, Vector2> DirectionUnitVectors = new() {
+        { East, Vector2.UnitX },
+        { SouthEast, Vector2.UnitX + Vector2.UnitY },
+        { South, Vector2.UnitY },
+        { SouthWest, -Vector2.UnitX + Vector2.UnitY },
+        { West, -Vector2.UnitX },
+        { NorthWest, -Vector2.UnitX - Vector2.UnitY },
+        { North, -Vector2.UnitY },
+        { NorthEast, Vector2.UnitX - Vector2.UnitY },
+    };
 
     // Maps directions to their angular bounds
     // These overlap intentionally, a preference towards a direction is better than gaps,
     // And realistically the player will often be travelling directly on these bounds (as they
     // are the cardinal directions) so we need to choose one way or the other.
-    public static readonly Dictionary<Direction, (Angle, Angle)> DirectionBounds =
-        new Dictionary<Direction, (Angle, Angle)> {
-            {
-                East,
-                (new Angle(-1 / 16f, Revolution), new Angle(1 / 16f, Revolution))
-            }, {
-                SouthEast,
-                (new Angle(-3 / 16f, Revolution), new Angle(-1 / 16f, Revolution))
-            }, {
-                South,
-                (new Angle(-5 / 16f, Revolution), new Angle(-3 / 16f, Revolution))
-            }, {
-                SouthWest,
-                (new Angle(-7 / 16f, Revolution), new Angle(-5 / 16f, Revolution))
-            }, {
-                West,
-                (new Angle(7 / 16f, Revolution), new Angle(-7 / 16f, Revolution))
-            }, {
-                NorthWest,
-                (new Angle(5 / 16f, Revolution), new Angle(7 / 16f, Revolution))
-            }, {
-                North,
-                (new Angle(3 / 16f, Revolution), new Angle(5 / 16f, Revolution))
-            }, {
-                NorthEast,
-                (new Angle(1 / 16f, Revolution), new Angle(3 / 16f, Revolution))
-            },
-        };
+    public static readonly Dictionary<Direction, (Angle, Angle)> DirectionBounds = new() {
+        {
+            East,
+            (new Angle(-1 / 16f, Revolution), new Angle(1 / 16f, Revolution))
+        }, {
+            SouthEast,
+            (new Angle(-3 / 16f, Revolution), new Angle(-1 / 16f, Revolution))
+        }, {
+            South,
+            (new Angle(-5 / 16f, Revolution), new Angle(-3 / 16f, Revolution))
+        }, {
+            SouthWest,
+            (new Angle(-7 / 16f, Revolution), new Angle(-5 / 16f, Revolution))
+        }, {
+            West,
+            (new Angle(7 / 16f, Revolution), new Angle(-7 / 16f, Revolution))
+        }, {
+            NorthWest,
+            (new Angle(5 / 16f, Revolution), new Angle(7 / 16f, Revolution))
+        }, {
+            North,
+            (new Angle(3 / 16f, Revolution), new Angle(5 / 16f, Revolution))
+        }, {
+            NorthEast,
+            (new Angle(1 / 16f, Revolution), new Angle(3 / 16f, Revolution))
+        },
+    };
 
     // Favor left/right on the diagonals
-    public static readonly Dictionary<Direction, (Angle, Angle)> FourDirectionBounds =
-        new Dictionary<Direction, (Angle, Angle)> {
-            {
-                East,
-                (new Angle(-0.125f, Revolution), new Angle(0.125f, Revolution))
-            }, {
-                West,
-                (new Angle(0.375f, Revolution), new Angle(-0.375f, Revolution))
-            }, {
-                South,
-                (new Angle(-0.375f, Revolution), new Angle(-0.125f, Revolution))
-            }, {
-                North,
-                (new Angle(0.125f, Revolution), new Angle(0.375f, Revolution))
-            },
-        };
+    public static readonly Dictionary<Direction, (Angle, Angle)> FourDirectionBounds = new() {
+        {
+            East,
+            (new Angle(-0.125f, Revolution), new Angle(0.125f, Revolution))
+        }, {
+            West,
+            (new Angle(0.375f, Revolution), new Angle(-0.375f, Revolution))
+        }, {
+            South,
+            (new Angle(-0.375f, Revolution), new Angle(-0.125f, Revolution))
+        }, {
+            North,
+            (new Angle(0.125f, Revolution), new Angle(0.375f, Revolution))
+        },
+    };
 
     // Tile location at NW / top of tile, same for map coords & absolute rendering coords
     public static Vector2 MapOrigin { get; set; } = Vector2.Zero;

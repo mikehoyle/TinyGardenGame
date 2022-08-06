@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MonoGame.Extended;
+﻿using MonoGame.Extended;
 using TinyGardenGame.Core.Components;
 
 namespace TinyGardenGame.Player.Components {
@@ -8,25 +7,24 @@ namespace TinyGardenGame.Player.Components {
    * TODO: Allow smart-selection based on what's nearby. 
    */
   public class SelectionComponent {
-    public Vector2 SelectedSquare { get; set; }
+    public Vector2 SelectedSquare { get; private set; }
 
+    // Current selection strategy is simply beneath the characters feet, biasing towards facing
+    // direction if on multiple tiles
     public void SetFromMapPlacement(
         PositionComponent position, CollisionFootprintComponent footprint) {
-      var selectionDirection = DirectionBounds
-          .FirstOrDefault(
-              entry => Angle.IsBetween(position.Rotation, entry.Value.Item1, entry.Value.Item2))
-          .Key;
-      var vector = DirectionUnitVectors[selectionDirection];
-      var targetSelection = position.CurrentSquare + vector.ToPoint();
-      var footprintModifier =
-          vector * new Vector2(footprint.Footprint.Width / 2, footprint.Footprint.Height / 2);
-      if (PositionComponent.GetSquareForPosition(position.Position + footprintModifier)
-          .Equals(targetSelection)) {
-        // Selecting unit overlaps target square, select one further
-        targetSelection += vector.ToPoint();
-      }
-
-      SelectedSquare = targetSelection.ToVector2();
+      var facingDirection = AngleToDirection(position.Rotation);
+      var facingUnitVector = DirectionUnitVectors[facingDirection];
+      var facingPointInDistance =
+          position.Position.Translate(facingUnitVector.X * 10, facingUnitVector.Y * 10);
+      var footprintRect = new RectangleF(
+          position.Position.X + footprint.Footprint.Left,
+          position.Position.Y + footprint.Footprint.Top,
+          footprint.Footprint.Width,
+          footprint.Footprint.Height);
+      var selectionPoint = footprintRect.ClosestPointTo(facingPointInDistance.ToPoint());
+      
+      SelectedSquare = PositionComponent.GetSquareForPosition(selectionPoint).ToVector2();
     }
   }
 }
