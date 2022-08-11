@@ -16,6 +16,7 @@ public class RoamEnemyAiHandler : IEnemyAiHandler {
   private ComponentMapper<PositionComponent> _positionMapper;
   private ComponentMapper<MotionComponent> _motionMapper;
   private readonly Random _random;
+  private ComponentMapper<AnimationComponent> _animationMapper;
 
   public RoamEnemyAiHandler(float roamVariationPerSec) {
     _roamVariationPerSec = roamVariationPerSec;
@@ -25,6 +26,7 @@ public class RoamEnemyAiHandler : IEnemyAiHandler {
   public void Initialize(IComponentMapperService mapperService) {
     _positionMapper = mapperService.GetMapper<PositionComponent>();
     _motionMapper = mapperService.GetMapper<MotionComponent>();
+    _animationMapper = mapperService.GetMapper<AnimationComponent>();
   }
 
   public void Handle(GameTime gameTime, int entity) {
@@ -43,5 +45,9 @@ public class RoamEnemyAiHandler : IEnemyAiHandler {
     movementAngle += new Angle(_random.NextSingle(-updateVariation, updateVariation));
     
     motion.SetMotionFromAngle(gameTime, movementAngle);
+    
+    // Set animation
+    var direction = AngleToDirection(movementAngle);
+    _animationMapper.Put(entity, new AnimationComponent(AnimationComponent.Action.Run, direction));
   }
 }

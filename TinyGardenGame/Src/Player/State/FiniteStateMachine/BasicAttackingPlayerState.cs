@@ -33,7 +33,8 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       motionComponent.SetMotionFromCardinalVector(Vector2.Zero);
       var facingDirection = AngleToDirection(position.Rotation);
       PlayerState.PlayerEntity.Attach(BuildDamageSource(facingDirection));
-      SetAnimationFromDirection(drawable, "attack", facingDirection, false);
+      PlayerState.PlayerEntity.Attach(
+          new AnimationComponent(AnimationComponent.Action.Attack, facingDirection, loop: false));
     }
 
     public override Type? Update(GameTime gameTime, HashSet<PlayerAction> actions) {

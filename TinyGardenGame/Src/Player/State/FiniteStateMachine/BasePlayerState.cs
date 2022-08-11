@@ -21,33 +21,5 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     public abstract Type? Update(GameTime gameTime, HashSet<PlayerAction> actions);
 
     public virtual void Exit() { }
-
-    protected void SetAnimationFromDirection(
-        DrawableComponent drawable,
-        string animation,
-        Direction direction,
-        bool loop = true) {
-      // Remember, the directions are for the tile grid, not the player's viewpoint
-      drawable.SpriteEffects = SpriteEffects.None;
-      switch (direction) {
-        case SouthEast:
-          drawable.SetAnimation($"{animation}_down", loop);
-          break;
-        case NorthWest:
-          drawable.SetAnimation($"{animation}_up", loop);
-          break;
-        case South:
-        case SouthWest:
-        case West:
-          drawable.SetAnimation($"{animation}_left", loop);
-          break;
-        case North:
-        case NorthEast:
-        case East:
-          drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
-          drawable.SetAnimation($"{animation}_left", loop);
-          break;
-      }
-    }
   }
 }

@@ -40,6 +40,10 @@ namespace TinyGardenGame.Screens {
       _world = new WorldBuilder()
           .AddSystem(new PlayerInputSystem(this, playerState, map))
           .AddSystem(new EnemyAiSystem(game.Config))
+          .AddSystem(collisionSystem)
+          .AddSystem(new MotionSystem())
+          .AddSystem(new GrowthSystem(game))
+          .AddSystem(new AnimationSystem())
           .AddSystem(new RenderSystem(
               game,
               GraphicsDevice,
@@ -47,9 +51,6 @@ namespace TinyGardenGame.Screens {
               _gameState,
               mapProcessor,
               hud.Draw))
-          .AddSystem(collisionSystem)
-          .AddSystem(new MotionSystem())
-          .AddSystem(new GrowthSystem(game))
           .AddSystem(cameraSystem)
           .AddSystem(_debugSystem)
           .Build();

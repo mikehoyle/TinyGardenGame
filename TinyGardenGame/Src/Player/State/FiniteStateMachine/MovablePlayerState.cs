@@ -69,12 +69,13 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
           motionComponent.GetMovementVector(gameTime, movementDirection));
 
       var moved = movementDirection != Vector2.Zero;
-      var animation = moved ? "run" : "idle";
+      var animation = moved ? AnimationComponent.Action.Run : AnimationComponent.Action.Idle;
 
-      var drawable = PlayerState.PlayerEntity.Get<DrawableComponent>();
       var position = PlayerState.PlayerEntity.Get<PositionComponent>();
       var facingDirection = AngleToDirection(position.Rotation);
-      SetAnimationFromDirection(drawable, animation, facingDirection);
+      PlayerState.PlayerEntity.Attach(
+          new AnimationComponent(animation, facingDirection));
+      
       return moved;
     }
 
