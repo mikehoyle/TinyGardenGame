@@ -19,5 +19,14 @@ namespace TinyGardenGame.Core.Components {
     public void SetMotionFromCardinalVector(Vector2 vector) {
       CurrentMotion = vector.Equals(Vector2.Zero) ? vector : vector.Rotate(-0.25f * (float)Math.PI);
     }
+    
+    public Vector2 GetMovementVector(GameTime gameTime, Vector2 movementDirection) {
+      var normalizedSpeed = SpeedTilesPerSec * gameTime.GetElapsedSeconds();
+      return movementDirection * normalizedSpeed;
+    }
+
+    public void SetMotionFromAngle(GameTime gameTime, Angle angle) {
+      CurrentMotion = angle.ToVector(SpeedTilesPerSec * gameTime.GetElapsedSeconds());
+    }
   }
 }

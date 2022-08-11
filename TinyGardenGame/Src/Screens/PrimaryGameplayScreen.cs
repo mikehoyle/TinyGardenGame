@@ -7,6 +7,8 @@ using TinyGardenGame.Plants.Systems;
 using TinyGardenGame.Player.State;
 using TinyGardenGame.Player.State.Inventory;
 using TinyGardenGame.Player.Systems;
+using TinyGardenGame.Units;
+using TinyGardenGame.Units.Systems;
 
 namespace TinyGardenGame.Screens {
   public class PrimaryGameplayScreen : GameScreen {
@@ -37,6 +39,7 @@ namespace TinyGardenGame.Screens {
       var mapProcessor = new MapProcessor(game, map);
       _world = new WorldBuilder()
           .AddSystem(new PlayerInputSystem(this, playerState, map))
+          .AddSystem(new EnemyAiSystem(game.Config))
           .AddSystem(new RenderSystem(
               game,
               GraphicsDevice,
@@ -51,7 +54,12 @@ namespace TinyGardenGame.Screens {
           .AddSystem(_debugSystem)
           .Build();
       playerState.Initialize(_world, game, collisionSystem, map, mapProcessor);
-      playerState.Inventory.AddItem(InventoryItem.GreatAcorn, 1);
+      
+      // Base state
+      playerState.Inventory.AddItem(InventoryItem.GreatAcorn);
+      var unitFactory = new UnitEntityFactory(game.Content);
+      // TODO: remove this temporary test unit
+      unitFactory.Build(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
     }
 
     public override void LoadContent() {

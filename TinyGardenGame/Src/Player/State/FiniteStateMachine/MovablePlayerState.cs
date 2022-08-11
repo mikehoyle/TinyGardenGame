@@ -66,7 +66,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       var movementDirection = GetMovementDirection(actions);
       var motionComponent = PlayerState.PlayerEntity.Get<MotionComponent>();
       motionComponent.SetMotionFromCardinalVector(
-          GetMovementVector(gameTime, movementDirection, motionComponent.SpeedTilesPerSec));
+          motionComponent.GetMovementVector(gameTime, movementDirection));
 
       var moved = movementDirection != Vector2.Zero;
       var animation = moved ? "run" : "idle";
@@ -76,12 +76,6 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       var facingDirection = AngleToDirection(position.Rotation);
       SetAnimationFromDirection(drawable, animation, facingDirection);
       return moved;
-    }
-
-    private static Vector2 GetMovementVector(
-        GameTime gameTime, Vector2 movementDirection, float speed) {
-      var normalizedSpeed = speed * gameTime.GetElapsedSeconds();
-      return movementDirection * normalizedSpeed;
     }
 
     private static Vector2 GetMovementDirection(HashSet<PlayerAction> actions) {

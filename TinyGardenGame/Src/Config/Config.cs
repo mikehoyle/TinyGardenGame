@@ -40,6 +40,9 @@
     public readonly float LakeMinAngleStepRadians = 0.4f;
     public readonly float LakeMaxAngleStepRadians = 1.2f;
     public readonly float LakeVertexVariabilityPercent = 0.65f;
+    
+    // AI
+    public readonly float AiRoamVariationRadiansPerSec = 6f;
   }
 
   /**

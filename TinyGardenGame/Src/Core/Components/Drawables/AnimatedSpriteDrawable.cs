@@ -1,9 +1,14 @@
-﻿namespace TinyGardenGame.Core.Components.Drawables {
+﻿using System.Collections.Generic;
+
+namespace TinyGardenGame.Core.Components.Drawables {
   public class AnimatedSpriteDrawable : BaseDrawable {
     private readonly AsepriteAnimatedSprite _sprite;
+    private List<string> PossibleAnimations { get; }
 
     public AnimatedSpriteDrawable(AsepriteAnimatedSprite sprite) {
       _sprite = sprite;
+      PossibleAnimations = new List<string>();
+      PossibleAnimations.AddRange(sprite.Animations.Keys);
     }
 
     public override void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects) {
