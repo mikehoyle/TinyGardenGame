@@ -54,7 +54,8 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
               -AttackWidth / 2,
               AttackWidth / 2, facingDirection),
           DamageDealt,
-          AttackWindup);
+          AttackWindup,
+          new() { DamageRecipientComponent.Category.Enemy });
     }
   }
 }

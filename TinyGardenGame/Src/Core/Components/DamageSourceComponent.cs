@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TinyGardenGame.Core.Components {
   /**
@@ -17,16 +18,23 @@ namespace TinyGardenGame.Core.Components {
 
     public TimeSpan CurrentLifetime { get; set; } = TimeSpan.Zero;
 
-    public DamageSourceComponent(SysRectangleF hitbox, double damageDealt) {
+    public HashSet<DamageRecipientComponent.Category> TargetSet { get; init; }
+
+    public DamageSourceComponent(
+        SysRectangleF hitbox,
+        double damageDealt,
+        HashSet<DamageRecipientComponent.Category> targetSet) {
       DamageHitbox = hitbox;
       DamageDealt = damageDealt;
+      TargetSet = targetSet;
     }
 
     public DamageSourceComponent(
         SysRectangleF hitbox,
         double damageDealt,
         TimeSpan windupTime,
-        bool isPersistent = false) : this(hitbox, damageDealt) {
+        HashSet<DamageRecipientComponent.Category> targetSet,
+        bool isPersistent = false) : this(hitbox, damageDealt, targetSet) {
       WindupTime = windupTime;
       IsPersistent = isPersistent;
     }

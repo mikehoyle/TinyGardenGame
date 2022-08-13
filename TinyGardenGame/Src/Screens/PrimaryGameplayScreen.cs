@@ -44,6 +44,7 @@ namespace TinyGardenGame.Screens {
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem(game))
           .AddSystem(new AnimationSystem())
+          .AddSystem(new DamageSystem(map))
           .AddSystem(new RenderSystem(
               game,
               GraphicsDevice,

@@ -61,7 +61,9 @@ namespace TinyGardenGame.Player.State {
           .AttachAnd(new PositionComponent(CenterOfMapTile(0, 0)))
           .AttachAnd(new CollisionFootprintComponent(new RectangleF(-0.3f, -0.3f, 0.6f, 0.6f)))
           .AttachAnd(new DamageRecipientComponent(
-              Hp.CurrentValue, new SysRectangleF(-0.3f, -0.3f, 0.6f, 0.6f)))
+              Hp.CurrentValue,
+              new SysRectangleF(-0.3f, -0.3f, 0.6f, 0.6f),
+              DamageRecipientComponent.Category.Friendly))
           .AttachAnd(new SelectionComponent());
     }
 

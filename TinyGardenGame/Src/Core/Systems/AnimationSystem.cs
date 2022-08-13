@@ -72,8 +72,7 @@ public class AnimationSystem : EntityUpdateSystem {
         case East:
           if (drawable.Drawable.PossibleAnimations.Contains($"{animation}_right")) {
             directionString = "_right";
-          }
-          else {
+          } else {
             drawable.SpriteEffects = SpriteEffects.FlipHorizontally;
             directionString = "_left";
           }

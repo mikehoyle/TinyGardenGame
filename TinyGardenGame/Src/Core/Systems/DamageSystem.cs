@@ -133,5 +133,9 @@ namespace TinyGardenGame.Core.Systems {
     public override int GetHashCode() {
       return _entityId;
     }
+
+    public override bool Equals(object obj) {
+      return obj is DamageReceivingEntity && GetHashCode() == obj.GetHashCode();
+    }
   }
 }
