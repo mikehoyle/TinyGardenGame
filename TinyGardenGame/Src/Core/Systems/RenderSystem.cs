@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using MonoGame.Extended.TextureAtlases;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Player.Systems;
@@ -32,6 +33,9 @@ namespace TinyGardenGame.Core.Systems {
     private readonly MapProcessor _mapProcessor;
     private readonly Effect _nightEffect;
     private DepthSortComparer _depthComparer;
+    private readonly TextureRegion2D _meterEmptySprite;
+    private readonly TextureRegion2D _meterFullSprite;
+    private ComponentMapper<VisibleMeterComponent> _visibleMeterMapper;
 
     public delegate void RenderSystemDraw(SpriteBatch spriteBatch, GameTime gameTime);
 
@@ -46,15 +50,20 @@ namespace TinyGardenGame.Core.Systems {
       _graphicsDevice = graphicsDevice;
       _cameraSystem = cameraSystem;
       _gameState = gameState;
-      _nightEffect = game.Content.Load<Effect>("shaders/night_shader");
       _drawHud = drawHud;
       _spriteBatch = new SpriteBatch(graphicsDevice);
       _mapProcessor = mapProcessor;
+      
+      // Content
+      _nightEffect = game.Content.Load<Effect>("shaders/night_shader");
+      _meterEmptySprite = game.Content.LoadSprite(SpriteName.LoadingBarEmpty).TextureRegion;
+      _meterFullSprite = game.Content.LoadSprite(SpriteName.LoadingBarFull).TextureRegion;
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
+      _visibleMeterMapper = mapperService.GetMapper<VisibleMeterComponent>();
       _depthComparer = new DepthSortComparer(_drawableComponentMapper, _positionComponentMapper);
     }
 
@@ -90,6 +99,15 @@ namespace TinyGardenGame.Core.Systems {
         var absolutePosition = _positionComponentMapper.Get(entity).AbsolutePosition;
         drawable.Update(gameTime);
         drawable.Draw(_spriteBatch, absolutePosition);
+      }
+      
+      // TODO: This is a hack! It might mess up rendering of menus and stuff! Needs fixing!
+      //    for now, just render in a separate pass after everything else to make up for multiple
+      //    drawables being attached to a single entity. This should be in the overlay layer
+      foreach (var entity in entities.Where(entity => _visibleMeterMapper.Has(entity))) {
+        var absolutePosition = _positionComponentMapper.Get(entity).AbsolutePosition;
+        var visibleMeter = _visibleMeterMapper.Get(entity);
+        visibleMeter.Draw(_spriteBatch, absolutePosition, _meterFullSprite, _meterEmptySprite);
       }
     }
 

@@ -3,12 +3,15 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MonoGame.Extended.Screens;
+using NLog;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration;
 
 namespace TinyGardenGame.Screens {
   /** Currently, just load all textures with no UI */
   public class GameStartLoadingScreen : GameScreen {
+    public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    
     private readonly MainGame _game;
     private Task? _loadingTask;
     private Task<GameMap>? _mapGenerationTask;
@@ -22,6 +25,7 @@ namespace TinyGardenGame.Screens {
     }
 
     public override void Initialize() {
+      Logger.Info("Beginning loading assets and generating map");
       _spriteBatch = new SpriteBatch(_game.GraphicsDevice);
       _loadTimer.Start();
     }
@@ -60,7 +64,9 @@ namespace TinyGardenGame.Screens {
     }
 
     private Task<GameMap> GenerateMap() {
-      return Task.Run(() => new MapGenerator(_game.Config).GenerateMap());
+      return Task.Run(() => {
+        return new MapGenerator(_game.Config).GenerateMap();
+      });
     }
   }
 }

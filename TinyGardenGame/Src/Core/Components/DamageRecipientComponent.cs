@@ -5,13 +5,16 @@
       Enemy,
     }
     
-    public double Hp { get; set; }
+    public double MaxHp { get; set; }
+    public double CurrentHp { get; set; }
+    
     public SysRectangleF Hitbox { get; }
     
     public Category RecipientCategory { get; }
 
-    public DamageRecipientComponent(double hp, SysRectangleF hitbox, Category category) {
-      Hp = hp;
+    public DamageRecipientComponent(double maxHp, SysRectangleF hitbox, Category category) {
+      MaxHp = maxHp;
+      CurrentHp = maxHp;
       Hitbox = hitbox;
       RecipientCategory = category;
     }

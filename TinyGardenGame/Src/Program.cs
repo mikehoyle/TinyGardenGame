@@ -15,13 +15,30 @@ global using SysRectangleF = System.Drawing.RectangleF;
 global using AsepriteSprite = MonoGame.Aseprite.Graphics.Sprite;
 global using AsepriteAnimatedSprite = MonoGame.Aseprite.Graphics.AnimatedSprite;
 using System;
+using NLog;
 
 namespace TinyGardenGame {
   public static class Program {
     [STAThread]
     static void Main() {
-      using (var game = new MainGame())
+      ConfigureLogging();
+      using (var game = new MainGame()) {
         game.Run();
+      }
+    }
+
+    private static void ConfigureLogging() {
+      var config = new NLog.Config.LoggingConfiguration();
+
+      // Targets where to log to: File and Console
+      var logFile = new NLog.Targets.FileTarget("logfile") { FileName = "logs.txt" };
+      var logConsole = new NLog.Targets.ConsoleTarget("logconsole");
+      
+      // Rules for mapping loggers to targets            
+      config.AddRule(LogLevel.Info, LogLevel.Fatal, logConsole);
+      config.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
+      
+      LogManager.Configuration = config;
     }
   }
 }

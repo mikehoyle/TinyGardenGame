@@ -9,9 +9,9 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
   public class BasicAttackingPlayerState : MovablePlayerState {
     // TODO Define these in a weapon object or something when the time comes,
     //    anywhere but here.
-    private const float AttackOuterRange = 1f;
-    private const float AttackInnerRange = 0.5f;
-    private const float AttackWidth = 1f;
+    private const float AttackOuterRange = 1.5f;
+    private const float AttackInnerRange = 0.25f;
+    private const float AttackWidth = 2f;
     private static readonly TimeSpan AttackWindup = TimeSpan.FromMilliseconds(200);
     private static readonly TimeSpan FullDuration = TimeSpan.FromMilliseconds(500);
     private static readonly TimeSpan CancellableAfterDuration = TimeSpan.FromMilliseconds(300);
@@ -48,11 +48,12 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
 
     private DamageSourceComponent BuildDamageSource(Direction facingDirection) {
       return new DamageSourceComponent(
-          BuildDirectedRect(
+          BuildDirectedHitbox(
               AttackOuterRange,
               AttackInnerRange,
               -AttackWidth / 2,
-              AttackWidth / 2, facingDirection),
+              AttackWidth / 2,
+              facingDirection),
           DamageDealt,
           AttackWindup,
           new() { DamageRecipientComponent.Category.Enemy });

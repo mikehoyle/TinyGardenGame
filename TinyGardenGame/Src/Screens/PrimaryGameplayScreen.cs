@@ -42,7 +42,7 @@ namespace TinyGardenGame.Screens {
           .AddSystem(new EnemyAiSystem(game.Config))
           .AddSystem(collisionSystem)
           .AddSystem(new MotionSystem())
-          .AddSystem(new GrowthSystem(game))
+          .AddSystem(new GrowthSystem())
           .AddSystem(new AnimationSystem())
           .AddSystem(new DamageSystem(map))
           .AddSystem(new RenderSystem(

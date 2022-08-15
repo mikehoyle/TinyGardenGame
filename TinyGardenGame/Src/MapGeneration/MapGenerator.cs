@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
+using NLog;
+using NLog.Fluent;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.MapGeneration.RandomAlgorithms;
 
@@ -12,6 +14,8 @@ namespace TinyGardenGame.MapGeneration {
    * This is dead simple for now, but stands as a place for any future changes.
    */
   public class MapGenerator {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    
     private readonly Config.Config _config;
     private readonly Random _random;
 
@@ -23,7 +27,7 @@ namespace TinyGardenGame.MapGeneration {
     public GameMap GenerateMap() {
       Stopwatch benchmarkTimer = new Stopwatch();
       benchmarkTimer.Start();
-      Debug.WriteLine("Generating map...");
+      Logger.Info("Generating map with seed {0}...", _config.MapGenerationSeed);
 
       // First, fill the entire map with Biomes
       var map = new GameMap(_config.MapWidth, _config.MapHeight);
@@ -48,10 +52,10 @@ namespace TinyGardenGame.MapGeneration {
         }
       }
 
-      Debug.WriteLine($"Allocating base tiles took: {benchmarkTimer.Elapsed}");
+      Logger.Debug("Allocating base tiles took: {0}", benchmarkTimer.Elapsed);
 
       GenerateLakes(map, biomeSegments);
-      Debug.WriteLine($"Generating lakes took: {benchmarkTimer.Elapsed}");
+      Logger.Debug("Generating lakes took: {0}", benchmarkTimer.Elapsed);
 
       // Fill in land with noise
       // GenerateLandStructure(map);
@@ -66,7 +70,8 @@ namespace TinyGardenGame.MapGeneration {
 
       PostProcess(map);
 
-      Debug.WriteLine($"Post-process took: {benchmarkTimer.Elapsed}");
+      Logger.Debug($"Post-process took: {0}", benchmarkTimer.Elapsed);
+      Logger.Info("Successfully generated map");
       return map;
     }
 

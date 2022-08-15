@@ -6,6 +6,7 @@ using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
+using NLog;
 using TinyGardenGame.Config;
 
 namespace TinyGardenGame.Core {
@@ -97,6 +98,7 @@ namespace TinyGardenGame.Core {
       // OPTIMIZE: This in theory duplicates a lot. Even though contentManager caches, it could
       // cause churn on the heap.
       return Task.Run(() => {
+        var logger = LogManager.GetLogger("LoadAllAssets_closure");
         var assetsModel = AssetsModel.Load(assetConfigPath);
         foreach (var asset in assetsModel.Assets) {
           contentManager.Load<AsepriteDocument>(asset.Path);
@@ -112,6 +114,7 @@ namespace TinyGardenGame.Core {
           contentManager.Load<BitmapFont>(asset.Path);
           BmpFonts.Add(asset);
         }
+        logger.Info("Successfully loaded all assets");
       });
     }
   }

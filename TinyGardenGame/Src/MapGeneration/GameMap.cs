@@ -22,7 +22,7 @@ namespace TinyGardenGame.MapGeneration {
                               && Map[translatedX, translatedY] != null;
     }
 
-    public bool TryGet(int x, int y, out MapTile tile) {
+    public bool TryGet(int x, int y, out MapTile? tile) {
       if (Contains(x, y)) {
         tile = this[x, y];
         return true;

@@ -10,30 +10,20 @@ using TinyGardenGame.Plants.Components;
 
 namespace TinyGardenGame.Plants.Systems {
   public class GrowthSystem : EntityUpdateSystem {
-    private readonly MainGame _game;
     private ComponentMapper<GrowthComponent> _growthComponentMapper;
-    private TextureRegion2D _progressBarFullSprite;
-    private TextureRegion2D _progressBarEmptySprite;
 
     private ComponentMapper<PositionComponent> _positionComponentMapper;
-
-    // Maps growing entity to its progress bar
-    private readonly Dictionary<int, int> _progressBars;
     private ComponentMapper<DrawableComponent> _drawableComponentMapper;
+    private ComponentMapper<VisibleMeterComponent> _visibleMeterMapper;
 
-    public GrowthSystem(MainGame game)
-        : base(Aspect.All(typeof(GrowthComponent), typeof(PositionComponent))) {
-      _game = game;
-      _progressBars = new Dictionary<int, int>();
-    }
+    public GrowthSystem()
+        : base(Aspect.All(typeof(GrowthComponent), typeof(PositionComponent))) {}
 
     public override void Initialize(IComponentMapperService mapperService) {
       _growthComponentMapper = mapperService.GetMapper<GrowthComponent>();
       _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
       _drawableComponentMapper = mapperService.GetMapper<DrawableComponent>();
-
-      _progressBarEmptySprite = _game.Content.LoadSprite(SpriteName.LoadingBarEmpty).TextureRegion;
-      _progressBarFullSprite = _game.Content.LoadSprite(SpriteName.LoadingBarFull).TextureRegion;
+      _visibleMeterMapper = mapperService.GetMapper<VisibleMeterComponent>();
     }
 
     public override void Update(GameTime gameTime) {
@@ -43,21 +33,22 @@ namespace TinyGardenGame.Plants.Systems {
         if (growthComponent.IncrementGrowth(gameTime.ElapsedGameTime)) {
           SetAnimation(entity, growthComponent);
           _growthComponentMapper.Delete(entity);
-          if (_progressBars.ContainsKey(entity)) {
-            DestroyEntity(_progressBars[entity]);
-            _progressBars.Remove(entity);
+          if (_visibleMeterMapper.Has(entity)) {
+            _visibleMeterMapper.Delete(entity);
           }
 
           continue;
         }
 
         SetAnimation(entity, growthComponent);
-        if (!_progressBars.ContainsKey(entity)) {
-          _progressBars[entity] = CreateProgressBar(entity, growthComponent).Id;
+        if (!_visibleMeterMapper.Has(entity)) {
+          _visibleMeterMapper.Put(entity, new VisibleMeterComponent {
+              Offset = _positionComponentMapper.Get(entity).FootprintSizeInTiles,
+          });
         }
 
-        ((ProgressBarDrawable)_drawableComponentMapper.Get(_progressBars[entity]).Drawable)
-            .ProgressPercentage = growthComponent.CurrentGrowthPercentage;
+        _visibleMeterMapper.Get(entity).CurrentFillPercentage =
+            growthComponent.CurrentGrowthPercentage;
       }
     }
 
@@ -66,18 +57,6 @@ namespace TinyGardenGame.Plants.Systems {
         var drawable = _drawableComponentMapper.Get(entity);
         drawable.SetAnimation(growthComponent.CurrentGrowthAnimationName());
       }
-    }
-
-    private Entity CreateProgressBar(int growingEntity, GrowthComponent growthComponent) {
-      var targetPlacement = _positionComponentMapper.Get(growingEntity);
-      var progressBarDrawable = new ProgressBarDrawable(
-          _progressBarEmptySprite,
-          _progressBarFullSprite,
-          growthComponent.CurrentGrowthPercentage);
-      return CreateEntity()
-          .AttachAnd(new DrawableComponent(progressBarDrawable, RenderLayer.Overlay))
-          .AttachAnd(new PositionComponent(
-              targetPlacement.Position + targetPlacement.FootprintSizeInTiles));
     }
   }
 }

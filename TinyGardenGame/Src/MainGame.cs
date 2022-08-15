@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using MonoGame.Extended.Screens;
+using NLog;
 using TinyGardenGame.Core;
 using TinyGardenGame.Screens;
 
 namespace TinyGardenGame {
   public class MainGame : Game {
+    public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     public static readonly int RenderResolutionWidth = 320;
     public static readonly int RenderResolutionHeight = 180;
 
@@ -14,6 +16,7 @@ namespace TinyGardenGame {
     public Config.Config Config { get; }
 
     public MainGame() {
+      Logger.Info("Starting up game");
       Config = new Config.Config();
       _graphics = new GraphicsDeviceManager(this);
       _screenManager = new ScreenManager();

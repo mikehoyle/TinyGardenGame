@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Clipper2Lib;
 using MonoGame.Extended;
+using MonoGame.Extended.Shapes;
 using static MonoGame.Extended.AngleType;
 
 namespace TinyGardenGame {
@@ -145,29 +147,20 @@ namespace TinyGardenGame {
     /**
      * Builds a rectangle in the given direction from origin zero. Only works in
      * the simple four directions, as Rectangles won't go diagonal.
-     * TODO: this doesn't work for attacks, because attacks are exclusively diagonal
-     *    from the user's perspective
+     * Parameters left & right refer to from the unit's perspective.
      */
-    public static SysRectangleF BuildDirectedRect(
+    public static Polygon BuildDirectedHitbox(
         float farBound, float nearBound, float leftBound, float rightBound, Direction direction) {
-      var depth = farBound - nearBound;
-      var width = rightBound - leftBound;
+      // Initially right-facing, i.e. angle = 0rad
+      var polygon = new Polygon(new List<Vector2> {
+          new(nearBound, leftBound),
+          new(farBound, leftBound),
+          new(farBound, rightBound),
+          new(nearBound, rightBound),
+      });
 
-      switch (direction) {
-        default:
-        case SouthEast:
-        case NorthEast:
-        case East:
-          return new SysRectangleF(nearBound, leftBound, depth, width);
-        case SouthWest:
-        case NorthWest:
-        case West:
-          return new SysRectangleF(-farBound, -rightBound, depth, width);
-        case North:
-          return new SysRectangleF(leftBound, -farBound, width, depth);
-        case South:
-          return new SysRectangleF(-rightBound, nearBound, width, depth);
-      }
+      polygon.Rotate(DirectionUnitVectors[direction].ToAngle());
+      return polygon;
     }
   }
 
@@ -178,6 +171,26 @@ namespace TinyGardenGame {
 
     public static System.Drawing.Rectangle ToDrawing(this Rectangle rect) {
       return new System.Drawing.Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+    }
+    
+    public static System.Drawing.RectangleF ToDrawing(this RectangleF rect) {
+      return new System.Drawing.RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
+    }
+
+    public static List<PointD> ToClipperPath(this SysRectangleF rect) {
+      return new List<PointD> {
+          new(rect.Left, rect.Top),
+          new(rect.Right, rect.Top),
+          new(rect.Right, rect.Bottom),
+          new(rect.Left, rect.Bottom),
+      };
+    }
+  }
+
+  public static class PolygonExtensions {
+    public static List<PointD> ToClipperPath(this Polygon polygon) {
+      return polygon.Vertices.Select(
+          point => new PointD(point.X, point.Y)).ToList();
     }
   }
 }

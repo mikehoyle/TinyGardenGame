@@ -68,12 +68,21 @@ namespace TinyGardenGame.Player.State {
     }
 
     public void Update(GameTime gameTime, HashSet<PlayerAction> triggeredActions) {
+      SyncResources();
       var newState = State?.Update(gameTime, triggeredActions);
       if (newState != null && _states[newState].MeetsEntryCondition()) {
         State.Exit();
         State = _states[newState];
         State.Enter();
       }
+    }
+
+    // TODO: The need for this sync is error-prone. The meters should use the source components
+    //     directly
+    private void SyncResources() {
+      var hpComponent = PlayerEntity.Get<DamageRecipientComponent>();
+      Hp.MaxValue = hpComponent.MaxHp;
+      Hp.CurrentValue = hpComponent.CurrentHp;
     }
   }
 }

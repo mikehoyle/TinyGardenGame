@@ -21,7 +21,7 @@ public class UnitEntityFactory {
         Sprite = SpriteName.Inchworm,
         CollisionFootprint = new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f),
         Hp = 25,
-        SpeedTilesPerSec = 1f,
+        SpeedTilesPerSec = 0.75f,
         InitialBehavior = EnemyAiComponent.State.Roam,
     });
   }
@@ -40,6 +40,9 @@ public class UnitEntityFactory {
         .AttachAnd(
             new DrawableComponent(new AnimatedSpriteDrawable(_content.LoadAnimated(unit.Sprite))))
         .AttachAnd(new MotionComponent(unit.SpeedTilesPerSec))
-        .AttachAnd(new EnemyAiComponent(unit.InitialBehavior));
+        .AttachAnd(new EnemyAiComponent(unit.InitialBehavior))
+        .AttachAnd(new DamageRecipientComponent(
+            unit.Hp, unit.CollisionFootprint.ToDrawing(), DamageRecipientComponent.Category.Enemy))
+        .AttachAnd(new VisibleMeterComponent { Offset = new Vector2(0, 3) });
   }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Clipper2Lib;
+using MonoGame.Extended.Shapes;
 
 namespace TinyGardenGame.Core.Components {
   /**
@@ -7,7 +10,10 @@ namespace TinyGardenGame.Core.Components {
    * self-destruct once the attack is over.
    */
   public class DamageSourceComponent {
-    public SysRectangleF DamageHitbox { get; set; }
+    private Polygon _damageHitbox;
+
+    public Polygon DamageHitbox { get; set; }
+    
     public double DamageDealt { get; set; }
 
     /** If not persistent, destroy on proc */
@@ -21,7 +27,7 @@ namespace TinyGardenGame.Core.Components {
     public HashSet<DamageRecipientComponent.Category> TargetSet { get; init; }
 
     public DamageSourceComponent(
-        SysRectangleF hitbox,
+        Polygon hitbox,
         double damageDealt,
         HashSet<DamageRecipientComponent.Category> targetSet) {
       DamageHitbox = hitbox;
@@ -30,13 +36,18 @@ namespace TinyGardenGame.Core.Components {
     }
 
     public DamageSourceComponent(
-        SysRectangleF hitbox,
+        Polygon hitbox,
         double damageDealt,
         TimeSpan windupTime,
         HashSet<DamageRecipientComponent.Category> targetSet,
         bool isPersistent = false) : this(hitbox, damageDealt, targetSet) {
       WindupTime = windupTime;
       IsPersistent = isPersistent;
+    }
+
+    public Polygon TranslatedPoly(Vector2 translation) {
+      DamageHitbox.Offset(translation);
+      return DamageHitbox;
     }
   }
 }

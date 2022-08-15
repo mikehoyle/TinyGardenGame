@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Clipper2Lib;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
+using NLog;
 using QuadTrees;
 using QuadTrees.QTreeRectF;
 using TinyGardenGame.Core.Components;
@@ -13,24 +15,30 @@ namespace TinyGardenGame.Core.Systems {
    *     internal-only components of Extended's ECS system.
    */
   public class DamageSystem : EntityUpdateSystem {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    
     private readonly HashSet<int> _damageSourceEntities;
     private readonly QuadTreeRectF<DamageReceivingEntity> _damageRecipientQuadTree;
 
     private ComponentMapper<DamageRecipientComponent> _damageRecipientMapper;
     private ComponentMapper<DamageSourceComponent> _damageSourceMapper;
     private ComponentMapper<PositionComponent> _positionMapper;
+    private readonly ClipperD _clipper;
+    private ComponentMapper<VisibleMeterComponent> _visibleMeterMapper;
 
     public DamageSystem(GameMap map) : base(
         Aspect.One(typeof(DamageRecipientComponent), typeof(DamageSourceComponent))) {
       _damageSourceEntities = new HashSet<int>();
       _damageRecipientQuadTree = new QuadTreeRectF<DamageReceivingEntity>(
           new SysRectangleF(map.Bounds.X, map.Bounds.Y, map.Bounds.Width, map.Bounds.Height));
+      _clipper = new ClipperD(/* scale = */ 4);
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
       _damageRecipientMapper = mapperService.GetMapper<DamageRecipientComponent>();
       _damageSourceMapper = mapperService.GetMapper<DamageSourceComponent>();
       _positionMapper = mapperService.GetMapper<PositionComponent>();
+      _visibleMeterMapper = mapperService.GetMapper<VisibleMeterComponent>();
     }
 
     public override void Update(GameTime gameTime) {
@@ -38,6 +46,12 @@ namespace TinyGardenGame.Core.Systems {
       // update pass. Consider only processing for entities on camera?
       foreach (var damageRecipient in _damageRecipientQuadTree.GetAllObjects()) {
         _damageRecipientQuadTree.Move(damageRecipient);
+
+        if (_visibleMeterMapper.Has(damageRecipient.EntityId)) {
+          var recipientComponent = damageRecipient.DamageRecipient;
+          _visibleMeterMapper.Get(damageRecipient.EntityId).CurrentFillPercentage =
+              recipientComponent.CurrentHp / recipientComponent.MaxHp;
+        }
       }
 
       foreach (var entity in _damageSourceEntities) {
@@ -47,13 +61,14 @@ namespace TinyGardenGame.Core.Systems {
         }
 
         var damageSource = _damageSourceMapper.Get(entity);
+        var position = _positionMapper.Get(entity);
         if (damageSource.IsPersistent) {
-          ApplyDamageFromSource(damageSource);
+          ApplyDamageFromSource(damageSource, position);
         }
         else {
           damageSource.CurrentLifetime += gameTime.ElapsedGameTime;
           if (damageSource.CurrentLifetime > damageSource.WindupTime) {
-            ApplyDamageFromSource(damageSource);
+            ApplyDamageFromSource(damageSource, position);
             _damageSourceMapper.Delete(entity);
           }
         }
@@ -75,6 +90,7 @@ namespace TinyGardenGame.Core.Systems {
     protected override void OnEntityChanged(int entityId) {
       var dummy = new DamageReceivingEntity(entityId);
       if (_damageRecipientQuadTree.Contains(dummy)) {
+        // OPTIMIZE: this also is an unnecessary amount of churn
         _damageRecipientQuadTree.Remove(dummy);
       }
 
@@ -87,10 +103,31 @@ namespace TinyGardenGame.Core.Systems {
       _damageSourceEntities.Remove(entityId);
     }
 
-    private void ApplyDamageFromSource(DamageSourceComponent source) {
-      foreach (var damageRecipient in _damageRecipientQuadTree.GetObjects(source.DamageHitbox)) {
-        damageRecipient.DamageRecipient.Hp -= source.DamageDealt;
-        // TODO: handle HP going to zero
+    private void ApplyDamageFromSource(DamageSourceComponent source, PositionComponent position) {
+      var sourcePoly = source.TranslatedPoly(position.Position);
+      foreach (var damageRecipient in
+               _damageRecipientQuadTree.GetObjects(sourcePoly.BoundingRectangle.ToDrawing())) {
+        if (!source.TargetSet.Contains(damageRecipient.DamageRecipient.RecipientCategory)) {
+          continue;
+        }
+        _clipper.Clear();
+        _clipper.AddSubject(sourcePoly.ToClipperPath());
+        _clipper.AddClip(damageRecipient.Rect.ToClipperPath());
+        var result = new PolyTreeD();
+        _clipper.Execute(ClipType.Intersection, FillRule.EvenOdd, result);
+        if (result.Count > 0) {
+          Logger.Debug($"Applying damage to entity {damageRecipient.EntityId}");
+          damageRecipient.DamageRecipient.CurrentHp -= source.DamageDealt;
+          if (damageRecipient.DamageRecipient.CurrentHp < 0) {
+            // TODO: More elegantly handle unit death instead of just deleting them
+            DestroyEntity(damageRecipient.EntityId);
+          }
+        }
+        else {
+          Logger.Debug(
+              $"Damage matched in quadtree but didn't clip for entity {0}",
+              damageRecipient.EntityId);
+        }
       }
     }
   }
@@ -98,7 +135,7 @@ namespace TinyGardenGame.Core.Systems {
   public class DamageReceivingEntity : IRectFQuadStorable {
     public DamageRecipientComponent DamageRecipient { get; }
     private readonly PositionComponent _position;
-    private readonly int _entityId;
+    public int EntityId { get; }
     private SysRectangleF _rect;
 
     public SysRectangleF Rect {
@@ -109,12 +146,12 @@ namespace TinyGardenGame.Core.Systems {
     }
 
     public DamageReceivingEntity(int entityId) {
-      _entityId = entityId;
+      EntityId = entityId;
     }
 
     public DamageReceivingEntity(
         int entityId, DamageRecipientComponent damageRecipient, PositionComponent position) {
-      _entityId = entityId;
+      EntityId = entityId;
       DamageRecipient = damageRecipient;
       _position = position;
       UpdateRect();
@@ -131,7 +168,7 @@ namespace TinyGardenGame.Core.Systems {
      * Hashed based simply on EntityId for easy equality.
      */
     public override int GetHashCode() {
-      return _entityId;
+      return EntityId;
     }
 
     public override bool Equals(object obj) {

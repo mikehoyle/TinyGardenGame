@@ -3,7 +3,7 @@
 namespace TinyGardenGame.Player.State {
   public class ResourceMeter {
     private double _currentValue;
-    public double MaxValue { get; }
+    public double MaxValue { get; set; }
     public double MinValue { get; }
 
 

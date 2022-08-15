@@ -25,7 +25,8 @@ namespace TinyGardenGame.Core.Systems {
       _playerState = playerState;
 
 
-      screen.Console.SetHp += (caller, val) => _playerState.Hp.CurrentValue = val;
+      screen.Console.SetHp += (caller, val) =>
+          _playerState.PlayerEntity.Get<DamageRecipientComponent>().CurrentHp = val;
       screen.Console.SetEnergy += (caller, val) => _playerState.Energy.CurrentValue = val;
       screen.Console.MovePlayer += TeleportPlayer;
     }
