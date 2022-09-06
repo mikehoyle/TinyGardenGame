@@ -44,6 +44,7 @@
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
         <PackageReference Include="NLog" Version="5.0.2" />
+        <PackageReference Include="OneOf" Version="3.0.223" />
         <PackageReference Include="QuadTrees" Version="1.0.4" />
         <PackageReference Include="SimplexNoise" Version="2.0.0" />
         <PackageReference Include="Tomlyn" Version="0.14.4" />

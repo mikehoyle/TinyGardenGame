@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Clipper2Lib;
 using MonoGame.Extended.Shapes;
+using OneOf;
 
 namespace TinyGardenGame.Core.Components {
   /**
@@ -10,9 +11,6 @@ namespace TinyGardenGame.Core.Components {
    * self-destruct once the attack is over.
    */
   public class DamageSourceComponent {
-    private Polygon _damageHitbox;
-
-    public Polygon DamageHitbox { get; set; }
     
     public double DamageDealt { get; set; }
 
@@ -26,11 +24,22 @@ namespace TinyGardenGame.Core.Components {
 
     public HashSet<DamageRecipientComponent.Category> TargetSet { get; init; }
 
+    public OneOf<AoeDamageSource, TargetedDamageSource> DamageType { get; }
+    
+    public DamageSourceComponent(
+        int targetEntityId,
+        double damageDealt,
+        HashSet<DamageRecipientComponent.Category> targetSet) {
+      DamageType = new TargetedDamageSource { TargetEntityId = targetEntityId };
+      DamageDealt = damageDealt;
+      TargetSet = targetSet;
+    }
+
     public DamageSourceComponent(
         Polygon hitbox,
         double damageDealt,
         HashSet<DamageRecipientComponent.Category> targetSet) {
-      DamageHitbox = hitbox;
+      DamageType = new AoeDamageSource { DamageHitbox = hitbox };
       DamageDealt = damageDealt;
       TargetSet = targetSet;
     }
@@ -44,10 +53,19 @@ namespace TinyGardenGame.Core.Components {
       WindupTime = windupTime;
       IsPersistent = isPersistent;
     }
+  }
+
+  public class AoeDamageSource {
+    public Polygon DamageHitbox { get; init; }
+    
 
     public Polygon TranslatedPoly(Vector2 translation) {
-      DamageHitbox.Offset(translation);
-      return DamageHitbox;
+      return DamageHitbox
+          .TransformedCopy(translation, /* rotation = */ 0, /* scale = */ Vector2.One);
     }
+  }
+  
+  public class TargetedDamageSource {
+    public int TargetEntityId { get; init; }
   }
 }
