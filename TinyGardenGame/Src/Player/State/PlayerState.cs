@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Entities;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
@@ -32,11 +33,12 @@ namespace TinyGardenGame.Player.State {
 
     public BasePlayerState State { get; private set; }
 
-    public PlayerState(Config.Config config) {
+    public PlayerState() {
       Inventory = new PlayerInventory();
       Tools = new PlayerTools();
-      Hp = new ResourceMeter(config.DefaultMaxHp, config.DefaultMinHp);
-      Energy = new ResourceMeter(config.DefaultMaxEnergy, config.DefaultMinEnergy);
+      Hp = new ResourceMeter(GameConfig.Config.DefaultMaxHp, GameConfig.Config.DefaultMinHp);
+      Energy = new ResourceMeter(
+          GameConfig.Config.DefaultMaxEnergy, GameConfig.Config.DefaultMinEnergy);
       _states = new KeyedCollection<Type, BasePlayerState>(state => state.GetType());
     }
 
@@ -56,7 +58,7 @@ namespace TinyGardenGame.Player.State {
       PlayerEntity = world.CreateEntity()
           .AttachAnd(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)))
           .AttachAnd(new CameraFollowComponent())
-          .AttachAnd(new MotionComponent(game.Config.PlayerSpeed))
+          .AttachAnd(new MotionComponent(GameConfig.Config.PlayerSpeed))
           .AttachAnd(new PlayerInputComponent())
           .AttachAnd(new PositionComponent(CenterOfMapTile(0, 0)))
           .AttachAnd(new CollisionFootprintComponent(new RectangleF(-0.3f, -0.3f, 0.6f, 0.6f)))

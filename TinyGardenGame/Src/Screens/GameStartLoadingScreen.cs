@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using MonoGame.Extended.Screens;
 using NLog;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration;
 
@@ -36,7 +37,7 @@ namespace TinyGardenGame.Screens {
     }
 
     public override void Update(GameTime gameTime) {
-      _loadingTask ??= AssetLoading.LoadAllAssets(Content, _game.Config.AssetsConfigPath);
+      _loadingTask ??= AssetLoading.LoadAllAssets(Content, GameConfig.Config.AssetsConfigPath);
       _mapGenerationTask ??= GenerateMap();
 
       if (_loadingTask.IsCanceled || _loadingTask.IsFaulted) {
@@ -64,9 +65,7 @@ namespace TinyGardenGame.Screens {
     }
 
     private Task<GameMap> GenerateMap() {
-      return Task.Run(() => {
-        return new MapGenerator(_game.Config).GenerateMap();
-      });
+      return Task.Run(() => new MapGenerator().GenerateMap());
     }
   }
 }

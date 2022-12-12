@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using MonoGame.Extended.Entities;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Core.Systems;
@@ -15,7 +16,6 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     private readonly GameMap _map;
     private PlantType _hoveredPlaceableType;
     private readonly PlantEntityFactory _plantFactory;
-    private readonly Config.Config _config;
     private readonly Entity _placementGhostEntity;
     private readonly MapProcessor _mapProcessor;
 
@@ -28,10 +28,8 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
         MapProcessor mapProcessor) : base(playerState, isSpaceOccupied, map) {
       _isSpaceOccupied = isSpaceOccupied;
       _map = map;
-      _plantFactory = new PlantEntityFactory(game.Config, game.Content, world.CreateEntity);
-      _config = game.Config;
+      _plantFactory = new PlantEntityFactory(game.Content, world.CreateEntity);
       _placementGhostEntity = world.CreateEntity();
-      _plantFactory = new PlantEntityFactory(game.Config, game.Content, world.CreateEntity);
       _mapProcessor = mapProcessor;
     }
 
@@ -88,7 +86,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
     }
 
     private void UpdateBuildGhost() {
-      if (_config.ShowBuildGhost) {
+      if (GameConfig.Config.ShowBuildGhost) {
         var placement = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
 
         _placementGhostEntity.Get<PositionComponent>().Position = placement;

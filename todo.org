@@ -44,10 +44,16 @@
    some plants have no collision, so you can trench under plants (like reeds
    atm).
  - [ ] Damage source rects are not reflective of the damage direction.
+ - [ ] Move scattered configurations into text config and codegen
+ - [ ] Attacking is straight up broken.
+ - [ ] Player state resource meters not matched with damage recipient component
 
 * TODO Stretch (i.e. Cool ideas) [0/1]
- - [ ] Dynamic shadows to indicate time of day
  - [ ] Tameable, ridable mounts (Like mice, squirrels, etc.)
+
+* TODO Juice Ideas [/]
+ - [ ] Dynamic shadows to indicate time of day
+ - [ ] Footsteps
 
 * TODO Lower priority [1/1]
  - [X] FPS counter

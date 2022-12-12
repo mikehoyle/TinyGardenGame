@@ -1,8 +1,8 @@
 ﻿using System;
+using TinyGardenGame.Config;
 
 namespace TinyGardenGame.GameState {
   public class InGameClock {
-    private readonly Config.Config _config;
     private readonly int _hoursOfDaylight;
     public int Day { get; private set; }
     public double TimeOfDay { get; private set; }
@@ -14,20 +14,19 @@ namespace TinyGardenGame.GameState {
 
     public event EventHandler<int> OnNightBegin;
 
-    public InGameClock(Config.Config config) {
+    public InGameClock() {
       Day = 1;
       TimeOfDay = 0;
       IsNight = false;
-      _config = config;
-      _hoursOfDaylight = config.TotalHoursInADay - config.HoursOfNight;
+      _hoursOfDaylight = GameConfig.Config.TotalHoursInADay - GameConfig.Config.HoursOfNight;
     }
 
     public void Update(GameTime gameTime) {
-      TimeOfDay += gameTime.ElapsedGameTime.TotalSeconds / _config.HourLengthInSeconds;
-      if (TimeOfDay >= _config.TotalHoursInADay) {
+      TimeOfDay += gameTime.ElapsedGameTime.TotalSeconds / GameConfig.Config.HourLengthInSeconds;
+      if (TimeOfDay >= GameConfig.Config.TotalHoursInADay) {
         Day += 1;
         // Allow for overflow into the next day
-        TimeOfDay -= _config.TotalHoursInADay;
+        TimeOfDay -= GameConfig.Config.TotalHoursInADay;
         IsNight = false;
         OnNewDay?.Invoke(this, Day);
       }

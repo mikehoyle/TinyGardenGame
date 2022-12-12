@@ -5,6 +5,8 @@ using TinyGardenGame.Units.Components;
 namespace TinyGardenGame.Units; 
 
 public class Unit {
+  private const float DefaultAggroRange = 5f;
+  
   public enum Type {
     Inchworm,
   }
@@ -18,6 +20,10 @@ public class Unit {
   public int Hp { get; init; }
   
   public float SpeedTilesPerSec { get; init; }
+  
+  public float AttackRange { get; init; }
 
-  public EnemyAiComponent.State InitialBehavior { get; set; } = EnemyAiComponent.State.Roam;
+  public float AggroRange { get; init; } = DefaultAggroRange;
+
+  public EnemyAiComponent.State InitialBehavior { get; set; } = EnemyAiComponent.State.AttackTree;
 }

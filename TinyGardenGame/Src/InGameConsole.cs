@@ -1,5 +1,6 @@
 ﻿using System;
 using MonoGameConsole;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core;
 
 namespace TinyGardenGame {
@@ -18,7 +19,7 @@ namespace TinyGardenGame {
     }
 
     private void Initialize(MainGame game, SpriteBatch spriteBatch, SpriteFont spriteFont) {
-      if (!game.Config.Debug.EnableConsole) {
+      if (!GameConfig.Config.Debug.EnableConsole) {
         return;
       }
 

@@ -19,8 +19,11 @@
         <None Remove="Icon.ico" />
         <None Remove="Icon.bmp" />
         <None Remove="Src\ExternalForks\**" />
-        <None Update="Src\Config\Assets.toml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <None Update="Config\Assets.toml">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Config\GameConfig.toml">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
     <ItemGroup>

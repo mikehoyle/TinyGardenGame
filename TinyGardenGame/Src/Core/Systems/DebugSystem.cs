@@ -1,6 +1,7 @@
 ﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.Sprites;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Player.Components;
 using TinyGardenGame.Player.State;
@@ -39,7 +40,7 @@ namespace TinyGardenGame.Core.Systems {
       _selectionComponent = mapperService.GetMapper<SelectionComponent>();
 
       _selectionIndicatorEntity =
-          _screen.Game.Config.Debug.ShowSelectionIndicator ? CreateEntity() : null;
+          GameConfig.Config.Debug.ShowSelectionIndicator ? CreateEntity() : null;
     }
 
     public void LoadContent() {
@@ -51,7 +52,7 @@ namespace TinyGardenGame.Core.Systems {
     }
 
     private void LoadSelectionIndicator() {
-      if (_screen.Game.Config.Debug.ShowSelectionIndicator && _playerState.PlayerEntity != null) {
+      if (GameConfig.Config.Debug.ShowSelectionIndicator && _playerState.PlayerEntity != null) {
         var playerSelection = _selectionComponent.Get(_playerState.PlayerEntity);
         var sprite = _screen.Game.Content.LoadSprite(SpriteName.SelectedTileOverlay);
         _selectionIndicatorEntity

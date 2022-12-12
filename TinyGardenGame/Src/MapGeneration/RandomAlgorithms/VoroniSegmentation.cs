@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using MonoGame.Extended;
+using TinyGardenGame.Config;
 using TinyGardenGame.MapGeneration.MapTiles;
 
 namespace TinyGardenGame.MapGeneration.RandomAlgorithms {
@@ -26,9 +27,9 @@ namespace TinyGardenGame.MapGeneration.RandomAlgorithms {
      * biomes.
      */
     public static List<BiomeSegment> GenerateBiomes(
-        Random random, Config.Config config, int mapWidth, int mapHeight) {
+        Random random, int mapWidth, int mapHeight) {
       var biomeSegments = new List<BiomeSegment>();
-      var gridSize = config.BiomeSize;
+      var gridSize = GameConfig.Config.BiomeSize;
       for (var x = 0; x < mapWidth; x += gridSize) {
         for (var y = 0; y < mapHeight; y += gridSize) {
           // Note that it's okay for a segment to be outside of the map size, as it's only used for

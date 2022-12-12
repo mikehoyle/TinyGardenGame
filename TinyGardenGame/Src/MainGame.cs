@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using MonoGame.Extended.Screens;
 using NLog;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core;
 using TinyGardenGame.Screens;
 
@@ -13,11 +14,10 @@ namespace TinyGardenGame {
 
     private GraphicsDeviceManager _graphics;
     private readonly ScreenManager _screenManager;
-    public Config.Config Config { get; }
 
     public MainGame() {
       Logger.Info("Starting up game");
-      Config = new Config.Config();
+      GameConfig.Init();
       _graphics = new GraphicsDeviceManager(this);
       _screenManager = new ScreenManager();
       Content.RootDirectory = "Content";
@@ -39,7 +39,7 @@ namespace TinyGardenGame {
       _graphics.PreferredBackBufferWidth = 1920;
       _graphics.PreferredBackBufferHeight = 1080;
       IsFixedTimeStep = true;
-      TargetElapsedTime = TimeSpan.FromSeconds(1d / Config.FpsCap);
+      TargetElapsedTime = TimeSpan.FromSeconds(1d / GameConfig.Config.FpsCap);
       _graphics.ApplyChanges();
     }
 

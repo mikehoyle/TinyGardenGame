@@ -6,6 +6,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
 using NLog;
 using NLog.Fluent;
+using TinyGardenGame.Config;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.MapGeneration.RandomAlgorithms;
 
@@ -16,30 +17,28 @@ namespace TinyGardenGame.MapGeneration {
   public class MapGenerator {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     
-    private readonly Config.Config _config;
     private readonly Random _random;
 
-    public MapGenerator(Config.Config config) {
-      _config = config;
-      _random = new Random(config.MapGenerationSeed);
+    public MapGenerator() {
+      _random = new Random(GameConfig.Config.MapGenerationSeed);
     }
 
     public GameMap GenerateMap() {
       Stopwatch benchmarkTimer = new Stopwatch();
       benchmarkTimer.Start();
-      Logger.Info("Generating map with seed {0}...", _config.MapGenerationSeed);
+      Logger.Info("Generating map with seed {0}...", GameConfig.Config.MapGenerationSeed);
 
       // First, fill the entire map with Biomes
-      var map = new GameMap(_config.MapWidth, _config.MapHeight);
+      var map = new GameMap(GameConfig.Config.MapWidth, GameConfig.Config.MapHeight);
       var biomeSegments = VoroniSegmentation.GenerateBiomes(
-          _random, _config, _config.MapWidth, _config.MapHeight);
+          _random, GameConfig.Config.MapWidth, GameConfig.Config.MapHeight);
       // OPTIMIZE: This for loop is dreadfully slow and could probably be massively sped up
       // by Voroni algorithms like Fortune's Algorithm or Jump Flood.
       // TODO: Use Lloyd Relaxation with truer randomness for better variety?
       // TODO: Rivers along Delaunay Triangle edges?
       // http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
-      for (short x = 0; x < _config.MapWidth; x++) {
-        for (short y = 0; y < _config.MapHeight; y++) {
+      for (short x = 0; x < GameConfig.Config.MapWidth; x++) {
+        for (short y = 0; y < GameConfig.Config.MapHeight; y++) {
           (Type Type, float prox) closestSegment = (typeof(object), float.MaxValue);
           foreach (var segment in biomeSegments) {
             var proximity = segment.ProximityTo(x, y);
@@ -92,14 +91,14 @@ namespace TinyGardenGame.MapGeneration {
      *      the variability is scaled by the radius skip.
      */
     private void GenerateLake(GameMap map, int originX, int originY) {
-      if (_random.NextSingle() > _config.LakeProbabilityPerBiomeInstance) {
+      if (_random.NextSingle() > GameConfig.Config.LakeProbabilityPerBiomeInstance) {
         return;
       }
 
       var currentAngle = new Angle(0, AngleType.Radian);
-      var baseRadius = _random.NextSingle(_config.LakeMinRadius, _config.LakeMaxRadius);
-      var radiusLowerLimit = baseRadius - (baseRadius * _config.LakeVertexVariabilityPercent);
-      var radiusUpperLimit = baseRadius + (baseRadius * _config.LakeVertexVariabilityPercent);
+      var baseRadius = _random.NextSingle(GameConfig.Config.LakeMinRadius, GameConfig.Config.LakeMaxRadius);
+      var radiusLowerLimit = baseRadius - (baseRadius * GameConfig.Config.LakeVertexVariabilityPercent);
+      var radiusUpperLimit = baseRadius + (baseRadius * GameConfig.Config.LakeVertexVariabilityPercent);
       var currentRadius = baseRadius;
 
       var polygonVertices = new List<Vector2>();
@@ -111,13 +110,13 @@ namespace TinyGardenGame.MapGeneration {
 
         // Increment angle around the circle
         var angleAddition = _random.NextSingle(
-            _config.LakeMinAngleStepRadians, _config.LakeMaxAngleStepRadians);
+            GameConfig.Config.LakeMinAngleStepRadians, GameConfig.Config.LakeMaxAngleStepRadians);
         currentAngle.Radians += angleAddition;
 
         // Allow more variation the farther we're stepping
         var variationPercent =
-            (angleAddition / _config.LakeMaxAngleStepRadians) *
-            _config.LakeVertexVariabilityPercent;
+            (angleAddition / GameConfig.Config.LakeMaxAngleStepRadians) *
+            GameConfig.Config.LakeVertexVariabilityPercent;
         var currentLowerLimit =
             Math.Max(radiusLowerLimit, currentRadius - (baseRadius * variationPercent));
         var currentUpperLimit =
@@ -145,7 +144,7 @@ namespace TinyGardenGame.MapGeneration {
     }
 
     private void AddStartingArea(GameMap map) {
-      var radius = _config.StartingAreaRadius;
+      var radius = GameConfig.Config.StartingAreaRadius;
       for (var x = -radius; x <= radius; x++) {
         for (var y = -radius; y <= radius; y++) {
           // Add fuzziness on the edges
@@ -226,11 +225,11 @@ namespace TinyGardenGame.MapGeneration {
     }
 
     private void GenerateLandStructure(GameMap map) {
-      var border = _config.OceanBorderWidth;
+      var border = GameConfig.Config.OceanBorderWidth;
       var noiseMap = SimplexNoiseGenerator.GenerateNoiseMap(
-          _config.MapWidth - (border * 2),
-          _config.MapHeight - (border * 2),
-          _config.MapGenerationSeed);
+          GameConfig.Config.MapWidth - (border * 2),
+          GameConfig.Config.MapHeight - (border * 2),
+          GameConfig.Config.MapGenerationSeed);
 
       for (short i = 0; i < noiseMap.GetLength(0); i++) {
         for (short j = 0; j < noiseMap.GetLength(1); j++) {

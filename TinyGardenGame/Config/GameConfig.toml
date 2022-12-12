@@ -1,0 +1,42 @@
+﻿# Player
+PlayerSpeed = 3.0
+DefaultMaxHp = 100
+DefaultMinHp = 0
+DefaultMaxEnergy = 100
+DefaultMinEnergy = 0
+
+# Global
+FpsCap = 144
+AssetsConfigPath = "Config/Assets.toml"
+
+# Game
+ShowBuildHints = true
+ShowBuildGhost = true
+BuildGhostOpacity = 0.45
+
+# Game: Time
+TotalHoursInADay = 12
+HoursOfNight = 4
+HourLengthInSeconds = 20
+
+# Map Generation
+MapWidth = 500
+MapHeight = 500
+MapGenerationSeed = 42
+OceanBorderWidth = 3
+StartingAreaRadius = 6
+BiomeSize = 30
+LakeMinRadius = 4
+LakeMaxRadius = 8
+LakeProbabilityPerBiomeInstance = 0.75
+LakeMinAngleStepRadians = 0.4
+LakeMaxAngleStepRadians = 1.2
+LakeVertexVariabilityPercent = 0.65
+
+# AI
+AiRoamVariationRadiansPerSec = 6
+
+[Debug]
+ShowSelectionIndicator = true
+EnableConsole = true
+EnableFpsDisplay = true

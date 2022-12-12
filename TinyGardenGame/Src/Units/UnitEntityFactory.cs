@@ -7,7 +7,7 @@ using TinyGardenGame.Core.Components;
 using TinyGardenGame.Core.Components.Drawables;
 using TinyGardenGame.Units.Components;
 
-namespace TinyGardenGame.Units; 
+namespace TinyGardenGame.Units;
 
 /**
  * Builds NPC units.
@@ -15,34 +15,39 @@ namespace TinyGardenGame.Units;
 public class UnitEntityFactory {
   private static readonly KeyedCollection<Unit.Type, Unit> Units = new(unit => unit.UnitType);
 
-  static UnitEntityFactory() {
-    Units.Add(new Unit {
-        UnitType = Unit.Type.Inchworm,
-        Sprite = SpriteName.Inchworm,
-        CollisionFootprint = new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f),
-        Hp = 25,
-        SpeedTilesPerSec = 0.75f,
-        InitialBehavior = EnemyAiComponent.State.Roam,
-    });
-  }
-
   private readonly ContentManager _content;
+
+  static UnitEntityFactory() {
+    Units.Add(
+        new Unit {
+            UnitType = Unit.Type.Inchworm,
+            Sprite = SpriteName.Inchworm,
+            CollisionFootprint = new RectangleF(-0.25f, -0.25f, 0.5f, 0.5f),
+            Hp = 25,
+            SpeedTilesPerSec = 0.75f,
+            AttackRange = 0.25f,
+            InitialBehavior = EnemyAiComponent.State.AttackTree,
+        });
+  }
 
   public UnitEntityFactory(ContentManager content) {
     _content = content;
   }
-  
+
   public Entity Build(Unit.Type unitType, Func<Entity> createEntityFunc, Vector2 position) {
     var unit = Units[unitType];
     return createEntityFunc()
         .AttachAnd(new PositionComponent(position))
-        .AttachAnd(new CollisionFootprintComponent(unit.CollisionFootprint)) 
+        .AttachAnd(new CollisionFootprintComponent(unit.CollisionFootprint))
         .AttachAnd(
             new DrawableComponent(new AnimatedSpriteDrawable(_content.LoadAnimated(unit.Sprite))))
         .AttachAnd(new MotionComponent(unit.SpeedTilesPerSec))
         .AttachAnd(new EnemyAiComponent(unit.InitialBehavior))
-        .AttachAnd(new DamageRecipientComponent(
-            unit.Hp, unit.CollisionFootprint.ToDrawing(), DamageRecipientComponent.Category.Enemy))
+        .AttachAnd(
+            new DamageRecipientComponent(
+                unit.Hp,
+                unit.CollisionFootprint.ToDrawing(),
+                DamageRecipientComponent.Category.Enemy))
         .AttachAnd(new VisibleMeterComponent { Offset = new Vector2(0, 3) });
   }
 }

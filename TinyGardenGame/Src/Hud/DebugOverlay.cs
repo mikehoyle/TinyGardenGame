@@ -1,4 +1,5 @@
 ﻿using MonoGame.Extended.ViewportAdapters;
+using TinyGardenGame.Config;
 using TinyGardenGame.Core;
 
 namespace TinyGardenGame.Hud {
@@ -17,7 +18,7 @@ namespace TinyGardenGame.Hud {
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
-      if (_game.Config.Debug.EnableFpsDisplay) {
+      if (GameConfig.Config.Debug.EnableFpsDisplay) {
         DisplayFps(spriteBatch, gameTime);
       }
     }

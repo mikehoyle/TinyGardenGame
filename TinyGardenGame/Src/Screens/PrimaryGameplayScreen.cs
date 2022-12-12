@@ -26,8 +26,8 @@ namespace TinyGardenGame.Screens {
       var cameraSystem = new CameraSystem(
           game, MainGame.RenderResolutionWidth, MainGame.RenderResolutionHeight);
       var collisionSystem = new CollisionSystem(map);
-      var playerState = new PlayerState(game.Config);
-      _gameState = new GameState.GameState(game.Config);
+      var playerState = new PlayerState();
+      _gameState = new GameState.GameState();
       _debugSystem = new DebugSystem(this, playerState);
       var hud = new HeadsUpDisplay(
           game,
@@ -37,9 +37,11 @@ namespace TinyGardenGame.Screens {
           MainGame.RenderResolutionWidth,
           MainGame.RenderResolutionHeight);
       var mapProcessor = new MapProcessor(game, map);
+      var importantEntities = new ImportantEntities();
       _world = new WorldBuilder()
+          .AddSystem(importantEntities)
           .AddSystem(new PlayerInputSystem(this, playerState, map))
-          .AddSystem(new EnemyAiSystem(game.Config))
+          .AddSystem(new EnemyAiSystem(importantEntities))
           .AddSystem(collisionSystem)
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem())
