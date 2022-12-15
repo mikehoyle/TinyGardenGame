@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyGardenGame", "TinyGardenGame\TinyGardenGame.csproj", "{12A4EB9A-5E52-4A5F-A6E8-720B53579F57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameConsoleCore", "MonoGameConsole\MonoGameConsoleCore\MonoGameConsoleCore.csproj", "{C3A1E54B-8C6B-4F52-AEBB-4E67AAF914FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameConsoleCore", "ThirdParty\MonoGameConsole\MonoGameConsoleCore\MonoGameConsoleCore.csproj", "{C3A1E54B-8C6B-4F52-AEBB-4E67AAF914FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clipper2Lib", "ThirdParty\Clipper2\CSharp\Clipper2Lib\Clipper2Lib.csproj", "{FB1240DF-66BE-4BEB-B77E-46A20FD45D24}"
 EndProject

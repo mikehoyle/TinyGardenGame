@@ -56,7 +56,8 @@
         <Compile Remove="Src\ExternalForks\**" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\MonoGameConsole\MonoGameConsoleCore\MonoGameConsoleCore.csproj" />
+        <ProjectReference 
+                Include="..\ThirdParty\MonoGameConsole\MonoGameConsoleCore\MonoGameConsoleCore.csproj" />
         <ProjectReference Include="..\ThirdParty\Clipper2\CSharp\Clipper2Lib\Clipper2Lib.csproj" />
     </ItemGroup>
 </Project>
