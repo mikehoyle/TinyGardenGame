@@ -3,4 +3,4 @@
 	url = https://github.com/AngusJohnson/Clipper2.git
 [submodule "MonoGameConsole"]
 	path = MonoGameConsole
-	url = https://github.com/romanov/MonoGame-Console.git
+	url = https://github.com/mikehoyle/MonoGame-Console.git
