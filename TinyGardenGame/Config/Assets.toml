@@ -233,7 +233,7 @@ AtlasRect = { X = 4, Width = 2, Height = 1 }
 
 [[Fonts]]
 Name = "ConsoleFont"
-Path = "ConsoleFont"
+Path = "fonts/Arial"
 
 [[BmpFonts]]
 Name = "CourierFont"

@@ -33,7 +33,7 @@ namespace TinyGardenGame.Screens {
 
     public override void LoadContent() {
       // Cant use AssetLoading as we haven't initialized it yet
-      _font = _game.Content.Load<SpriteFont>("ConsoleFont");
+      _font = _game.Content.Load<SpriteFont>("fonts/Arial");
     }
 
     public override void Update(GameTime gameTime) {
