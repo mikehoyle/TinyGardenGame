@@ -6,6 +6,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameConsoleCore", "Thir
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clipper2Lib", "ThirdParty\Clipper2\CSharp\Clipper2Lib\Clipper2Lib.csproj", "{FB1240DF-66BE-4BEB-B77E-46A20FD45D24}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{4E31D9DB-B769-459C-8AD6-61FC0929D24F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended.Entities", "ThirdParty\MonoGame.Extended\Source\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj", "{A209CE2B-6D44-40AA-8AEA-EF95B13103BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Extended", "ThirdParty\MonoGame.Extended\Source\MonoGame.Extended\MonoGame.Extended.csproj", "{C9F1419E-9A5B-42AC-A4B5-9F898BC08CA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Vars", "Engine.Vars\Engine.Vars.csproj", "{3BE8595E-0129-4EA6-8EC5-44A4F4D42E10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +32,23 @@ Global
 		{FB1240DF-66BE-4BEB-B77E-46A20FD45D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB1240DF-66BE-4BEB-B77E-46A20FD45D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB1240DF-66BE-4BEB-B77E-46A20FD45D24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A209CE2B-6D44-40AA-8AEA-EF95B13103BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A209CE2B-6D44-40AA-8AEA-EF95B13103BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A209CE2B-6D44-40AA-8AEA-EF95B13103BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A209CE2B-6D44-40AA-8AEA-EF95B13103BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9F1419E-9A5B-42AC-A4B5-9F898BC08CA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9F1419E-9A5B-42AC-A4B5-9F898BC08CA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9F1419E-9A5B-42AC-A4B5-9F898BC08CA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9F1419E-9A5B-42AC-A4B5-9F898BC08CA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BE8595E-0129-4EA6-8EC5-44A4F4D42E10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BE8595E-0129-4EA6-8EC5-44A4F4D42E10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BE8595E-0129-4EA6-8EC5-44A4F4D42E10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BE8595E-0129-4EA6-8EC5-44A4F4D42E10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB1240DF-66BE-4BEB-B77E-46A20FD45D24} = {4E31D9DB-B769-459C-8AD6-61FC0929D24F}
+		{C3A1E54B-8C6B-4F52-AEBB-4E67AAF914FC} = {4E31D9DB-B769-459C-8AD6-61FC0929D24F}
+		{A209CE2B-6D44-40AA-8AEA-EF95B13103BB} = {4E31D9DB-B769-459C-8AD6-61FC0929D24F}
+		{C9F1419E-9A5B-42AC-A4B5-9F898BC08CA3} = {4E31D9DB-B769-459C-8AD6-61FC0929D24F}
 	EndGlobalSection
 EndGlobal

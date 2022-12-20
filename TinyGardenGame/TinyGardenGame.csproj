@@ -36,10 +36,14 @@
         <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\Engine.Vars\Engine.Vars.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false" />
+        <AdditionalFiles Include="Config/Assets.toml" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="MonoGame.Aseprite" Version="2.0.5" />
-        <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
         <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0" />
-        <PackageReference Include="MonoGame.Extended.Entities" Version="3.8.0" />
         <PackageReference Include="MonoGame.Extended.Input" Version="3.8.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
@@ -52,5 +56,7 @@
     <ItemGroup>
         <ProjectReference Include="..\ThirdParty\MonoGameConsole\MonoGameConsoleCore\MonoGameConsoleCore.csproj" />
         <ProjectReference Include="..\ThirdParty\Clipper2\CSharp\Clipper2Lib\Clipper2Lib.csproj" />
+        <ProjectReference Include="..\ThirdParty\MonoGame.Extended\Source\MonoGame.Extended\MonoGame.Extended.csproj" />
+        <ProjectReference Include="..\ThirdParty\MonoGame.Extended\Source\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     </ItemGroup>
 </Project>

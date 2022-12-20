@@ -22,9 +22,8 @@ namespace TinyGardenGame {
     [STAThread]
     static void Main() {
       ConfigureLogging();
-      using (var game = new MainGame()) {
-        game.Run();
-      }
+      using var game = new MainGame();
+      game.Run();
     }
 
     private static void ConfigureLogging() {
