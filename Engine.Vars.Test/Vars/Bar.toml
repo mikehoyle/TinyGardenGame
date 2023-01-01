@@ -1,0 +1,8 @@
+﻿[[Bar]]
+Name = "BlaBla"
+Mm = 45.637
+Ref-Foo = "Bar"
+
+[[Bar]]
+Name = "SomethingElse"
+Xy = "hello"

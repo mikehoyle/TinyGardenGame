@@ -1,0 +1,8 @@
+﻿[[Units]]
+Name = "Inchworm"
+Ref-Sprite = "Inchworm"
+CollisionFootprint = { X = -0.25, Y = -0.25, Width = 0.5, Height = 0.5 }
+Hp = 25
+SpeedTilesPerSec = 0.75
+AttackRange = 0.25
+# TODO: how to do initial behavior?
