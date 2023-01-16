@@ -61,7 +61,7 @@ namespace TinyGardenGame.Screens {
       playerState.Initialize(_world, game, collisionSystem, map, mapProcessor);
       
       // Base state
-      playerState.Inventory.AddItem(InventoryItem.GreatAcorn);
+      playerState.Inventory.AddItem(InventoryItem.Type.GreatAcorn);
       // TODO: remove this temporary test unit
       Unit.Build(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
     }

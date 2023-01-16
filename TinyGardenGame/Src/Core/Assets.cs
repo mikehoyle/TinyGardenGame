@@ -3,11 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MonoGame.Aseprite.Documents;
 using MonoGame.Extended.BitmapFonts;
-using MonoGame.Extended.Collections;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.TextureAtlases;
 using NLog;
-using TinyGardenGame.Config;
 
 namespace TinyGardenGame.Core {
   // TODO: This special static class is error prone

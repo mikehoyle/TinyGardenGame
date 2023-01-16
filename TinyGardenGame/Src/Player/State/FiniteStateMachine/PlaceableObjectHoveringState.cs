@@ -9,15 +9,16 @@ using TinyGardenGame.Core.Systems;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Plants;
 using TinyGardenGame.Player.Components;
+using TinyGardenGame.Vars;
 
 namespace TinyGardenGame.Player.State.FiniteStateMachine {
   public class PlaceableObjectHoveringState : MovablePlayerState {
     private readonly IIsSpaceOccupied _isSpaceOccupied;
     private readonly GameMap _map;
-    private PlantType _hoveredPlaceableType;
-    private readonly PlantEntityFactory _plantFactory;
+    private Plant _hoveredPlaceableItem;
     private readonly Entity _placementGhostEntity;
     private readonly MapProcessor _mapProcessor;
+    private readonly Func<Entity> _createEntity;
 
     public PlaceableObjectHoveringState(
         PlayerState playerState,
@@ -28,7 +29,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
         MapProcessor mapProcessor) : base(playerState, isSpaceOccupied, map) {
       _isSpaceOccupied = isSpaceOccupied;
       _map = map;
-      _plantFactory = new PlantEntityFactory(game.Content, world.CreateEntity);
+      _createEntity = world.CreateEntity;
       _placementGhostEntity = world.CreateEntity();
       _mapProcessor = mapProcessor;
     }
@@ -41,11 +42,10 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       var currentItem = PlayerState.Inventory.CurrentlySelectedItem;
       var selectionPosition = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
 
-      _hoveredPlaceableType = currentItem.PlantType();
-      _plantFactory.CreateGhostPlant(
-          _hoveredPlaceableType, selectionPosition, _placementGhostEntity);
+      _hoveredPlaceableItem = currentItem.PlantType();
+      _hoveredPlaceableItem.CreateGhost(selectionPosition, _placementGhostEntity);
       _mapProcessor.TileHighlightCondition =
-          _plantFactory.GetPlantGrowthCondition(_hoveredPlaceableType);
+          _hoveredPlaceableItem.GrowthCondition;
     }
 
     public override Type? Update(GameTime gameTime, HashSet<PlayerAction> actions) {
@@ -53,7 +53,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       if (actions.Contains(PlayerAction.PlacePlant)) {
         // TODO: place-plant state transition to accomodate animation
         var placement = PlayerState.PlayerEntity.Get<SelectionComponent>().SelectedSquare;
-        if (AttemptPlantPlacement(_hoveredPlaceableType, placement)) {
+        if (AttemptPlantPlacement(_hoveredPlaceableItem, placement)) {
           PlayerState.Inventory.CurrentlySelectedItem.Expend(1);
 
           MaybeMove(gameTime, actions);
@@ -76,9 +76,9 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       _mapProcessor.TileHighlightCondition = null;
     }
 
-    private bool AttemptPlantPlacement(PlantType type, Vector2 location) {
-      if (CanPlacePlant(type, location)) {
-        _plantFactory.CreatePlant(type, location);
+    private bool AttemptPlantPlacement(Plant plant, Vector2 location) {
+      if (CanPlacePlant(plant, location)) {
+        plant.Instantiate(location, _createEntity);
         return true;
       }
 
@@ -91,7 +91,7 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
 
         _placementGhostEntity.Get<PositionComponent>().Position = placement;
         var sprite = (SpriteDrawable)_placementGhostEntity.Get<DrawableComponent>().Drawable;
-        if (CanPlacePlant(_hoveredPlaceableType, placement)) {
+        if (CanPlacePlant(_hoveredPlaceableItem, placement)) {
           sprite.Sprite.Color = Color.White;
         }
         else {
@@ -100,17 +100,16 @@ namespace TinyGardenGame.Player.State.FiniteStateMachine {
       }
     }
 
-    private bool CanPlacePlant(PlantType type, Vector2 location) {
-      var footprintSize = _plantFactory.GetPlantFootprintSize(type);
+    private bool CanPlacePlant(Plant plant, Vector2 location) {
+      var footprintSize = plant.FootprintVec;
       var candidateFootprint = new SysRectangleF(
           location.X, location.Y, footprintSize.X, footprintSize.Y);
       if (_isSpaceOccupied.IsSpaceOccupied(candidateFootprint)) {
         return false;
       }
-
-      var growthCondition = _plantFactory.GetPlantGrowthCondition(type);
+      
       foreach (var tile in _map.GetIntersectingTiles(candidateFootprint)) {
-        if (!growthCondition(tile.Tile)) {
+        if (!plant.GrowthCondition(tile.Tile)) {
           return false;
         }
       }

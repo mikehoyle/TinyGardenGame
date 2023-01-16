@@ -5,8 +5,9 @@ using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
-using TinyGardenGame.Plants;
+using TinyGardenGame.Vars;
 using static TinyGardenGame.Vars.Sprite.Type;
+using Sprite = MonoGame.Extended.Sprites.Sprite;
 
 namespace TinyGardenGame.MapGeneration {
   /**
@@ -18,7 +19,7 @@ namespace TinyGardenGame.MapGeneration {
     private readonly GameMap _map;
     private readonly Sprite _tileHighlightSprite;
 
-    public PlantEntityFactory.CanGrowOn? TileHighlightCondition { get; set; }
+    public Plant.CanGrowOn? TileHighlightCondition { get; set; }
 
     public MapProcessor(MainGame game, GameMap map) {
       _game = game;

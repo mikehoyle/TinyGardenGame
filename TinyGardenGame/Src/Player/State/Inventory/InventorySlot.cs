@@ -1,7 +1,7 @@
 ﻿#nullable enable
-using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
-using TinyGardenGame.Plants;
+using TinyGardenGame.Vars;
+using Sprite = MonoGame.Extended.Sprites.Sprite;
 
 namespace TinyGardenGame.Player.State.Inventory {
   public class InventorySlot {
@@ -10,12 +10,12 @@ namespace TinyGardenGame.Player.State.Inventory {
     public InventoryItem Item;
     public uint Count;
 
-    public PlantType PlantType() {
-      return Items.ItemMap[Item].PlantType;
+    public Plant PlantType() {
+      return Item.Plant;
     }
 
     public Sprite GetSprite(ContentManager content) {
-      _cachedSprite ??= content.LoadSprite(Items.ItemMap[Item].Sprite);
+      _cachedSprite ??= content.LoadSprite(Item.Sprite.Id);
       return _cachedSprite;
     }
 

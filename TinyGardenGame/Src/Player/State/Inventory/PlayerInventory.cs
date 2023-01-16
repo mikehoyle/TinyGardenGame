@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using TinyGardenGame.Vars;
 
 namespace TinyGardenGame.Player.State.Inventory {
   public class PlayerInventory {
@@ -20,7 +21,7 @@ namespace TinyGardenGame.Player.State.Inventory {
       _currentlySelectedSlot = 0;
     }
 
-    public void AddItem(InventoryItem item, uint amount = 1) {
+    public void AddItem(InventoryItem.Type type, uint amount = 1) {
       var firstAvailableSlot = -1;
       for (var i = 0; i < _inventoryContents.Length; i++) {
         var contents = ContentsOfSlot(i);
@@ -30,7 +31,7 @@ namespace TinyGardenGame.Player.State.Inventory {
           }
         }
         else {
-          if (contents.Item == item) {
+          if (contents.Item.Id == type) {
             contents.Count += amount;
             return;
           }
@@ -43,7 +44,7 @@ namespace TinyGardenGame.Player.State.Inventory {
       }
 
       _inventoryContents[firstAvailableSlot] = new InventorySlot {
-          Item = item,
+          Item = InventoryItem.Items[type],
           Count = amount,
       };
     }

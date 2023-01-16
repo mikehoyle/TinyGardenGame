@@ -1,0 +1,9 @@
+﻿[[InventoryItem]]
+Name = "ReedSeeds"
+Ref-Plant-Plant = "Reeds"
+Ref-Sprite-Sprite = "InventoryReedSeeds"
+
+[[InventoryItem]]
+Name = "GreatAcorn"
+Ref-Plant-Plant = "GreatOak"
+Ref-Sprite-Sprite = "InventoryGreatAcorn"
