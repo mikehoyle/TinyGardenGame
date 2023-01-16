@@ -10,110 +10,26 @@ using NLog;
 using TinyGardenGame.Config;
 
 namespace TinyGardenGame.Core {
-  // TODO: separate out this massive enum into a few themed enums?
-  public enum SpriteName {
-    // Player
-    Player,
-    
-    // Units
-    Inchworm,
-
-    // Overlay
-    ValidTile,
-    SelectedTileOverlay,
-    LoadingBarEmpty,
-    LoadingBarFull,
-
-    // HUD
-    InventoryContainer,
-    InventorySelected,
-    ProgressBarFillEmpty,
-    ProgressBarFillHp,
-    ProgressBarFillEnergy,
-
-    // Inventory
-    InventoryReedSeeds,
-    InventoryGreatAcorn,
-
-    // Plants: Player Made
-    GreatTree,
-    Marigold,
-    Reeds,
-
-    // Plants: Weeds
-    Dandelion,
-    Shrub,
-
-    // Tiles: Water
-    Water0,
-    Water1,
-    Water2Nw,
-    Water2Sw,
-    Water2Ew,
-    Water3,
-    Water4,
-
-    // Tiles: Base
-    Weeds1,
-    Weeds2,
-    Weeds3,
-
-    Sand1,
-    Sand2,
-    Sand3,
-
-    Rocks1,
-    Rocks2,
-    Rocks3,
-
-    DryDirt1,
-    DryDirt2,
-    DryDirt3,
-
-    FlowerPatch1,
-    FlowerPatch2,
-    FlowerPatch3,
-
-    // Tools
-    HandTool,
-    TillerTool,
-    ShovelTool,
-
-    // Fonts
-    ConsoleFont,
-
-    // Bmp Fonts
-    CourierFont,
-  }
-
   // TODO: This special static class is error prone
   public static class AssetLoading {
-    public static KeyedCollection<SpriteName, Asset> Assets = new(x => x.Name);
-
-    public static KeyedCollection<SpriteName, FontAsset> Fonts = new(x => x.Name);
-
-    public static KeyedCollection<SpriteName, FontAsset> BmpFonts = new(x => x.Name);
 
     public static Task LoadAllAssets(ContentManager contentManager, string assetConfigPath) {
       // OPTIMIZE: This in theory duplicates a lot. Even though contentManager caches, it could
       // cause churn on the heap.
       return Task.Run(() => {
         var logger = LogManager.GetLogger("LoadAllAssets_closure");
-        var assetsModel = AssetsModel.Load(assetConfigPath);
-        foreach (var asset in assetsModel.Assets) {
-          contentManager.Load<AsepriteDocument>(asset.Path);
-          Assets.Add(asset);
+        foreach (var sprite in Vars.Sprite.Items) {
+          contentManager.Load<AsepriteDocument>(sprite.Value.Path);
         }
 
-        foreach (var asset in assetsModel.Fonts) {
-          contentManager.Load<SpriteFont>(asset.Path);
-          Fonts.Add(asset);
+        foreach (var font in Vars.SpriteFont.Items) {
+          contentManager.Load<SpriteFont>(font.Value.Path);
         }
-
-        foreach (var asset in assetsModel.BmpFonts) {
-          contentManager.Load<BitmapFont>(asset.Path);
-          BmpFonts.Add(asset);
+        
+        foreach (var font in Vars.BmpFont.Items) {
+          contentManager.Load<BitmapFont>(font.Value.Path);
         }
+        
         logger.Info("Successfully loaded all assets");
       });
     }
@@ -121,8 +37,8 @@ namespace TinyGardenGame.Core {
 
   public static class ContentManagerExtensions {
     public static AsepriteAnimatedSprite LoadAnimated(
-        this ContentManager content, SpriteName spriteName) {
-      var item = AssetLoading.Assets[spriteName];
+        this ContentManager content, Vars.Sprite.Type spriteName) {
+      var item = Vars.Sprite.Items[spriteName];
       var asepriteDocument = content.Load<AsepriteDocument>(item.Path);
       var sprite = new AsepriteAnimatedSprite(asepriteDocument) {
           Origin = GetOrigin(item, asepriteDocument),
@@ -134,8 +50,8 @@ namespace TinyGardenGame.Core {
       return sprite;
     }
 
-    public static Sprite LoadSprite(this ContentManager content, SpriteName spriteName) {
-      var item = AssetLoading.Assets[spriteName];
+    public static Sprite LoadSprite(this ContentManager content, Vars.Sprite.Type spriteName) {
+      var item = Vars.Sprite.Items[spriteName];
       var asepriteDocument = content.Load<AsepriteDocument>(item.Path);
       var sprite = item.HasAtlasRect
           ? new Sprite(new TextureRegion2D(asepriteDocument.Texture, item.AtlasRect.ToRect().Value))
@@ -144,14 +60,14 @@ namespace TinyGardenGame.Core {
       return sprite;
     }
 
-    public static Texture2D LoadTexture(this ContentManager content, SpriteName spriteName) {
-      var item = AssetLoading.Assets[spriteName];
+    public static Texture2D LoadTexture(this ContentManager content, Vars.Sprite.Type spriteName) {
+      var item = Vars.Sprite.Items[spriteName];
       return content.Load<AsepriteDocument>(item.Path).Texture;
     }
 
     public static NinePatchRegion2D LoadNinepatch(
-        this ContentManager content, SpriteName spriteName) {
-      var item = AssetLoading.Assets[spriteName];
+        this ContentManager content, Vars.Sprite.Type spriteName) {
+      var item = Vars.Sprite.Items[spriteName];
       var document = content.Load<AsepriteDocument>(item.Path);
       if (document.Slices.TryGetValue("nine_patch", out var slice)) {
         foreach (var key in slice.SliceKeys.Values) {
@@ -173,16 +89,16 @@ namespace TinyGardenGame.Core {
       throw new Exception($"{spriteName} doesn't have a nine_patch slice");
     }
 
-    public static SpriteFont LoadFont(this ContentManager content, SpriteName spriteName) {
-      return content.Load<SpriteFont>(AssetLoading.Fonts[spriteName].Path);
+    public static SpriteFont LoadFont(this ContentManager content, Vars.SpriteFont.Type spriteName) {
+      return content.Load<SpriteFont>(Vars.SpriteFont.Items[spriteName].Path);
     }
 
-    public static BitmapFont LoadBmpFont(this ContentManager content, SpriteName spriteName) {
-      return content.Load<BitmapFont>(AssetLoading.BmpFonts[spriteName].Path);
+    public static BitmapFont LoadBmpFont(this ContentManager content, Vars.BmpFont.Type spriteName) {
+      return content.Load<BitmapFont>(Vars.BmpFont.Items[spriteName].Path);
     }
 
     // TODO: Support slices for atlas rect as well
-    private static Vector2 GetOrigin(Asset item, AsepriteDocument document) {
+    private static Vector2 GetOrigin(Vars.Sprite item, AsepriteDocument document) {
       if (document.Slices.Count == 1) {
         foreach (var sliceKey in document.Slices.Values.First().SliceKeys.Values) {
           if (sliceKey.HasPivot) {

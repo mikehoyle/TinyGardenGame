@@ -23,9 +23,9 @@ namespace TinyGardenGame.Hud {
       _content = content;
       _hudScale = hudScale;
       _playerInventory = playerInventory;
-      _borderSprite = content.LoadTexture(SpriteName.InventoryContainer);
-      _selectedSprite = content.LoadTexture(SpriteName.InventorySelected);
-      _font = content.LoadFont(SpriteName.ConsoleFont);
+      _borderSprite = content.LoadTexture(Vars.Sprite.Type.InventoryContainer);
+      _selectedSprite = content.LoadTexture(Vars.Sprite.Type.InventorySelected);
+      _font = content.LoadFont(Vars.SpriteFont.Type.ConsoleFont);
 
       _inventoryContainerWidth = _borderSprite.Width;
       _inventoryContainerHeight = _borderSprite.Height;

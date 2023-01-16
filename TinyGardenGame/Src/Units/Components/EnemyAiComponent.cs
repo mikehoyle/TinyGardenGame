@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
+using TinyGardenGame.Vars;
 
 namespace TinyGardenGame.Units.Components;
 
 public class EnemyAiComponent {
-  public enum State {
-    Roam,
-    AttackTree,
-  }
 
-  public EnemyAiComponent(State state) {
-    ActivityState = new Stack<State>();
+  public EnemyAiComponent(EnemyAiState state) {
+    ActivityState = new Stack<EnemyAiState>();
     // For now, always default to Roam state
-    ActivityState.Push(State.Roam);
-    if (state != State.Roam) {
-      ActivityState.Push(State.AttackTree);
+    ActivityState.Push(EnemyAiState.Items[EnemyAiState.Type.Roam]);
+    if (state.Id != EnemyAiState.Type.Roam) {
+      ActivityState.Push(EnemyAiState.Items[EnemyAiState.Type.AttackTree]);
     }
   }
 
-  public Stack<State> ActivityState { get; init; }
+  public Stack<EnemyAiState> ActivityState { get; init; }
 }

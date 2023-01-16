@@ -19,7 +19,7 @@ namespace TinyGardenGame.MapGeneration.MapTiles {
 
     private BitVector32 _metadata;
 
-    public abstract SpriteName Sprite { get; }
+    public abstract Vars.Sprite.Type Sprite { get; }
 
     public bool ContainsWater {
       get => GetFlag(ContainsWaterMask);

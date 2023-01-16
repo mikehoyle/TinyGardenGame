@@ -2,16 +2,16 @@
 
 namespace TinyGardenGame.MapGeneration.MapTiles {
   public class DryDirtTile : MapTile {
-    public override SpriteName Sprite {
+    public override Vars.Sprite.Type Sprite {
       get {
         switch (TextureVariant) {
           case 1:
           default:
-            return SpriteName.DryDirt1;
+            return Vars.Sprite.Type.DryDirt1;
           case 2:
-            return SpriteName.DryDirt2;
+            return Vars.Sprite.Type.DryDirt2;
           case 3:
-            return SpriteName.DryDirt3;
+            return Vars.Sprite.Type.DryDirt3;
         }
       }
     }

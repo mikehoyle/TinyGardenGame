@@ -56,8 +56,8 @@ namespace TinyGardenGame.Core.Systems {
       
       // Content
       _nightEffect = game.Content.Load<Effect>("shaders/night_shader");
-      _meterEmptySprite = game.Content.LoadSprite(SpriteName.LoadingBarEmpty).TextureRegion;
-      _meterFullSprite = game.Content.LoadSprite(SpriteName.LoadingBarFull).TextureRegion;
+      _meterEmptySprite = game.Content.LoadSprite(Vars.Sprite.Type.LoadingBarEmpty).TextureRegion;
+      _meterFullSprite = game.Content.LoadSprite(Vars.Sprite.Type.LoadingBarFull).TextureRegion;
     }
 
     public override void Initialize(IComponentMapperService mapperService) {

@@ -1,18 +1,18 @@
-﻿[[Plants]]
+﻿[[Plant]]
 Name = "Marigold"
-Ref-Sprite = "Marigold"
+Ref-Sprite-Sprite = "Marigold"
 GrowthTimeSecs = 45
 FootprintSize = { Width = 1.0, Height = 1.0 }
 # TODO: How to handle growth condition?
 
-[[Plants]]
+[[Plant]]
 Name = "Reeds"
-Ref-Sprite = "Reeds"
+Ref-Sprite-Sprite = "Reeds"
 GrowthTimeSecs = 30
 FootprintSize = { Width = 1.0, Height = 1.0 }
 
-[[Plants]]
+[[Plant]]
 Name = "GreatOak"
-Ref-Sprite = "GreatTree"
+Ref-Sprite-Sprite = "GreatTree"
 GrowthTimeSecs = 0
 FootprintSize = { Width = 3.0, Height = 3.0 }

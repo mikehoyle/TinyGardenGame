@@ -1,4 +1,4 @@
-using Engine.Vars.Generated;
+using ThisIsATestNamespace;
 
 namespace Engine.Vars.Test;
 

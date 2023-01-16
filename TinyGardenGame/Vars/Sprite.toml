@@ -1,232 +1,232 @@
-﻿[[Sprites]]
+﻿[[Sprite]]
 Name = "Player"
 Path = "sprites/gnome"
 Origin = { X = 16, Y = 32 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Inchworm"
 Path = "sprites/units/inchworm"
 
-[[Sprites]]
+[[Sprite]]
 Name = "ValidTile"
 Path = "sprites/valid_square"
 Origin = { X = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "SelectedTileOverlay"
 Path = "tilesets/selected_overlay"
 Origin = { X = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "LoadingBarEmpty"
 Path = "sprites/loading_bar"
 AtlasRect = { Width = 24, Height = 3 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "LoadingBarFull"
 Path = "sprites/loading_bar"
 AtlasRect = { Y = 3, Width = 24, Height = 3 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "InventoryContainer"
 Path = "sprites/inventory_border"
 
-[[Sprites]]
+[[Sprite]]
 Name = "InventorySelected"
 Path = "sprites/inventory_selected"
 
-[[Sprites]]
+[[Sprite]]
 Name = "GreatTree"
 Path = "sprites/plants/great_tree"
 
-[[Sprites]]
+[[Sprite]]
 Name = "Marigold"
 Path = "sprites/plants/marigold"
 Origin = { X = 16, Y = 32 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Reeds"
 Path = "sprites/plants/reeds"
 Origin = { X = 16, Y = 32 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Dandelion"
 Path = "sprites/plants/dandelion"
 Origin = { X = 16, Y = 32 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Shrub"
 Path = "sprites/plants/shrub"
 Origin = { X = 16, Y = 32 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water0"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 0, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water1"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 32, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water2Nw"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 64, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water2Sw"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 96, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water2Ew"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 128, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water3"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 160, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Water4"
 Path = "tilesets/water"
 Origin = { X = 16, Y = 0 }
 AtlasRect = { X = 192, Width = 32, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Weeds1"
 Path = "tilesets/grass"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 0, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Weeds2"
 Path = "tilesets/grass"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 32, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Weeds3"
 Path = "tilesets/grass"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 64, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Sand1"
 Path = "tilesets/sand"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 0, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Sand2"
 Path = "tilesets/sand"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 32, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Sand3"
 Path = "tilesets/sand"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 64, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Rocks1"
 Path = "tilesets/rocks"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 0, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Rocks2"
 Path = "tilesets/rocks"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 32, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "Rocks3"
 Path = "tilesets/rocks"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 64, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "DryDirt1"
 Path = "tilesets/dry_dirt"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 0, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "DryDirt2"
 Path = "tilesets/dry_dirt"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 32, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "DryDirt3"
 Path = "tilesets/dry_dirt"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 64, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "FlowerPatch1"
 Path = "tilesets/flower_patch"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 0, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "FlowerPatch2"
 Path = "tilesets/flower_patch"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 32, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "FlowerPatch3"
 Path = "tilesets/flower_patch"
 Origin = { X = 16, Y = 8 }
 AtlasRect = { X = 64, Width = 32, Height = 24 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "InventoryReedSeeds"
 Path = "sprites/inventory_items"
 AtlasRect = { X = 0, Y = 0, Width = 16, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "InventoryGreatAcorn"
 Path = "sprites/inventory_items"
 AtlasRect = { X = 16, Y = 0, Width = 16, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "HandTool"
 Path = "sprites/tools"
 AtlasRect = { Width = 16, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "TillerTool"
 Path = "sprites/tools"
 AtlasRect = { X = 16, Width = 16, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "ShovelTool"
 Path = "sprites/tools"
 AtlasRect = { X = 32, Width = 16, Height = 16 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "ProgressBarFillEmpty"
 Path = "sprites/progress_bar_fill"
 AtlasRect = { X = 0, Width = 2, Height = 1 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "ProgressBarFillHp"
 Path = "sprites/progress_bar_fill"
 AtlasRect = { X = 2, Width = 2, Height = 1 }
 
-[[Sprites]]
+[[Sprite]]
 Name = "ProgressBarFillEnergy"
 Path = "sprites/progress_bar_fill"
 AtlasRect = { X = 4, Width = 2, Height = 1 }

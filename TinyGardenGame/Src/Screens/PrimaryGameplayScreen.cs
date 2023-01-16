@@ -9,6 +9,7 @@ using TinyGardenGame.Player.State.Inventory;
 using TinyGardenGame.Player.Systems;
 using TinyGardenGame.Units;
 using TinyGardenGame.Units.Systems;
+using TinyGardenGame.Vars;
 
 namespace TinyGardenGame.Screens {
   public class PrimaryGameplayScreen : GameScreen {
@@ -61,9 +62,8 @@ namespace TinyGardenGame.Screens {
       
       // Base state
       playerState.Inventory.AddItem(InventoryItem.GreatAcorn);
-      var unitFactory = new UnitEntityFactory(game.Content);
       // TODO: remove this temporary test unit
-      unitFactory.Build(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
+      Unit.Build(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
     }
 
     public override void LoadContent() {

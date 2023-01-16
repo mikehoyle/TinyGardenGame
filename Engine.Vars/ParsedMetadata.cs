@@ -18,6 +18,8 @@ internal class ParsedMetadata : IEquatable<ParsedMetadata> {
   private ParsedMetadata() { }
 
   public string TableName { get; private set; } =  "";
+
+  public string Namespace { get; set; } = "";
   
   public HashSet<string> Names { get; } = new();
   // Some duplication, oh well -- Maps names to their parsed Toml table
@@ -28,7 +30,11 @@ internal class ParsedMetadata : IEquatable<ParsedMetadata> {
   
   // Maps referred field to all attempted references, for validation.
   public Dictionary<string, HashSet<string>> RefFields { get; } = new();
-  
+
+  // Maps ref field names to the table to which they refer
+  // TODO(P0) fill and use this
+  public Dictionary<string, string> RefFieldNames { get; } = new();
+
   // Maps object name to field names and type
   public Dictionary<string, Dictionary<string, FieldType>> InnerObjects { get; } = new();
   
@@ -75,12 +81,24 @@ internal class ParsedMetadata : IEquatable<ParsedMetadata> {
                 $"Ref value must be string: {keyValuePair.Key} in {file.Path}");
           }
           
-          var refTableName = keyValuePair.Key.Substring(RefPrefix.Length);
+          var refNameSplit = keyValuePair.Key.Split('-');
+          if (refNameSplit.Length != 3) {
+            throw new VarsGenerationException(
+              $"Ref must contain target table and name (in {file.Path})");
+          }
+          var refTableName = refNameSplit[1];
+          var refFieldName = refNameSplit[2];
           if (result.RefFields.TryGetValue(refTableName, out var list)) {
             list.Add(value);
           } else {
             result.RefFields.Add(refTableName, new HashSet<string> { value });
           }
+
+          if (result.Fields.ContainsKey(refFieldName)) {
+            throw new VarsGenerationException(
+              $"Ref field can't have same name as normal field (in {file.Path})");
+          }
+          result.RefFieldNames[refFieldName] = refTableName;
         } else {
           var type = GetFieldType(keyValuePair.Value, keyValuePair.Key, result.TableName);
           if (result.Fields.TryGetValue(keyValuePair.Key, out var existingType)) {
@@ -90,6 +108,9 @@ internal class ParsedMetadata : IEquatable<ParsedMetadata> {
                   $"({type} and {existingType}), in table {result.TableName}");
             }
           } else {
+            if (result.RefFieldNames.ContainsKey(keyValuePair.Key)) {
+              throw new VarsGenerationException($"Cannot have field already used by ref field");
+            }
             result.Fields.Add(keyValuePair.Key, type);  
           }
 

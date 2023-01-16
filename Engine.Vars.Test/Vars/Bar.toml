@@ -1,7 +1,7 @@
 ﻿[[Bar]]
 Name = "BlaBla"
 Mm = 45.637
-Ref-Foo = "Bar"
+Ref-Foo-ReferenceToFoo = "Bar"
 
 [[Bar]]
 Name = "SomethingElse"

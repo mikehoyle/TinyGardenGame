@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using Microsoft.CodeAnalysis;
 
 namespace Engine.Vars;
 
 [Generator]
-public class VarsSourceGenerator : ISourceGenerator {  
+public class VarsSourceGenerator : ISourceGenerator {
+  private const string DefaultNamespace = "Engine.Vars.Generated";
+  
   public void Initialize(GeneratorInitializationContext context) {}
 
   public void Execute(GeneratorExecutionContext context) {
@@ -19,8 +22,14 @@ public class VarsSourceGenerator : ISourceGenerator {
               $"File contains already-used table name {metadata.TableName}, {file.Path}");
         }
 
-        metadataMap.Add(metadata);
+        var fileNamespace = DefaultNamespace;
+        if (context.AnalyzerConfigOptions.GetOptions(file)
+            .TryGetValue("build_metadata.AdditionalFiles.GeneratedNamespace", out var customNamespace)) {
+          fileNamespace = customNamespace;
+        }
 
+        metadata.Namespace = fileNamespace;
+        metadataMap.Add(metadata);
       }
 
       foreach (var metadata in metadataMap) {

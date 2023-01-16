@@ -14,7 +14,7 @@ namespace TinyGardenGame.Hud {
     public DebugOverlay(MainGame mainGame, ScalingViewportAdapter hudScale) {
       _game = mainGame;
       _hudScale = hudScale;
-      _font = mainGame.Content.LoadFont(SpriteName.ConsoleFont);
+      _font = mainGame.Content.LoadFont(Vars.SpriteFont.Type.ConsoleFont);
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {

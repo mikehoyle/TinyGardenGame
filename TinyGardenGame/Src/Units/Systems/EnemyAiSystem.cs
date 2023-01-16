@@ -3,6 +3,7 @@ using MonoGame.Extended.Entities.Systems;
 using TinyGardenGame.Config;
 using TinyGardenGame.Core.Components;
 using TinyGardenGame.Units.Components;
+using TinyGardenGame.Vars;
 
 namespace TinyGardenGame.Units.Systems;
 
@@ -28,12 +29,12 @@ public class EnemyAiSystem : EntityUpdateSystem {
 
   public override void Update(GameTime gameTime) {
     foreach (var entity in ActiveEntities)
-      switch (_aiComponentMapper.Get(entity).ActivityState.Peek()) {
+      switch (_aiComponentMapper.Get(entity).ActivityState.Peek().Id) {
         default:
-        case EnemyAiComponent.State.Roam:
+        case EnemyAiState.Type.Roam:
           _roamHandler.Handle(gameTime, entity);
           break;
-        case EnemyAiComponent.State.AttackTree:
+        case EnemyAiState.Type.AttackTree:
           _attackTreeHandler.Handle(gameTime, entity);
           break;
       }

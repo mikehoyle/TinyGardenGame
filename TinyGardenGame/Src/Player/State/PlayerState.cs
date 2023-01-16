@@ -54,7 +54,7 @@ namespace TinyGardenGame.Player.State {
           this, world, game, isSpaceOccupied, map, mapProcessor));
 
       State = _states[typeof(MovablePlayerState)];
-      var playerSprite = game.Content.LoadAnimated(SpriteName.Player);
+      var playerSprite = game.Content.LoadAnimated(Vars.Sprite.Type.Player);
       PlayerEntity = world.CreateEntity()
           .AttachAnd(new DrawableComponent(new AnimatedSpriteDrawable(playerSprite)))
           .AttachAnd(new CameraFollowComponent())

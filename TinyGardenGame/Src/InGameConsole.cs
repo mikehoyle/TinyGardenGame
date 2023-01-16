@@ -14,7 +14,7 @@ namespace TinyGardenGame {
     public event EventHandler<int> SetEnergy;
 
     public InGameConsole(MainGame game) {
-      var spriteFont = game.Content.LoadFont(SpriteName.ConsoleFont);
+      var spriteFont = game.Content.LoadFont(Vars.SpriteFont.Type.ConsoleFont);
       Initialize(game, new SpriteBatch(game.GraphicsDevice), spriteFont);
     }
 

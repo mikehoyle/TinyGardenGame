@@ -5,11 +5,13 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+        <GeneratedNamespace>ThisIsATestNamespace</GeneratedNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Engine.Vars\Engine.Vars.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <AdditionalFiles Include="Vars/*.toml" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GeneratedNamespace" Visible="false" />
+        <AdditionalFiles Include="Vars/*.toml" GeneratedNamespace="ThisIsATestNamespace" />
     </ItemGroup>
 
     <ItemGroup>

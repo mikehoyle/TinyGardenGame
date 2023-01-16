@@ -24,10 +24,10 @@ namespace TinyGardenGame.Hud {
         ContentManager gameContent, ScalingViewportAdapter hudScale, PlayerState playerState) {
       _hudScale = hudScale;
       _playerState = playerState;
-      _meterBorder = gameContent.LoadNinepatch(SpriteName.InventoryContainer);
-      _meterFillEmpty = gameContent.LoadSprite(SpriteName.ProgressBarFillEmpty);
-      _meterFillHp = gameContent.LoadSprite(SpriteName.ProgressBarFillHp);
-      _meterFillEnergy = gameContent.LoadSprite(SpriteName.ProgressBarFillEnergy);
+      _meterBorder = gameContent.LoadNinepatch(Vars.Sprite.Type.InventoryContainer);
+      _meterFillEmpty = gameContent.LoadSprite(Vars.Sprite.Type.ProgressBarFillEmpty);
+      _meterFillHp = gameContent.LoadSprite(Vars.Sprite.Type.ProgressBarFillHp);
+      _meterFillEnergy = gameContent.LoadSprite(Vars.Sprite.Type.ProgressBarFillEnergy);
       var paddingTopPx = HeadsUpDisplay.PaddingPx + TopMargin;
       var paddingRightPx = HeadsUpDisplay.PaddingPx;
 

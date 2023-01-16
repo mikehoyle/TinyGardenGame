@@ -2,16 +2,16 @@
 
 namespace TinyGardenGame.MapGeneration.MapTiles {
   public class SandTile : MapTile {
-    public override SpriteName Sprite {
+    public override Vars.Sprite.Type Sprite {
       get {
         switch (TextureVariant) {
           case 1:
           default:
-            return SpriteName.Sand1;
+            return Vars.Sprite.Type.Sand1;
           case 2:
-            return SpriteName.Sand2;
+            return Vars.Sprite.Type.Sand2;
           case 3:
-            return SpriteName.Sand3;
+            return Vars.Sprite.Type.Sand3;
         }
       }
     }

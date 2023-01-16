@@ -6,7 +6,7 @@ using MonoGame.Extended.Sprites;
 using TinyGardenGame.Core;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.Plants;
-using static TinyGardenGame.Core.SpriteName;
+using static TinyGardenGame.Vars.Sprite.Type;
 
 namespace TinyGardenGame.MapGeneration {
   /**
@@ -56,7 +56,7 @@ namespace TinyGardenGame.MapGeneration {
 
     private void RenderTile(
         SpriteBatch spriteBatch,
-        SpriteName spriteName,
+        Vars.Sprite.Type spriteName,
         int x,
         int y,
         SpriteEffects effects = SpriteEffects.None) {

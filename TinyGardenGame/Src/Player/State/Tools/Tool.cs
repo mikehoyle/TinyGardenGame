@@ -9,7 +9,7 @@ namespace TinyGardenGame.Player.State.Tools {
   public abstract class Tool {
     private Sprite? _cachedSprite;
 
-    protected abstract SpriteName SpriteName { get; }
+    protected abstract Vars.Sprite.Type SpriteName { get; }
 
     public Sprite GetSprite(ContentManager contentManager) {
       return _cachedSprite ??= contentManager.LoadSprite(SpriteName);

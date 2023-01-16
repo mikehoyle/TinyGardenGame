@@ -10,19 +10,19 @@ namespace TinyGardenGame.Player.State.Inventory {
   }
 
   public struct ItemMetadata {
-    public ItemMetadata(PlantType plantType, SpriteName sprite) {
+    public ItemMetadata(PlantType plantType, Vars.Sprite.Type sprite) {
       PlantType = plantType;
       Sprite = sprite;
     }
 
     public readonly PlantType PlantType;
-    public readonly SpriteName Sprite;
+    public readonly Vars.Sprite.Type Sprite;
   }
 
   public static class Items {
     public static readonly Dictionary<InventoryItem, ItemMetadata> ItemMap = new() {
-        { ReedSeeds, new ItemMetadata(PlantType.Reeds, SpriteName.InventoryReedSeeds) },
-        { GreatAcorn, new ItemMetadata(PlantType.GreatOak, SpriteName.InventoryGreatAcorn) },
+        { ReedSeeds, new ItemMetadata(PlantType.Reeds, Vars.Sprite.Type.InventoryReedSeeds) },
+        { GreatAcorn, new ItemMetadata(PlantType.GreatOak, Vars.Sprite.Type.InventoryGreatAcorn) },
     };
   }
 }

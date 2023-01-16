@@ -54,7 +54,7 @@ namespace TinyGardenGame.Core.Systems {
     private void LoadSelectionIndicator() {
       if (GameConfig.Config.Debug.ShowSelectionIndicator && _playerState.PlayerEntity != null) {
         var playerSelection = _selectionComponent.Get(_playerState.PlayerEntity);
-        var sprite = _screen.Game.Content.LoadSprite(SpriteName.SelectedTileOverlay);
+        var sprite = _screen.Game.Content.LoadSprite(Vars.Sprite.Type.SelectedTileOverlay);
         _selectionIndicatorEntity
             .AttachAnd(new DrawableComponent(sprite, RenderLayer.Overlay))
             .Attach(new PositionComponent(playerSelection.SelectedSquare));
