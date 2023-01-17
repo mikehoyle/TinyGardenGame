@@ -12,11 +12,10 @@ namespace TinyGardenGame.Hud {
     private readonly InGameClock _clock;
     private readonly BitmapFont _font;
 
-    public TimeDisplay(
-        ContentManager content, ScalingViewportAdapter hudScale, InGameClock gameClock) {
+    public TimeDisplay(ScalingViewportAdapter hudScale, InGameClock gameClock) {
       _hudScale = hudScale;
       _clock = gameClock;
-      _font = content.LoadBmpFont(Vars.BmpFont.Type.CourierFont);
+      _font = Platform.Content.LoadBmpFont(Vars.BmpFont.Type.CourierFont);
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {

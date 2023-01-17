@@ -8,7 +8,6 @@ namespace TinyGardenGame.Hud {
   public class InventoryDisplay {
     private const int InventoryBottomMarginPx = 2;
 
-    private readonly ContentManager _content;
     private readonly ScalingViewportAdapter _hudScale;
     private readonly PlayerInventory _playerInventory;
 
@@ -18,14 +17,12 @@ namespace TinyGardenGame.Hud {
     private readonly int _inventoryContainerHeight;
     private readonly SpriteFont _font;
 
-    public InventoryDisplay(
-        ContentManager content, ScalingViewportAdapter hudScale, PlayerInventory playerInventory) {
-      _content = content;
+    public InventoryDisplay(ScalingViewportAdapter hudScale, PlayerInventory playerInventory) {
       _hudScale = hudScale;
       _playerInventory = playerInventory;
-      _borderSprite = content.LoadTexture(Vars.Sprite.Type.InventoryContainer);
-      _selectedSprite = content.LoadTexture(Vars.Sprite.Type.InventorySelected);
-      _font = content.LoadFont(Vars.SpriteFont.Type.ConsoleFont);
+      _borderSprite = Platform.Content.LoadTexture(Vars.Sprite.Type.InventoryContainer);
+      _selectedSprite = Platform.Content.LoadTexture(Vars.Sprite.Type.InventorySelected);
+      _font = Platform.Content.LoadFont(Vars.SpriteFont.Type.ConsoleFont);
 
       _inventoryContainerWidth = _borderSprite.Width;
       _inventoryContainerHeight = _borderSprite.Height;
@@ -47,7 +44,7 @@ namespace TinyGardenGame.Hud {
         // Draw item sprite
         var itemAtSlot = _playerInventory.ContentsOfSlot(i);
         if (itemAtSlot != null && itemAtSlot.Count != 0) {
-          itemAtSlot.GetSprite(_content).Draw(
+          itemAtSlot.GetSprite(Platform.Content).Draw(
               spriteBatch,
               position,
               rotation: 0f,

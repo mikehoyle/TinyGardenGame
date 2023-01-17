@@ -5,9 +5,7 @@ using TinyGardenGame.Hud;
 using TinyGardenGame.MapGeneration;
 using TinyGardenGame.Plants.Systems;
 using TinyGardenGame.Player.State;
-using TinyGardenGame.Player.State.Inventory;
 using TinyGardenGame.Player.Systems;
-using TinyGardenGame.Units;
 using TinyGardenGame.Units.Systems;
 using TinyGardenGame.Vars;
 
@@ -60,10 +58,9 @@ namespace TinyGardenGame.Screens {
           .Build();
       playerState.Initialize(_world, game, collisionSystem, map, mapProcessor);
       
-      // Base state
-      playerState.Inventory.AddItem(InventoryItem.Type.GreatAcorn);
       // TODO: remove this temporary test unit
-      Unit.Build(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
+      Plant.Items[Plant.Type.GreatOak].Instantiate(new Vector2(0, 3), _world.CreateEntity);
+      Unit.Instantiate(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
     }
 
     public override void LoadContent() {

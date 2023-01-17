@@ -5,19 +5,16 @@ using TinyGardenGame.Player.State.Tools;
 namespace TinyGardenGame.Hud {
   public class ToolDisplay {
     private const int MarginPx = 2;
-
-    private readonly ContentManager _content;
     private readonly ScalingViewportAdapter _hudScale;
     private readonly PlayerTools _tools;
 
-    public ToolDisplay(ContentManager content, ScalingViewportAdapter hudScale, PlayerTools tools) {
-      _content = content;
+    public ToolDisplay(ScalingViewportAdapter hudScale, PlayerTools tools) {
       _hudScale = hudScale;
       _tools = tools;
     }
 
     public void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
-      var sprite = _tools.CurrentlySelectedTool.GetSprite(_content);
+      var sprite = _tools.CurrentlySelectedTool.GetSprite(Platform.Content);
       var position =
           new Vector2(MarginPx, _hudScale.VirtualHeight - sprite.TextureRegion.Height - MarginPx);
       sprite.Draw(

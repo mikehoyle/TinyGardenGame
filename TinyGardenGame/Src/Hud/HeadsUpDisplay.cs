@@ -21,10 +21,10 @@ namespace TinyGardenGame.Hud {
         int renderWidth,
         int renderHeight) {
       _hudScale = new ScalingViewportAdapter(graphicsDevice, renderWidth, renderHeight);
-      _inventoryDisplay = new InventoryDisplay(game.Content, _hudScale, playerState.Inventory);
-      _toolDisplay = new ToolDisplay(game.Content, _hudScale, playerState.Tools);
-      _resourcesDisplay = new ResourcesDisplay(game.Content, _hudScale, playerState);
-      _timeDisplay = new TimeDisplay(game.Content, _hudScale, gameState.Clock);
+      _inventoryDisplay = new InventoryDisplay(_hudScale, playerState.Inventory);
+      _toolDisplay = new ToolDisplay(_hudScale, playerState.Tools);
+      _resourcesDisplay = new ResourcesDisplay(_hudScale, playerState);
+      _timeDisplay = new TimeDisplay(_hudScale, gameState.Clock);
       _debugOverlay = new DebugOverlay(game, _hudScale);
     }
 

@@ -5,7 +5,6 @@ using System.Linq;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
 using NLog;
-using NLog.Fluent;
 using TinyGardenGame.Config;
 using TinyGardenGame.MapGeneration.MapTiles;
 using TinyGardenGame.MapGeneration.RandomAlgorithms;
@@ -251,6 +250,12 @@ namespace TinyGardenGame.MapGeneration {
           MapProcessor.MarkWaterNonTraversableIfSurrounded(map, x, y, tile);
         }
       });
+
+      AddPrefabs(map);
+    }
+    private void AddPrefabs(GameMap map) {
+      // For now, just place the great tree
+
     }
   }
 }

@@ -19,7 +19,7 @@ public partial class Unit
     CollisionFootprint.Width,
     CollisionFootprint.Height);
 
-  public static Entity Build(Type unitType, Func<Entity> createEntityFunc, Vector2 position) {
+  public static Entity Instantiate(Type unitType, Func<Entity> createEntityFunc, Vector2 position) {
     var unit = Items[unitType];
     return createEntityFunc()
       .AttachAnd(new PositionComponent(position))

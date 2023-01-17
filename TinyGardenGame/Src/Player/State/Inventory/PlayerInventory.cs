@@ -58,7 +58,7 @@ namespace TinyGardenGame.Player.State.Inventory {
         return null;
       }
 
-      return _inventoryContents[slot].Count < 1 ? null : _inventoryContents[slot];
+      return _inventoryContents[slot]!.Count < 1 ? null : _inventoryContents[slot];
     }
   }
 }
