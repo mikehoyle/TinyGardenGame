@@ -6,4 +6,4 @@ Hp = 25
 SpeedTilesPerSec = 0.75
 AttackRange = 0.25
 AggroRange = 5.0
-Ref-EnemyAiState-InitalBehavior = "Roam"
+Ref-EnemyAiState-InitalBehavior = "AttackTree"

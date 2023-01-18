@@ -67,6 +67,7 @@ namespace TinyGardenGame.Player.State {
               new SysRectangleF(-0.3f, -0.3f, 0.6f, 0.6f),
               DamageRecipientComponent.Category.Friendly))
           .AttachAnd(new SelectionComponent());
+      PlayerEntity.SetTag(Tags.Player);
     }
 
     public void Update(GameTime gameTime, HashSet<PlayerAction> triggeredActions) {

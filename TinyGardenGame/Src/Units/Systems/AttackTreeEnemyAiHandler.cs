@@ -12,25 +12,23 @@ public class AttackTreeEnemyAiHandler : IEnemyAiHandler {
   private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
   private readonly IEnemyAiHandler _backupBehavior;
-  private readonly ImportantEntities _importantEntities;
+  private TagManager _tagManager;
   private ComponentMapper<AnimationComponent> _animationComponentMapper;
   private ComponentMapper<MotionComponent> _motionMapper;
   private ComponentMapper<PositionComponent> _positionComponentMapper;
 
-  public AttackTreeEnemyAiHandler(
-      IEnemyAiHandler backupBehavior, ImportantEntities importantEntities) {
+  public AttackTreeEnemyAiHandler(IEnemyAiHandler backupBehavior) {
     _backupBehavior = backupBehavior;
-    _importantEntities = importantEntities;
   }
 
   public void Handle(GameTime gameTime, int entity) {
-    if (!_importantEntities.GreatTree.HasValue) {
+    if (!_tagManager.IsRegistered(Tags.GreatTree)) {
       Logger.Warn("No Great Tree, AI reverting to backup behavior");
       _backupBehavior.Handle(gameTime, entity);
       return;
     }
 
-    var greatTreePosition = _positionComponentMapper.Get(_importantEntities.GreatTree.Value);
+    var greatTreePosition = _positionComponentMapper.Get(_tagManager.GetEntity(Tags.GreatTree));
     var position = _positionComponentMapper.Get(entity);
     var targetAngle = position.AngleTo(greatTreePosition);
     _motionMapper.Get(entity).SetMotionFromAngle(gameTime, targetAngle);
@@ -42,7 +40,8 @@ public class AttackTreeEnemyAiHandler : IEnemyAiHandler {
         new AnimationComponent(AnimationComponent.Action.Run, direction));
   }
 
-  public void Initialize(IComponentMapperService mapperService) {
+  public void Initialize(IComponentMapperService mapperService, TagManager tagManager) {
+    _tagManager = tagManager;
     _positionComponentMapper = mapperService.GetMapper<PositionComponent>();
     _motionMapper = mapperService.GetMapper<MotionComponent>();
     // TODO: handle animation differently

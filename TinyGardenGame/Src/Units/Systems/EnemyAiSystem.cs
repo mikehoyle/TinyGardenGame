@@ -13,10 +13,10 @@ public class EnemyAiSystem : EntityUpdateSystem {
   private readonly RoamEnemyAiHandler _roamHandler;
   private ComponentMapper<EnemyAiComponent> _aiComponentMapper;
 
-  public EnemyAiSystem(ImportantEntities importantEntities) : base(
+  public EnemyAiSystem() : base(
       Aspect.All(typeof(EnemyAiComponent), typeof(PositionComponent))) {
     _roamHandler = new RoamEnemyAiHandler(GameConfig.Config.AiRoamVariationRadiansPerSec);
-    _attackTreeHandler = new AttackTreeEnemyAiHandler(_roamHandler, importantEntities);
+    _attackTreeHandler = new AttackTreeEnemyAiHandler(_roamHandler);
   }
 
 
@@ -24,7 +24,7 @@ public class EnemyAiSystem : EntityUpdateSystem {
     _aiComponentMapper = mapperService.GetMapper<EnemyAiComponent>();
 
     _roamHandler.Initialize(mapperService);
-    _attackTreeHandler.Initialize(mapperService);
+    _attackTreeHandler.Initialize(mapperService, TagManager);
   }
 
   public override void Update(GameTime gameTime) {

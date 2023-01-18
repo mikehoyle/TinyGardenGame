@@ -19,6 +19,8 @@ public partial class Plant {
   private int _growthStages;
   public delegate bool CanGrowOn(MapTile tile);
   public Vector2 FootprintVec => new(FootprintSize.Width, FootprintSize.Height);
+  public RectangleF CollisionRect => new(
+      CollisionFootprint.X, CollisionFootprint.Y, CollisionFootprint.Width, CollisionFootprint.Height);
   public CanGrowOn GrowthCondition {
     get {
       return Id switch {
@@ -44,8 +46,10 @@ public partial class Plant {
     var entity = createEntity()
         .AttachAnd(drawable)
         .AttachAnd(new PositionComponent(position, footprintSize: FootprintVec));
-    // No plant collisions for now
-    //.AttachAnd(new CollisionFootprintComponent(metadata.CollisionFootprint));
+    if ((CollisionFootprint.Height > 0) && (CollisionFootprint.Width > 0)) {
+      entity.Attach(new CollisionFootprintComponent(CollisionRect));
+    }
+    
     if (GrowthTimeSecs > 0) {
       var growth = new GrowthComponent(
           TimeSpan.FromSeconds(GrowthTimeSecs), GrowthStages);
@@ -53,7 +57,9 @@ public partial class Plant {
       entity.Attach(growth);
     }
 
-    CustomSetup(entity);
+    if (Tag != null) {
+      entity.SetTag(Tag);
+    }
   }
 
   public int CreateGhost(Vector2 position, Entity existingEntity) {
@@ -67,17 +73,6 @@ public partial class Plant {
     return existingEntity.AttachAnd(new DrawableComponent(sprite))
         .AttachAnd(new PositionComponent(position, footprintSize: FootprintVec))
         .Id;
-  }
-
-  /// <summary>
-  /// Optional final step of entity creation
-  /// </summary>
-  private void CustomSetup(Entity entity) {
-    Action<Entity> customSetupAction = Id switch {
-        Type.GreatOak => e => e.Attach(new GreatTreeComponent()),
-        _ => _ => { },
-    };
-    customSetupAction(entity);
   }
 
   private AsepriteAnimatedSprite LoadSprite() {

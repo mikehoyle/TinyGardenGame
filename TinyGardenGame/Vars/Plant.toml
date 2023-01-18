@@ -16,3 +16,5 @@ Name = "GreatOak"
 Ref-Sprite-Sprite = "GreatTree"
 GrowthTimeSecs = 0
 FootprintSize = { Width = 3.0, Height = 3.0 }
+CollisionFootprint = { X = 0.0, Y = 0.0, Width = 3.0, Height = 3.0 }
+Tag = "GreatTree"

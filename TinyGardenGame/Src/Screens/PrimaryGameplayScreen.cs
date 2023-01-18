@@ -36,11 +36,9 @@ namespace TinyGardenGame.Screens {
           MainGame.RenderResolutionWidth,
           MainGame.RenderResolutionHeight);
       var mapProcessor = new MapProcessor(game, map);
-      var importantEntities = new ImportantEntities();
       _world = new WorldBuilder()
-          .AddSystem(importantEntities)
           .AddSystem(new PlayerInputSystem(this, playerState, map))
-          .AddSystem(new EnemyAiSystem(importantEntities))
+          .AddSystem(new EnemyAiSystem())
           .AddSystem(collisionSystem)
           .AddSystem(new MotionSystem())
           .AddSystem(new GrowthSystem())
@@ -60,7 +58,7 @@ namespace TinyGardenGame.Screens {
       
       // TODO: remove this temporary test unit
       Plant.Items[Plant.Type.GreatOak].Instantiate(new Vector2(0, 3), _world.CreateEntity);
-      Unit.Instantiate(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(3, 3));
+      Unit.Instantiate(Unit.Type.Inchworm, _world.CreateEntity, new Vector2(4, -1));
     }
 
     public override void LoadContent() {
